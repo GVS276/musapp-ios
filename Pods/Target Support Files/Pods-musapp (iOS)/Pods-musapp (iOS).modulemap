@@ -1,0 +1,6 @@
+framework module Pods_musapp__iOS_ {
+  umbrella header "Pods-musapp (iOS)-umbrella.h"
+
+  export *
+  module * { export * }
+}

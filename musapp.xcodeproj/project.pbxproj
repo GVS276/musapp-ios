@@ -1,0 +1,778 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 55;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		1A3F230228A045A500BF13D3 /* SQLDataBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A3F230128A045A500BF13D3 /* SQLDataBase.swift */; };
+		1A3F230A28A048E600BF13D3 /* DBSemaphore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A3F230928A048E600BF13D3 /* DBSemaphore.swift */; };
+		1A3F230C28A049F100BF13D3 /* DBContracts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A3F230B28A049F100BF13D3 /* DBContracts.swift */; };
+		1A3F231028A04C9300BF13D3 /* DBAudioDao.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A3F230F28A04C9300BF13D3 /* DBAudioDao.swift */; };
+		1A3F231328A0506700BF13D3 /* AudioModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A3F231228A0506700BF13D3 /* AudioModel.swift */; };
+		1A3F231528A052F900BF13D3 /* DBUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A3F231428A052F900BF13D3 /* DBUtils.swift */; };
+		1AA2A3EA289BE56D009A8739 /* Tests_iOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AA2A3E9289BE56D009A8739 /* Tests_iOS.swift */; };
+		1AA2A3EC289BE56D009A8739 /* Tests_iOSLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AA2A3EB289BE56D009A8739 /* Tests_iOSLaunchTests.swift */; };
+		1AA2A3F6289BE56D009A8739 /* Tests_macOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AA2A3F5289BE56D009A8739 /* Tests_macOS.swift */; };
+		1AA2A3F8289BE56D009A8739 /* Tests_macOSLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AA2A3F7289BE56D009A8739 /* Tests_macOSLaunchTests.swift */; };
+		1AA2A3F9289BE56D009A8739 /* MusApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AA2A3D1289BE56C009A8739 /* MusApp.swift */; };
+		1AA2A3FD289BE56D009A8739 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1AA2A3D3289BE56D009A8739 /* Assets.xcassets */; };
+		1AD3E955289E6872007745E9 /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AD3E954289E6872007745E9 /* MainView.swift */; };
+		1AD3E959289E6CF7007745E9 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1AD3E958289E6CF7007745E9 /* AudioToolbox.framework */; };
+		1AD3E95B289E717C007745E9 /* UIUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AD3E95A289E717C007745E9 /* UIUtils.swift */; };
+		1AD3E95D289E81B9007745E9 /* AudioPlayerModelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AD3E95C289E81B9007745E9 /* AudioPlayerModelView.swift */; };
+		1AD3E95F289E9336007745E9 /* UINavigation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AD3E95E289E9336007745E9 /* UINavigation.swift */; };
+		1AD3E961289EA246007745E9 /* PlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AD3E960289EA246007745E9 /* PlayerView.swift */; };
+		1AD3E964289EA27D007745E9 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AD3E963289EA27D007745E9 /* SettingsView.swift */; };
+		1AD3E966289EA28D007745E9 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AD3E965289EA28D007745E9 /* LoginView.swift */; };
+		1AD3E968289EA2A4007745E9 /* UIExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AD3E967289EA2A4007745E9 /* UIExtensions.swift */; };
+		1ADB3F4828A1063500D44C59 /* DBTasks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ADB3F4728A1063500D44C59 /* DBTasks.swift */; };
+		1ADB3F4A28A1075000D44C59 /* DBDelegates.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ADB3F4928A1075000D44C59 /* DBDelegates.swift */; };
+		1ADB3F4C28A108F500D44C59 /* DBController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ADB3F4B28A108F500D44C59 /* DBController.swift */; };
+		1ADB3F4E28A10E6B00D44C59 /* MainViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ADB3F4D28A10E6B00D44C59 /* MainViewModel.swift */; };
+		1ADB3F5028A11D6800D44C59 /* VKViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ADB3F4F28A11D6800D44C59 /* VKViewModel.swift */; };
+		1ADB3F5228A128F800D44C59 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ADB3F5128A128F800D44C59 /* AppDelegate.swift */; };
+		1AEE0033289EB81000F70F29 /* ToastView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AEE0032289EB81000F70F29 /* ToastView.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		1AA2A3E6289BE56D009A8739 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1AA2A3CC289BE56C009A8739 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 1AA2A3D7289BE56D009A8739;
+			remoteInfo = "musapp (iOS)";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		02289A18AB1F5BB3D9652527 /* Pods-musapp (iOS).release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-musapp (iOS).release.xcconfig"; path = "Target Support Files/Pods-musapp (iOS)/Pods-musapp (iOS).release.xcconfig"; sourceTree = "<group>"; };
+		1A3F230128A045A500BF13D3 /* SQLDataBase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SQLDataBase.swift; sourceTree = "<group>"; };
+		1A3F230928A048E600BF13D3 /* DBSemaphore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DBSemaphore.swift; sourceTree = "<group>"; };
+		1A3F230B28A049F100BF13D3 /* DBContracts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DBContracts.swift; sourceTree = "<group>"; };
+		1A3F230F28A04C9300BF13D3 /* DBAudioDao.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DBAudioDao.swift; sourceTree = "<group>"; };
+		1A3F231228A0506700BF13D3 /* AudioModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioModel.swift; sourceTree = "<group>"; };
+		1A3F231428A052F900BF13D3 /* DBUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DBUtils.swift; sourceTree = "<group>"; };
+		1AA2A3D1289BE56C009A8739 /* MusApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusApp.swift; sourceTree = "<group>"; };
+		1AA2A3D3289BE56D009A8739 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		1AA2A3D8289BE56D009A8739 /* musapp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = musapp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		1AA2A3E5289BE56D009A8739 /* Tests iOS.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Tests iOS.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		1AA2A3E9289BE56D009A8739 /* Tests_iOS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests_iOS.swift; sourceTree = "<group>"; };
+		1AA2A3EB289BE56D009A8739 /* Tests_iOSLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests_iOSLaunchTests.swift; sourceTree = "<group>"; };
+		1AA2A3F1289BE56D009A8739 /* Tests macOS.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Tests macOS.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		1AA2A3F5289BE56D009A8739 /* Tests_macOS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests_macOS.swift; sourceTree = "<group>"; };
+		1AA2A3F7289BE56D009A8739 /* Tests_macOSLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests_macOSLaunchTests.swift; sourceTree = "<group>"; };
+		1AA2A40D289BE632009A8739 /* musapp--iOS--Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "musapp--iOS--Info.plist"; sourceTree = "<group>"; };
+		1AD3E954289E6872007745E9 /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
+		1AD3E956289E6CF7007745E9 /* musapp (iOS).entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "musapp (iOS).entitlements"; sourceTree = "<group>"; };
+		1AD3E958289E6CF7007745E9 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS15.2.sdk/System/Library/Frameworks/AudioToolbox.framework; sourceTree = DEVELOPER_DIR; };
+		1AD3E95A289E717C007745E9 /* UIUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIUtils.swift; sourceTree = "<group>"; };
+		1AD3E95C289E81B9007745E9 /* AudioPlayerModelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioPlayerModelView.swift; sourceTree = "<group>"; };
+		1AD3E95E289E9336007745E9 /* UINavigation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UINavigation.swift; sourceTree = "<group>"; };
+		1AD3E960289EA246007745E9 /* PlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerView.swift; sourceTree = "<group>"; };
+		1AD3E963289EA27D007745E9 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		1AD3E965289EA28D007745E9 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
+		1AD3E967289EA2A4007745E9 /* UIExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIExtensions.swift; sourceTree = "<group>"; };
+		1ADB3F3A28A1031D00D44C59 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS15.2.sdk/System/Library/Frameworks/StoreKit.framework; sourceTree = DEVELOPER_DIR; };
+		1ADB3F4728A1063500D44C59 /* DBTasks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DBTasks.swift; sourceTree = "<group>"; };
+		1ADB3F4928A1075000D44C59 /* DBDelegates.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DBDelegates.swift; sourceTree = "<group>"; };
+		1ADB3F4B28A108F500D44C59 /* DBController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DBController.swift; sourceTree = "<group>"; };
+		1ADB3F4D28A10E6B00D44C59 /* MainViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewModel.swift; sourceTree = "<group>"; };
+		1ADB3F4F28A11D6800D44C59 /* VKViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VKViewModel.swift; sourceTree = "<group>"; };
+		1ADB3F5128A128F800D44C59 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		1AEE0032289EB81000F70F29 /* ToastView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToastView.swift; sourceTree = "<group>"; };
+		1B4B5F824BBAF9DEF4B8FBB5 /* Pods-musapp (iOS).debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-musapp (iOS).debug.xcconfig"; path = "Target Support Files/Pods-musapp (iOS)/Pods-musapp (iOS).debug.xcconfig"; sourceTree = "<group>"; };
+		F8214EA146B5F46506345809 /* Pods_musapp__iOS_.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_musapp__iOS_.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		1AA2A3D5289BE56D009A8739 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1AD3E959289E6CF7007745E9 /* AudioToolbox.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1AA2A3E2289BE56D009A8739 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1AA2A3EE289BE56D009A8739 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		1A3F22FE28A0456A00BF13D3 /* db */ = {
+			isa = PBXGroup;
+			children = (
+				1A3F231128A0503A00BF13D3 /* model */,
+				1A3F230E28A04C7A00BF13D3 /* dao */,
+				1A3F230128A045A500BF13D3 /* SQLDataBase.swift */,
+				1A3F230928A048E600BF13D3 /* DBSemaphore.swift */,
+				1A3F230B28A049F100BF13D3 /* DBContracts.swift */,
+				1A3F231428A052F900BF13D3 /* DBUtils.swift */,
+				1ADB3F4728A1063500D44C59 /* DBTasks.swift */,
+				1ADB3F4928A1075000D44C59 /* DBDelegates.swift */,
+				1ADB3F4B28A108F500D44C59 /* DBController.swift */,
+			);
+			path = db;
+			sourceTree = "<group>";
+		};
+		1A3F230E28A04C7A00BF13D3 /* dao */ = {
+			isa = PBXGroup;
+			children = (
+				1A3F230F28A04C9300BF13D3 /* DBAudioDao.swift */,
+			);
+			path = dao;
+			sourceTree = "<group>";
+		};
+		1A3F231128A0503A00BF13D3 /* model */ = {
+			isa = PBXGroup;
+			children = (
+				1A3F231228A0506700BF13D3 /* AudioModel.swift */,
+			);
+			path = model;
+			sourceTree = "<group>";
+		};
+		1AA2A3CB289BE56C009A8739 = {
+			isa = PBXGroup;
+			children = (
+				1AD3E956289E6CF7007745E9 /* musapp (iOS).entitlements */,
+				1AA2A40D289BE632009A8739 /* musapp--iOS--Info.plist */,
+				1AA2A3D0289BE56C009A8739 /* Shared */,
+				1AA2A3E8289BE56D009A8739 /* Tests iOS */,
+				1AA2A3F4289BE56D009A8739 /* Tests macOS */,
+				1AA2A3D9289BE56D009A8739 /* Products */,
+				1AD3E957289E6CF7007745E9 /* Frameworks */,
+				EB8A39B418ACE09552BEE20C /* Pods */,
+			);
+			sourceTree = "<group>";
+		};
+		1AA2A3D0289BE56C009A8739 /* Shared */ = {
+			isa = PBXGroup;
+			children = (
+				1A3F22FE28A0456A00BF13D3 /* db */,
+				1AEE0031289EB80200F70F29 /* view */,
+				1AA2A414289C0CE8009A8739 /* models */,
+				1AA2A40F289BED3D009A8739 /* utils */,
+				1AA2A40E289BED02009A8739 /* ui */,
+				1AA2A3D1289BE56C009A8739 /* MusApp.swift */,
+				1ADB3F5128A128F800D44C59 /* AppDelegate.swift */,
+				1AA2A3D3289BE56D009A8739 /* Assets.xcassets */,
+			);
+			path = Shared;
+			sourceTree = "<group>";
+		};
+		1AA2A3D9289BE56D009A8739 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				1AA2A3D8289BE56D009A8739 /* musapp.app */,
+				1AA2A3E5289BE56D009A8739 /* Tests iOS.xctest */,
+				1AA2A3F1289BE56D009A8739 /* Tests macOS.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		1AA2A3E8289BE56D009A8739 /* Tests iOS */ = {
+			isa = PBXGroup;
+			children = (
+				1AA2A3E9289BE56D009A8739 /* Tests_iOS.swift */,
+				1AA2A3EB289BE56D009A8739 /* Tests_iOSLaunchTests.swift */,
+			);
+			path = "Tests iOS";
+			sourceTree = "<group>";
+		};
+		1AA2A3F4289BE56D009A8739 /* Tests macOS */ = {
+			isa = PBXGroup;
+			children = (
+				1AA2A3F5289BE56D009A8739 /* Tests_macOS.swift */,
+				1AA2A3F7289BE56D009A8739 /* Tests_macOSLaunchTests.swift */,
+			);
+			path = "Tests macOS";
+			sourceTree = "<group>";
+		};
+		1AA2A40E289BED02009A8739 /* ui */ = {
+			isa = PBXGroup;
+			children = (
+				1AD3E962289EA26B007745E9 /* settings */,
+				1AD3E954289E6872007745E9 /* MainView.swift */,
+				1AD3E965289EA28D007745E9 /* LoginView.swift */,
+				1AD3E960289EA246007745E9 /* PlayerView.swift */,
+			);
+			path = ui;
+			sourceTree = "<group>";
+		};
+		1AA2A40F289BED3D009A8739 /* utils */ = {
+			isa = PBXGroup;
+			children = (
+				1AD3E95A289E717C007745E9 /* UIUtils.swift */,
+				1AD3E95E289E9336007745E9 /* UINavigation.swift */,
+				1AD3E967289EA2A4007745E9 /* UIExtensions.swift */,
+			);
+			path = utils;
+			sourceTree = "<group>";
+		};
+		1AA2A414289C0CE8009A8739 /* models */ = {
+			isa = PBXGroup;
+			children = (
+				1AD3E95C289E81B9007745E9 /* AudioPlayerModelView.swift */,
+				1ADB3F4D28A10E6B00D44C59 /* MainViewModel.swift */,
+				1ADB3F4F28A11D6800D44C59 /* VKViewModel.swift */,
+			);
+			path = models;
+			sourceTree = "<group>";
+		};
+		1AD3E957289E6CF7007745E9 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				1ADB3F3A28A1031D00D44C59 /* StoreKit.framework */,
+				1AD3E958289E6CF7007745E9 /* AudioToolbox.framework */,
+				F8214EA146B5F46506345809 /* Pods_musapp__iOS_.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		1AD3E962289EA26B007745E9 /* settings */ = {
+			isa = PBXGroup;
+			children = (
+				1AD3E963289EA27D007745E9 /* SettingsView.swift */,
+			);
+			path = settings;
+			sourceTree = "<group>";
+		};
+		1AEE0031289EB80200F70F29 /* view */ = {
+			isa = PBXGroup;
+			children = (
+				1AEE0032289EB81000F70F29 /* ToastView.swift */,
+			);
+			path = view;
+			sourceTree = "<group>";
+		};
+		EB8A39B418ACE09552BEE20C /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				1B4B5F824BBAF9DEF4B8FBB5 /* Pods-musapp (iOS).debug.xcconfig */,
+				02289A18AB1F5BB3D9652527 /* Pods-musapp (iOS).release.xcconfig */,
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		1AA2A3D7289BE56D009A8739 /* musapp (iOS) */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1AA2A401289BE56D009A8739 /* Build configuration list for PBXNativeTarget "musapp (iOS)" */;
+			buildPhases = (
+				833A2EC2713C4FA30817BBB9 /* [CP] Check Pods Manifest.lock */,
+				1AA2A3D4289BE56D009A8739 /* Sources */,
+				1AA2A3D5289BE56D009A8739 /* Frameworks */,
+				1AA2A3D6289BE56D009A8739 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "musapp (iOS)";
+			productName = "musapp (iOS)";
+			productReference = 1AA2A3D8289BE56D009A8739 /* musapp.app */;
+			productType = "com.apple.product-type.application";
+		};
+		1AA2A3E4289BE56D009A8739 /* Tests iOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1AA2A407289BE56D009A8739 /* Build configuration list for PBXNativeTarget "Tests iOS" */;
+			buildPhases = (
+				1AA2A3E1289BE56D009A8739 /* Sources */,
+				1AA2A3E2289BE56D009A8739 /* Frameworks */,
+				1AA2A3E3289BE56D009A8739 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				1AA2A3E7289BE56D009A8739 /* PBXTargetDependency */,
+			);
+			name = "Tests iOS";
+			productName = "Tests iOS";
+			productReference = 1AA2A3E5289BE56D009A8739 /* Tests iOS.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+		1AA2A3F0289BE56D009A8739 /* Tests macOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1AA2A40A289BE56D009A8739 /* Build configuration list for PBXNativeTarget "Tests macOS" */;
+			buildPhases = (
+				1AA2A3ED289BE56D009A8739 /* Sources */,
+				1AA2A3EE289BE56D009A8739 /* Frameworks */,
+				1AA2A3EF289BE56D009A8739 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Tests macOS";
+			productName = "Tests macOS";
+			productReference = 1AA2A3F1289BE56D009A8739 /* Tests macOS.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		1AA2A3CC289BE56C009A8739 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1320;
+				LastUpgradeCheck = 1320;
+				TargetAttributes = {
+					1AA2A3D7289BE56D009A8739 = {
+						CreatedOnToolsVersion = 13.2;
+					};
+					1AA2A3E4289BE56D009A8739 = {
+						CreatedOnToolsVersion = 13.2;
+						TestTargetID = 1AA2A3D7289BE56D009A8739;
+					};
+					1AA2A3F0289BE56D009A8739 = {
+						CreatedOnToolsVersion = 13.2;
+						TestTargetID = 1AA2A3DD289BE56D009A8739;
+					};
+				};
+			};
+			buildConfigurationList = 1AA2A3CF289BE56C009A8739 /* Build configuration list for PBXProject "musapp" */;
+			compatibilityVersion = "Xcode 13.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 1AA2A3CB289BE56C009A8739;
+			productRefGroup = 1AA2A3D9289BE56D009A8739 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				1AA2A3D7289BE56D009A8739 /* musapp (iOS) */,
+				1AA2A3E4289BE56D009A8739 /* Tests iOS */,
+				1AA2A3F0289BE56D009A8739 /* Tests macOS */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		1AA2A3D6289BE56D009A8739 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1AA2A3FD289BE56D009A8739 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1AA2A3E3289BE56D009A8739 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1AA2A3EF289BE56D009A8739 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		833A2EC2713C4FA30817BBB9 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-musapp (iOS)-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		1AA2A3D4289BE56D009A8739 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1ADB3F5228A128F800D44C59 /* AppDelegate.swift in Sources */,
+				1A3F231028A04C9300BF13D3 /* DBAudioDao.swift in Sources */,
+				1AD3E961289EA246007745E9 /* PlayerView.swift in Sources */,
+				1ADB3F4A28A1075000D44C59 /* DBDelegates.swift in Sources */,
+				1AD3E964289EA27D007745E9 /* SettingsView.swift in Sources */,
+				1AD3E95F289E9336007745E9 /* UINavigation.swift in Sources */,
+				1AD3E968289EA2A4007745E9 /* UIExtensions.swift in Sources */,
+				1ADB3F4828A1063500D44C59 /* DBTasks.swift in Sources */,
+				1A3F230228A045A500BF13D3 /* SQLDataBase.swift in Sources */,
+				1AD3E95D289E81B9007745E9 /* AudioPlayerModelView.swift in Sources */,
+				1AEE0033289EB81000F70F29 /* ToastView.swift in Sources */,
+				1AD3E95B289E717C007745E9 /* UIUtils.swift in Sources */,
+				1AD3E955289E6872007745E9 /* MainView.swift in Sources */,
+				1A3F230A28A048E600BF13D3 /* DBSemaphore.swift in Sources */,
+				1ADB3F4E28A10E6B00D44C59 /* MainViewModel.swift in Sources */,
+				1A3F230C28A049F100BF13D3 /* DBContracts.swift in Sources */,
+				1AD3E966289EA28D007745E9 /* LoginView.swift in Sources */,
+				1A3F231328A0506700BF13D3 /* AudioModel.swift in Sources */,
+				1AA2A3F9289BE56D009A8739 /* MusApp.swift in Sources */,
+				1ADB3F5028A11D6800D44C59 /* VKViewModel.swift in Sources */,
+				1A3F231528A052F900BF13D3 /* DBUtils.swift in Sources */,
+				1ADB3F4C28A108F500D44C59 /* DBController.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1AA2A3E1289BE56D009A8739 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1AA2A3EC289BE56D009A8739 /* Tests_iOSLaunchTests.swift in Sources */,
+				1AA2A3EA289BE56D009A8739 /* Tests_iOS.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1AA2A3ED289BE56D009A8739 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1AA2A3F8289BE56D009A8739 /* Tests_macOSLaunchTests.swift in Sources */,
+				1AA2A3F6289BE56D009A8739 /* Tests_macOS.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		1AA2A3E7289BE56D009A8739 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 1AA2A3D7289BE56D009A8739 /* musapp (iOS) */;
+			targetProxy = 1AA2A3E6289BE56D009A8739 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		1AA2A3FF289BE56D009A8739 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		1AA2A400289BE56D009A8739 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+			};
+			name = Release;
+		};
+		1AA2A402289BE56D009A8739 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 1B4B5F824BBAF9DEF4B8FBB5 /* Pods-musapp (iOS).debug.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "musapp (iOS).entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = C97944NT66;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "musapp--iOS--Info.plist";
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.vg276.musapp;
+				PRODUCT_NAME = musapp;
+				SDKROOT = iphoneos;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		1AA2A403289BE56D009A8739 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 02289A18AB1F5BB3D9652527 /* Pods-musapp (iOS).release.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "musapp (iOS).entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = C97944NT66;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "musapp--iOS--Info.plist";
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.vg276.musapp;
+				PRODUCT_NAME = musapp;
+				SDKROOT = iphoneos;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		1AA2A408289BE56D009A8739 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = C97944NT66;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.2;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.vg276.Tests-iOS";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = "musapp (iOS)";
+			};
+			name = Debug;
+		};
+		1AA2A409289BE56D009A8739 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = C97944NT66;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.2;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.vg276.Tests-iOS";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = "musapp (iOS)";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		1AA2A40B289BE56D009A8739 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = C97944NT66;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 11.6;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.vg276.Tests-macOS";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_TARGET_NAME = "musapp (macOS)";
+			};
+			name = Debug;
+		};
+		1AA2A40C289BE56D009A8739 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = C97944NT66;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 11.6;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.vg276.Tests-macOS";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_TARGET_NAME = "musapp (macOS)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		1AA2A3CF289BE56C009A8739 /* Build configuration list for PBXProject "musapp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1AA2A3FF289BE56D009A8739 /* Debug */,
+				1AA2A400289BE56D009A8739 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1AA2A401289BE56D009A8739 /* Build configuration list for PBXNativeTarget "musapp (iOS)" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1AA2A402289BE56D009A8739 /* Debug */,
+				1AA2A403289BE56D009A8739 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1AA2A407289BE56D009A8739 /* Build configuration list for PBXNativeTarget "Tests iOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1AA2A408289BE56D009A8739 /* Debug */,
+				1AA2A409289BE56D009A8739 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1AA2A40A289BE56D009A8739 /* Build configuration list for PBXNativeTarget "Tests macOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1AA2A40B289BE56D009A8739 /* Debug */,
+				1AA2A40C289BE56D009A8739 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 1AA2A3CC289BE56C009A8739 /* Project object */;
+}
