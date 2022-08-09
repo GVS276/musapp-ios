@@ -11,7 +11,7 @@ import SQLite3
 class SQLDataBase
 {
     static let shared = SQLDataBase()
-    private let newVersion: Int32 = 1
+    private let newVersion: Int32 = 2
     
     private var semaphore: DBSemaphore? = nil
     private var audioDao: DBAudioDao? = nil
@@ -120,8 +120,15 @@ class SQLDataBase
         sqlite3_finalize(createTableStatement)
     }
     
-    fileprivate func upgradeDB(oldVersion: Int32, newVersion: Int32) {
- 
+    fileprivate func upgradeDB(oldVersion: Int32, newVersion: Int32)
+    {
+        if oldVersion < 2 {
+            self.executeUpdate(query: DBContracts.AudioEntry.SQL_UPDATE_AUDIO_TIMESTAMP)
+        }
+    }
+    
+    fileprivate func executeUpdate(query: String) {
+        DBUtils.executeRawQuery(dbConnection: self.db!, query: query)
     }
     
     private func createTables()

@@ -11,7 +11,7 @@ import MediaPlayer
 
 struct AudioStruct: Identifiable {
     let id = UUID().uuidString
-    let model: AudioModel
+    var model: AudioModel
     var isPlaying = false
 }
 
@@ -392,6 +392,17 @@ class AudioPlayerModelView: ObservableObject
     func receiveAudioList()
     {
         self.requestReceiveId = self.DB.receiveAudioList(delegate: self)
+    }
+    
+    func addAudioToDB(model: AudioStruct)
+    {
+        var newModel = model
+        newModel.isPlaying = false
+        
+        self.audioList.insert(newModel, at: 0)
+        self.DB.addAudio(model: newModel.model)
+        
+        Toast.shared.show(text: "Added to your data base")
     }
 }
 

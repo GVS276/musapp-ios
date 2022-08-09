@@ -26,7 +26,7 @@ struct SearchView: View
     
     var body: some View
     {
-        VStack(spacing: 0)
+        VStack(spacing: 15)
         {
             HStack(spacing: 15)
             {
@@ -123,25 +123,26 @@ struct SearchView: View
                     .multilineTextAlignment(.leading)
                     .onlyLeading()
                 
-                HStack
-                {
-                    Text(item.model.title)
-                        .foregroundColor(Color("color_text"))
-                        .font(.system(size: 14))
-                        .lineLimit(1)
-                        .multilineTextAlignment(.leading)
-                    
-                    Spacer()
-                    
-                    Text(UIUtils.getTimeFromDuration(sec: Int(item.model.duration)))
-                        .foregroundColor(Color("color_text"))
-                        .font(.system(size: 14))
-                        .lineLimit(1)
-                }
+                Text("\(item.model.title) / \(UIUtils.getTimeFromDuration(sec: Int(item.model.duration)))")
+                    .foregroundColor(Color("color_text"))
+                    .font(.system(size: 14))
+                    .lineLimit(1)
+                    .multilineTextAlignment(.leading)
+                    .onlyLeading()
             }
-            .padding(.trailing, 15)
+            
+            Button {
+                self.audioPlayer.addAudioToDB(model: bind.wrappedValue)
+            } label: {
+                Image("action_add")
+                    .renderingMode(.template)
+                    .foregroundColor(Color("color_text"))
+            }
+            .padding(.vertical, 10)
+            .padding(.horizontal, 15)
         }
-        .padding(.top, 15)
+        .background(Color("color_background"))
+        .padding(.bottom, 15)
         .onTapGesture {
             self.playOrPause(bind: bind)
         }

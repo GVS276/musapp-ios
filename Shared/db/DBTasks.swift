@@ -49,13 +49,14 @@ class AllAudioTask: DBBaseTask
 
 class AddAudioTask: DBBaseTask
 {
-    private let model: AudioModel
+    private var model: AudioModel
     
     init(model: AudioModel) {
         self.model = model
     }
     
     override func run() {
+        self.model.timestamp = DBUtils.getTimestamp()
         SQLDataBase.shared.getAudioDao().insertAudio(audio: self.model)
     }
 }

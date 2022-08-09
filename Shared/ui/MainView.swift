@@ -112,6 +112,7 @@ struct MainView: View
             }
             .padding(.trailing, 15)
         }
+        .background(Color("color_background"))
         .padding(.top, 15)
         .onTapGesture {
             self.playOrPause(bind: bind)

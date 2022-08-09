@@ -31,8 +31,9 @@ class DBAudioDao
                 \(DBContracts.AudioEntry.STREAM_URL), \
                 \(DBContracts.AudioEntry.DOWNLOAD_URL), \
                 \(DBContracts.AudioEntry.DURATION), \
-                \(DBContracts.AudioEntry.IS_DOWNLOADED)) \
-                VALUES (?, ?, ?, ?, ?, ?, ?);
+                \(DBContracts.AudioEntry.IS_DOWNLOADED), \
+                \(DBContracts.AudioEntry.TIMESTAMP)) \
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?);
                 """
         
         var insertStatement: OpaquePointer? = nil
@@ -45,6 +46,7 @@ class DBAudioDao
             DBUtils.bindText(opaquePointer: insertStatement!, value: audio.downloadUrl, columnIndex: 5)
             DBUtils.bindInt(opaquePointer: insertStatement!, value: audio.duration, columnIndex: 6)
             DBUtils.bindInt(opaquePointer: insertStatement!, value: audio.isDownloaded, columnIndex: 7)
+            DBUtils.bindInt64(opaquePointer: insertStatement!, value: audio.timestamp, columnIndex: 8)
             
             if sqlite3_step(insertStatement) == SQLITE_DONE {
                 print("audio: successfully inserted")
@@ -71,7 +73,7 @@ class DBAudioDao
     {
         semaphore.wait()
         
-        let query = "SELECT * from \(DBContracts.AudioEntry.TABLE_NAME) WHERE \(DBContracts.AudioEntry.AUDIO_ID) = '\(audioId)';"
+        let query = "SELECT * from \(DBContracts.AudioEntry.TABLE_NAME) WHERE \(DBContracts.AudioEntry.AUDIO_ID) = '\(audioId)' ORDER BY \(DBContracts.AudioEntry.TIMESTAMP) DESC;"
         let model = getAudioFromQuery(query: query)
         
         semaphore.signal()
@@ -123,6 +125,7 @@ class DBAudioDao
         model.downloadUrl = DBUtils.getString(dbStatement: stmt, columnIndex: 4)
         model.duration = DBUtils.getInt32(dbStatement: stmt, columnIndex: 5)
         model.isDownloaded = DBUtils.getInt32(dbStatement: stmt, columnIndex: 6)
+        model.timestamp = DBUtils.getInt64(dbStatement: stmt, columnIndex: 7)
 
         return model
     }

@@ -23,6 +23,7 @@ class DBContracts
         public static let DOWNLOAD_URL: String = "downloadUrl"          // String
         public static let DURATION: String = "duration"                 // Integer
         public static let IS_DOWNLOADED: String = "isDownloaded"        // Integer
+        public static let TIMESTAMP: String = "timestamp"               // Int64
         
         public static let SQL_CREATE_AUDIO: String = "CREATE TABLE IF NOT EXISTS " + TABLE_NAME + " (" +
         AUDIO_ID + " TEXT PRIMARY KEY," +
@@ -31,6 +32,9 @@ class DBContracts
         STREAM_URL + " TEXT," +
         DOWNLOAD_URL + " TEXT," +
         DURATION + " INTEGER," +
-        IS_DOWNLOADED + " INTEGER)"
+        IS_DOWNLOADED + " INTEGER," +
+        TIMESTAMP + " INTEGER)"
+        
+        public static let SQL_UPDATE_AUDIO_TIMESTAMP: String = "ALTER TABLE " + TABLE_NAME + " ADD COLUMN " + TIMESTAMP + " INTEGER DEFAULT 0";
     }
 }

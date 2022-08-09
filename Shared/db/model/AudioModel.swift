@@ -16,4 +16,5 @@ struct AudioModel
     var downloadUrl: String = ""
     var duration: Int32 = 0
     var isDownloaded: Int32 = 0
+    var timestamp: Int64 = 0
 }
