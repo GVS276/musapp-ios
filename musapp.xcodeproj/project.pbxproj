@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1A09A36328A2FF51009760A6 /* AudioSliderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A09A36228A2FF51009760A6 /* AudioSliderView.swift */; };
 		1A3F230228A045A500BF13D3 /* SQLDataBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A3F230128A045A500BF13D3 /* SQLDataBase.swift */; };
 		1A3F230A28A048E600BF13D3 /* DBSemaphore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A3F230928A048E600BF13D3 /* DBSemaphore.swift */; };
 		1A3F230C28A049F100BF13D3 /* DBContracts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A3F230B28A049F100BF13D3 /* DBContracts.swift */; };
@@ -50,6 +51,7 @@
 
 /* Begin PBXFileReference section */
 		02289A18AB1F5BB3D9652527 /* Pods-musapp (iOS).release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-musapp (iOS).release.xcconfig"; path = "Target Support Files/Pods-musapp (iOS)/Pods-musapp (iOS).release.xcconfig"; sourceTree = "<group>"; };
+		1A09A36228A2FF51009760A6 /* AudioSliderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioSliderView.swift; sourceTree = "<group>"; };
 		1A3F230128A045A500BF13D3 /* SQLDataBase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SQLDataBase.swift; sourceTree = "<group>"; };
 		1A3F230928A048E600BF13D3 /* DBSemaphore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DBSemaphore.swift; sourceTree = "<group>"; };
 		1A3F230B28A049F100BF13D3 /* DBContracts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DBContracts.swift; sourceTree = "<group>"; };
@@ -258,6 +260,7 @@
 			isa = PBXGroup;
 			children = (
 				1AEE0032289EB81000F70F29 /* ToastView.swift */,
+				1A09A36228A2FF51009760A6 /* AudioSliderView.swift */,
 			);
 			path = view;
 			sourceTree = "<group>";
@@ -433,6 +436,7 @@
 				1AD3E95F289E9336007745E9 /* UINavigation.swift in Sources */,
 				1AD3E968289EA2A4007745E9 /* UIExtensions.swift in Sources */,
 				1ADB3F4828A1063500D44C59 /* DBTasks.swift in Sources */,
+				1A09A36328A2FF51009760A6 /* AudioSliderView.swift in Sources */,
 				1A3F230228A045A500BF13D3 /* SQLDataBase.swift in Sources */,
 				1AD3E95D289E81B9007745E9 /* AudioPlayerModelView.swift in Sources */,
 				1AEE0033289EB81000F70F29 /* ToastView.swift in Sources */,

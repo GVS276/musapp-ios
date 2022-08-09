@@ -212,6 +212,18 @@ class AudioPlayerModelView: ObservableObject
         self.ready(value: false)
     }
     
+    func seek(value: Float)
+    {
+        let time = CMTimeMakeWithSeconds(Float64(value), preferredTimescale: 60000)
+        self.player?.seek(to: time, toleranceBefore: .zero, toleranceAfter: .zero)
+    }
+    
+    func seek(value: TimeInterval)
+    {
+        let time = CMTimeMakeWithSeconds(value, preferredTimescale: 60000)
+        self.player?.seek(to: time, toleranceBefore: .zero, toleranceAfter: .zero)
+    }
+    
     private func ready(value: Bool)
     {
         if let callback = self.playerReadyCallback {
@@ -223,26 +235,39 @@ class AudioPlayerModelView: ObservableObject
      * MP Center
      */
     
-    func setupCommandCenter() {
+    func setupCommandCenter()
+    {
         let commandCenter = MPRemoteCommandCenter.shared()
+        
         commandCenter.playCommand.isEnabled = true
-        commandCenter.pauseCommand.isEnabled = true
-        commandCenter.nextTrackCommand.isEnabled = true
-        commandCenter.previousTrackCommand.isEnabled = true
         commandCenter.playCommand.addTarget { event in
             self.play()
             return .success
         }
+        
+        commandCenter.pauseCommand.isEnabled = true
         commandCenter.pauseCommand.addTarget { event in
             self.pause()
             return .success
         }
+        
+        commandCenter.nextTrackCommand.isEnabled = true
         commandCenter.nextTrackCommand.addTarget { event in
             self.control(tag: .Next)
             return .success
         }
+        
+        commandCenter.previousTrackCommand.isEnabled = true
         commandCenter.previousTrackCommand.addTarget { event in
             self.control(tag: .Previous)
+            return .success
+        }
+        
+        commandCenter.changePlaybackPositionCommand.isEnabled = true
+        commandCenter.changePlaybackPositionCommand.addTarget { event in
+            if let event = event as? MPChangePlaybackPositionCommandEvent {
+                self.seek(value: event.positionTime)
+            }
             return .success
         }
     }

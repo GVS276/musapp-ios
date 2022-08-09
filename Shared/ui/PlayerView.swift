@@ -12,7 +12,7 @@ struct PlayerView: View
     @EnvironmentObject var audioPlayer: AudioPlayerModelView
     
     @State private var currentTime: Float = .zero
-    @State private var sliderProgress: Float = .zero
+    @State private var currentDuration: Float = .zero
     
     var body: some View
     {
@@ -87,7 +87,14 @@ struct PlayerView: View
             .padding(.horizontal, 30)
             .padding(.bottom, 15)
             
-            Slider(value: self.$sliderProgress, in: 0...100)
+            AudioSliderView(value: self.$currentTime, maxValue: self.$currentDuration, touchedHandler: { touched in
+                if !touched {
+                    self.audioPlayer.seek(value: self.currentTime)
+                    self.audioPlayer.play()
+                } else {
+                    self.audioPlayer.pause()
+                }
+            })
                 .padding(.bottom, 30)
                 .padding(.horizontal, 30)
             
@@ -135,6 +142,7 @@ struct PlayerView: View
         .onAppear(perform: {
             self.audioPlayer.addProgress { current, duration in
                 self.currentTime = current
+                self.currentDuration = duration
             }
         })
         .removed(self.audioPlayer.playerMode == .MINI)
