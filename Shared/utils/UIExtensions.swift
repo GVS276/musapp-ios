@@ -136,6 +136,6 @@ extension String {
     }
     
     var encoded: String? {
-        return self.addingPercentEncoding(withAllowedCharacters: .alphanumerics)
+        return self.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)
     }
 }

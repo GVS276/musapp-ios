@@ -19,7 +19,9 @@ struct PlayerView: View
         VStack(spacing: 0)
         {
             Button {
-                self.audioPlayer.playerMode = .MINI
+                withAnimation(.easeInOut) {
+                    self.audioPlayer.playerMode = .MINI
+                }
             } label: {
                 HStack(spacing: 0)
                 {
@@ -60,17 +62,30 @@ struct PlayerView: View
             Text(self.audioPlayer.playedModel?.model.artist ?? "Artist")
                 .foregroundColor(Color("color_text"))
                 .font(.system(size: 18))
+                .lineLimit(1)
+                .multilineTextAlignment(.center)
                 .padding(.horizontal, 30)
                 .padding(.bottom, 8)
-                .onlyLeading()
             
             Text(self.audioPlayer.playedModel?.model.title ?? "Title")
                 .foregroundColor(Color("color_text"))
                 .font(.system(size: 14))
+                .lineLimit(4)
+                .multilineTextAlignment(.center)
                 .padding(.horizontal, 30)
-                .onlyLeading()
             
             Spacer()
+            
+            AudioSliderView(value: self.$currentTime, maxValue: self.$currentDuration, touchedHandler: { touched in
+                if !touched {
+                    self.audioPlayer.seek(value: self.currentTime)
+                    self.audioPlayer.play()
+                } else {
+                    self.audioPlayer.pause()
+                }
+            })
+                .padding(.bottom, 10)
+                .padding(.horizontal, 30)
             
             HStack
             {
@@ -85,18 +100,7 @@ struct PlayerView: View
                     .font(.system(size: 14))
             }
             .padding(.horizontal, 30)
-            .padding(.bottom, 15)
-            
-            AudioSliderView(value: self.$currentTime, maxValue: self.$currentDuration, touchedHandler: { touched in
-                if !touched {
-                    self.audioPlayer.seek(value: self.currentTime)
-                    self.audioPlayer.play()
-                } else {
-                    self.audioPlayer.pause()
-                }
-            })
-                .padding(.bottom, 30)
-                .padding(.horizontal, 30)
+            .padding(.bottom, 30)
             
             HStack(spacing: 60)
             {
@@ -134,7 +138,7 @@ struct PlayerView: View
                 }
                 .frame(width: 35, height: 35)
             }
-            .padding(.bottom, 90)
+            .padding(.bottom, 60)
         }
         .background(Color("color_background").edgesIgnoringSafeArea(.all))
         .transition(.move(edge: .bottom))

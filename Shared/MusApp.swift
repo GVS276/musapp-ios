@@ -144,7 +144,7 @@ struct MusApp: App
         .padding(.vertical, 5)
         .background(Color("color_toolbar").edgesIgnoringSafeArea(.bottom))
         .onTapGesture {
-            withAnimation {
+            withAnimation(.easeInOut) {
                 self.audioPlayer.playerMode = .FULL
             }
         }
