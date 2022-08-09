@@ -74,15 +74,77 @@ struct MusApp: App
                         .navigationBarHidden(true)
                 }
             case .main:
-                NavigationView
+                VStack(spacing: 0)
                 {
-                    MainView()
-                        .environmentObject(self.audioPlayer)
-                        .environmentObject(self.mainModel)
-                        .navigationBarHidden(false)
+                    NavigationView
+                    {
+                        MainView()
+                            .environmentObject(self.audioPlayer)
+                            .navigationBarHidden(false)
+                    }
+                    
+                    self.miniPlayer()
+                        .removed(!self.audioPlayer.audioPlayerReady)
                 }
             default:
                 EmptyView()
+            }
+        }
+    }
+    
+    private func miniPlayer() -> some View
+    {
+        HStack(spacing: 0) {
+            ZStack
+            {
+                Image("music")
+                    .resizable()
+                    .renderingMode(.template)
+                    .aspectRatio(contentMode: .fit)
+                    .foregroundColor(.white)
+                    .frame(width: 25, height: 25)
+                    .padding(10)
+            }
+            .background(Color.blue)
+            .cornerRadius(10)
+            .padding(.horizontal, 15)
+            
+            VStack
+            {
+                Text(self.audioPlayer.playedModel?.model.artist ?? "Artist")
+                    .foregroundColor(.white)
+                    .font(.system(size: 16))
+                    .lineLimit(1)
+                    .multilineTextAlignment(.leading)
+                    .onlyLeading()
+                
+                Text(self.audioPlayer.playedModel?.model.title ?? "Title")
+                    .foregroundColor(.white)
+                    .font(.system(size: 14))
+                    .lineLimit(1)
+                    .multilineTextAlignment(.leading)
+                    .onlyLeading()
+            }
+            .padding(.trailing, 15)
+            
+            Button {
+                self.audioPlayer.control(tag: .PlayOrPause)
+            } label: {
+                Image(self.audioPlayer.audioPlaying ? "pause" : "play")
+                    .resizable()
+                    .renderingMode(.template)
+                    .aspectRatio(contentMode: .fill)
+                    .foregroundColor(.white)
+            }
+            .frame(width: 30, height: 30)
+            .padding(15)
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 5)
+        .background(Color("color_toolbar").edgesIgnoringSafeArea(.bottom))
+        .onTapGesture {
+            withAnimation {
+                self.audioPlayer.playerMode = .FULL
             }
         }
     }

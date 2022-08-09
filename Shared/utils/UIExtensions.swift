@@ -134,4 +134,8 @@ extension String {
         let data = Data(self.utf8)
         return Insecure.MD5.hash(data: data).map {String(format: "%02x", $0)}.joined()
     }
+    
+    var encoded: String? {
+        return self.addingPercentEncoding(withAllowedCharacters: .alphanumerics)
+    }
 }

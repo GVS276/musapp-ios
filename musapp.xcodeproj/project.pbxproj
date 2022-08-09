@@ -34,6 +34,7 @@
 		1ADB3F4E28A10E6B00D44C59 /* MainViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ADB3F4D28A10E6B00D44C59 /* MainViewModel.swift */; };
 		1ADB3F5028A11D6800D44C59 /* VKViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ADB3F4F28A11D6800D44C59 /* VKViewModel.swift */; };
 		1ADB3F5228A128F800D44C59 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ADB3F5128A128F800D44C59 /* AppDelegate.swift */; };
+		1AE0830D28A18B2F00ED456B /* SearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AE0830C28A18B2F00ED456B /* SearchView.swift */; };
 		1AEE0033289EB81000F70F29 /* ToastView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AEE0032289EB81000F70F29 /* ToastView.swift */; };
 /* End PBXBuildFile section */
 
@@ -82,6 +83,7 @@
 		1ADB3F4D28A10E6B00D44C59 /* MainViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewModel.swift; sourceTree = "<group>"; };
 		1ADB3F4F28A11D6800D44C59 /* VKViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VKViewModel.swift; sourceTree = "<group>"; };
 		1ADB3F5128A128F800D44C59 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		1AE0830C28A18B2F00ED456B /* SearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchView.swift; sourceTree = "<group>"; };
 		1AEE0032289EB81000F70F29 /* ToastView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToastView.swift; sourceTree = "<group>"; };
 		1B4B5F824BBAF9DEF4B8FBB5 /* Pods-musapp (iOS).debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-musapp (iOS).debug.xcconfig"; path = "Target Support Files/Pods-musapp (iOS)/Pods-musapp (iOS).debug.xcconfig"; sourceTree = "<group>"; };
 		F8214EA146B5F46506345809 /* Pods_musapp__iOS_.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_musapp__iOS_.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -209,6 +211,7 @@
 				1AD3E954289E6872007745E9 /* MainView.swift */,
 				1AD3E965289EA28D007745E9 /* LoginView.swift */,
 				1AD3E960289EA246007745E9 /* PlayerView.swift */,
+				1AE0830C28A18B2F00ED456B /* SearchView.swift */,
 			);
 			path = ui;
 			sourceTree = "<group>";
@@ -435,6 +438,7 @@
 				1AEE0033289EB81000F70F29 /* ToastView.swift in Sources */,
 				1AD3E95B289E717C007745E9 /* UIUtils.swift in Sources */,
 				1AD3E955289E6872007745E9 /* MainView.swift in Sources */,
+				1AE0830D28A18B2F00ED456B /* SearchView.swift in Sources */,
 				1A3F230A28A048E600BF13D3 /* DBSemaphore.swift in Sources */,
 				1ADB3F4E28A10E6B00D44C59 /* MainViewModel.swift in Sources */,
 				1A3F230C28A049F100BF13D3 /* DBContracts.swift in Sources */,

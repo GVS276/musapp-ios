@@ -5,6 +5,7 @@
 //  Created by Виктор Губин on 06.08.2022.
 //
 
+import SwiftUI
 import AVFoundation
 import MediaPlayer
 
@@ -23,7 +24,14 @@ enum PlayerMode: Int
 enum PlayerControl: Int
 {
     case Next = 0,
-         Previous
+         Previous,
+         PlayOrPause
+}
+
+enum PlayingMode: Int
+{
+    case FromMain = 0,
+         FromSearch
 }
 
 class AudioPlayerModelView: ObservableObject
@@ -32,7 +40,14 @@ class AudioPlayerModelView: ObservableObject
     @Published var playerMode: PlayerMode = .MINI
     @Published var playedModel: AudioStruct? = nil
     
+    @Published var audioPlaying = false
+    @Published var audioPlayerReady = false
+    
+    @Published var audioList: [AudioStruct] = []
+    @Published var searchList: [AudioStruct] = []
+    
     private var playing = false
+    private var playingMode: PlayingMode = .FromMain
     private var player: AVPlayer? = nil
     
     private var playerRateObserver: NSKeyValueObservation? = nil
@@ -45,10 +60,37 @@ class AudioPlayerModelView: ObservableObject
     private var playerFinishedCallback: (() -> Void)!
     private var playerControlCallback: ((_ tag: PlayerControl) -> Void)!
     
-    func addObserver(readyHandler: @escaping ((_ ready: Bool) -> Void),
-                     finishedHandler: @escaping (() -> Void),
-                     playingHandler: @escaping ((_ playing: Bool, _ id: String) -> Void),
-                     controlHandler: @escaping ((_ tag: PlayerControl) -> Void))
+    private let DB = DBController.shared
+    private var requestReceiveId: Int64? = nil
+    
+    init()
+    {
+        self.receiveAudioList()
+        self.addObserver { ready in
+            self.audioPlayerReady = ready
+        } finishedHandler: {
+            print("finished")
+            self.audioTrackFinished()
+        } playingHandler: { playing, id in
+            self.audioPlaying = playing
+            self.setPlaying(id: id, value: playing)
+        } controlHandler: { tag in
+            if tag == .Next {
+                self.audioTrackNext()
+            }
+            else if tag == .Previous {
+                self.audioTrackPrevious()
+            }
+            else if tag == .PlayOrPause {
+                self.playOrPause()
+            }
+        }
+    }
+    
+    private func addObserver(readyHandler: @escaping ((_ ready: Bool) -> Void),
+                             finishedHandler: @escaping (() -> Void),
+                             playingHandler: @escaping ((_ playing: Bool, _ id: String) -> Void),
+                             controlHandler: @escaping ((_ tag: PlayerControl) -> Void))
     {
         self.playerReadyCallback = readyHandler
         self.playerPlayingCallback = playingHandler
@@ -60,13 +102,25 @@ class AudioPlayerModelView: ObservableObject
         self.playerProgressCallback = progressHandler
     }
     
-    func startStream(url: String, playedId: String)
+    func setSearchList(list: [AudioStruct])
     {
+        DispatchQueue.main.async {
+            self.searchList.append(contentsOf: Array(list))
+        }
+    }
+    
+    func startStream(url: String, playedId: String, mode: PlayingMode)
+    {
+        // mode
+        self.setPlayingMode(mode: mode)
+        
+        // stop player
         if self.player != nil
         {
             self.stop()
         }
         
+        // new stream
         let audioSession = AVAudioSession.sharedInstance()
         do {
             try audioSession.setCategory(.playback)
@@ -200,5 +254,164 @@ class AudioPlayerModelView: ObservableObject
         info[MPMediaItemPropertyTitle] = self.playedModel?.model.title ?? ""
         info[MPMediaItemPropertyArtist] = self.playedModel?.model.artist ?? ""
         MPNowPlayingInfoCenter.default().nowPlayingInfo = info
+    }
+    
+    /*
+     * for control UI
+     */
+    private func playOrPause()
+    {
+        if self.audioPlaying {
+            self.pause()
+        } else {
+            self.play()
+        }
+    }
+    
+    private func oldTrackStopped()
+    {
+        if self.playedId.isEmpty
+        {
+            return
+        }
+        
+        if self.playingMode == .FromMain
+        {
+            if let index =  self.audioList.firstIndex(where: {$0.id == self.playedId})
+            {
+                self.audioList[index].isPlaying = false
+            }
+        } else {
+            if let index =  self.searchList.firstIndex(where: {$0.id == self.playedId})
+            {
+                self.searchList[index].isPlaying = false
+            }
+        }
+    }
+    
+    private func setPlaying(id: String, value: Bool)
+    {
+        if self.playingMode == .FromMain
+        {
+            if let index = self.audioList.firstIndex(where: {$0.id == id})
+            {
+                self.audioList[index].isPlaying = value
+                self.playedModel = self.audioList[index]
+            }
+        } else {
+            if let index = self.searchList.firstIndex(where: {$0.id == id})
+            {
+                self.searchList[index].isPlaying = value
+                self.playedModel = self.searchList[index]
+            }
+        }
+    }
+    
+    private func setPlayingMode(mode: PlayingMode)
+    {
+        self.oldTrackStopped()
+        
+        if mode == .FromMain, !self.searchList.isEmpty
+        {
+            self.searchList.removeAll()
+        }
+        
+        self.playingMode = mode
+    }
+    
+    private func audioTrackFinished()
+    {
+        if self.playingMode == .FromMain
+        {
+            if let index = self.audioList.firstIndex(where: {$0.id == self.playedId}) {
+                let next = index + 1
+                if next > self.audioList.count - 1
+                {
+                    self.oldTrackStopped()
+                    self.stop()
+                } else {
+                    let audio = self.audioList[next]
+                    self.startStream(url: audio.model.streamUrl, playedId: audio.id, mode: self.playingMode)
+                }
+            }
+        } else {
+            if let index = self.searchList.firstIndex(where: {$0.id == self.playedId}) {
+                let next = index + 1
+                if next > self.searchList.count - 1
+                {
+                    self.oldTrackStopped()
+                    self.stop()
+                } else {
+                    let audio = self.searchList[next]
+                    self.startStream(url: audio.model.streamUrl, playedId: audio.id, mode: self.playingMode)
+                }
+            }
+        }
+    }
+    
+    private func audioTrackNext()
+    {
+        if self.playingMode == .FromMain
+        {
+            if let index = self.audioList.firstIndex(where: {$0.id == self.playedId}) {
+                let next = index + 1 > self.audioList.count - 1 ? 0 : index + 1
+                let audio = self.audioList[next]
+                self.startStream(url: audio.model.streamUrl, playedId: audio.id, mode: self.playingMode)
+            }
+        } else {
+            if let index = self.searchList.firstIndex(where: {$0.id == self.playedId}) {
+                let next = index + 1 > self.searchList.count - 1 ? 0 : index + 1
+                let audio = self.searchList[next]
+                self.startStream(url: audio.model.streamUrl, playedId: audio.id, mode: self.playingMode)
+            }
+        }
+    }
+    
+    private func audioTrackPrevious()
+    {
+        if self.playingMode == .FromMain
+        {
+            if let index = self.audioList.firstIndex(where: {$0.id == self.playedId}) {
+                let previous = index - 1 < 0 ? self.audioList.count - 1 : index - 1
+                let audio = self.audioList[previous]
+                self.startStream(url: audio.model.streamUrl, playedId: audio.id, mode: self.playingMode)
+            }
+        } else {
+            if let index = self.searchList.firstIndex(where: {$0.id == self.playedId}) {
+                let previous = index - 1 < 0 ? self.searchList.count - 1 : index - 1
+                let audio = self.searchList[previous]
+                self.startStream(url: audio.model.streamUrl, playedId: audio.id, mode: self.playingMode)
+            }
+        }
+    }
+    
+    /*
+     * DB
+     */
+    
+    func receiveAudioList()
+    {
+        self.requestReceiveId = self.DB.receiveAudioList(delegate: self)
+    }
+}
+
+extension AudioPlayerModelView: IDBDelegate
+{
+    func onAudioList(requestIdentifier: Int64, list: Array<AudioModel>?)
+    {
+        if self.requestReceiveId == requestIdentifier
+        {
+            var result = [AudioStruct]()
+            if let list = list
+            {
+                list.forEach { model in
+                    result.append(AudioStruct(model: model))
+                }
+            }
+            
+            DispatchQueue.main.async {
+                self.audioList = result
+            }
+        }
     }
 }

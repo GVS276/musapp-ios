@@ -175,4 +175,66 @@ class VKViewModel: ObservableObject
             completionHandler(success)
         }
     }
+    
+    func searchAudio(token: String,
+                     secret: String,
+                     q: String,
+                     count: Int = 25,
+                     offset: Int = 0,
+                     completionHandler: @escaping ((_ list: [AudioStruct]) -> Void))
+    {
+        if let encoded = q.encoded
+        {
+            let method = "/method/audio.search?access_token=\(token)&q=\(encoded)&count=\(count)&offset=\(offset)&v=5.95&https=1&need_blocks=0&lang=ru&device_id=\(self.getDeviceId())"
+            
+            let methodForHash = "/method/audio.search?access_token=\(token)&q=\(q)&count=\(count)&offset=\(offset)&v=5.95&https=1&need_blocks=0&lang=ru&device_id=\(self.getDeviceId())"
+            
+            let hash = "\(methodForHash)\(secret)".md5
+            
+            self.requestSession(urlString: "https://api.vk.com\(method)&sig=\(hash)", parameters: nil) { data in
+                do
+                {
+                    if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
+                    {
+                        if let param = json["response"] as? [String: Any]
+                        {
+                            if let items = param["items"] as? NSArray
+                            {
+                                var list: [AudioStruct] = []
+                                items.forEach { it in
+                                    if let item = it as? [String: Any]
+                                    {
+                                        if let audioId = item["id"] as? Int64,
+                                           let artist = item["artist"] as? String,
+                                           let title = item["title"] as? String,
+                                           let streamUrl = item["url"] as? String,
+                                           let duration = item["duration"] as? Int
+                                        {
+                                            var model = AudioModel()
+                                            model.audioId = String(audioId)
+                                            model.artist = artist
+                                            model.title = title
+                                            model.streamUrl = streamUrl
+                                            model.downloadUrl = ""
+                                            model.duration = Int32(duration)
+                                            
+                                            // нужно добавить в будущем:
+                                            // is_explicit
+                                            // date
+                                            // thumb -> photo_300
+                                            
+                                            list.append(AudioStruct(model: model))
+                                        }
+                                    }
+                                }
+                                completionHandler(list)
+                            }
+                        }
+                    }
+                } catch {
+                    print(error)
+                }
+            }
+        }
+    }
 }
