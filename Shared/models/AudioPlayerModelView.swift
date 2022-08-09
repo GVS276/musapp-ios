@@ -421,7 +421,7 @@ extension AudioPlayerModelView: IDBDelegate
             }
             
             DispatchQueue.main.async {
-                self.audioList = result
+                self.audioList = result.sorted(by: {$0.model.timestamp > $1.model.timestamp})
             }
         }
     }
