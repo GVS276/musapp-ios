@@ -75,7 +75,6 @@ struct SearchView: View
         }
         .background(Color("color_background").edgesIgnoringSafeArea(.all))
         .viewTitle("Search", leading: HStack {}, trailing: HStack {})
-        .ignoresSafeArea(.keyboard)
         .onTapGesture {
             self.hideKeyBoard()
         }
@@ -207,6 +206,11 @@ struct SearchView: View
     
     private func audioAppear(audio: AudioStruct)
     {
+        if self.token.isEmpty && self.secret.isEmpty
+        {
+            return
+        }
+        
         if self.isPagination(offset: self.searchOffset, audio: audio)
         {
             let startIndex = self.audioPlayer.searchList.endIndex + 1

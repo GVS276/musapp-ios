@@ -16,8 +16,8 @@ class DBController
         return AllAudioTask(delegate: delegate).execute()
     }
     
-    func addAudio(model: AudioModel)
+    func addAudio(model: AudioModel, delegate: IDBDelegate?) -> Int64
     {
-        _ = AddAudioTask(model: model).execute()
+        return AddAudioTask(model: model, delegate: delegate).execute()
     }
 }

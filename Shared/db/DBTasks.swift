@@ -50,13 +50,19 @@ class AllAudioTask: DBBaseTask
 class AddAudioTask: DBBaseTask
 {
     private var model: AudioModel
+    private var delegate: IDBDelegate?
     
-    init(model: AudioModel) {
+    init(model: AudioModel, delegate: IDBDelegate?) {
         self.model = model
+        self.delegate = delegate
     }
     
     override func run() {
         self.model.timestamp = DBUtils.getTimestamp()
-        SQLDataBase.shared.getAudioDao().insertAudio(audio: self.model)
+        if SQLDataBase.shared.getAudioDao().insertAudio(audio: self.model) {
+            self.delegate?.onAudioAdded(requestIdentifier: self.requestIdentifier, model: self.model)
+        } else {
+            self.delegate?.onAudioAdded(requestIdentifier: self.requestIdentifier, model: nil)
+        }
     }
 }

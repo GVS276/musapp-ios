@@ -62,6 +62,7 @@ class AudioPlayerModelView: ObservableObject
     
     private let DB = DBController.shared
     private var requestReceiveId: Int64? = nil
+    private var requestAddId: Int64? = nil
     
     init()
     {
@@ -396,13 +397,7 @@ class AudioPlayerModelView: ObservableObject
     
     func addAudioToDB(model: AudioStruct)
     {
-        var newModel = model
-        newModel.isPlaying = false
-        
-        self.audioList.insert(newModel, at: 0)
-        self.DB.addAudio(model: newModel.model)
-        
-        Toast.shared.show(text: "Added to your data base")
+        self.requestAddId = self.DB.addAudio(model: model.model, delegate: self)
     }
 }
 
@@ -421,7 +416,23 @@ extension AudioPlayerModelView: IDBDelegate
             }
             
             DispatchQueue.main.async {
-                self.audioList = result.sorted(by: {$0.model.timestamp > $1.model.timestamp})
+                self.audioList = result
+            }
+        }
+    }
+    
+    func onAudioAdded(requestIdentifier: Int64, model: AudioModel?)
+    {
+        if self.requestAddId == requestIdentifier
+        {
+            DispatchQueue.main.async {
+                if let model = model
+                {
+                    self.audioList.insert(AudioStruct(model: model), at: 0)
+                    Toast.shared.show(text: "Added to your data base")
+                } else {
+                    Toast.shared.show(text: "Not added to your data base")
+                }
             }
         }
     }

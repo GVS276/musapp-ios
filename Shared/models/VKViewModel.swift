@@ -160,7 +160,7 @@ class VKViewModel: ObservableObject
                                         model.downloadUrl = ""
                                         model.duration = Int32(duration)
                                         
-                                        self.DB.addAudio(model: model)
+                                        _ = self.DB.addAudio(model: model, delegate: nil)
                                     }
                                 }
                             }

@@ -18,10 +18,11 @@ class DBAudioDao
         self.semaphore = semaphore
     }
     
-    func insertAudio(audio: AudioModel)
+    func insertAudio(audio: AudioModel) -> Bool
     {
         semaphore.wait()
         
+        var success = false
         let insertStatementString =
                 """
                 INSERT OR REPLACE INTO \(DBContracts.AudioEntry.TABLE_NAME) \
@@ -49,21 +50,24 @@ class DBAudioDao
             DBUtils.bindInt64(opaquePointer: insertStatement!, value: audio.timestamp, columnIndex: 8)
             
             if sqlite3_step(insertStatement) == SQLITE_DONE {
+                success = true
                 print("audio: successfully inserted")
             } else {
+                success = false
                 print("audio: failed to inserted")
             }
         }
         
         semaphore.signal()
+        return success
     }
     
     func getAllAudio() -> Array<AudioModel>?
     {
         semaphore.wait()
         
-        let query = "SELECT * from \(DBContracts.AudioEntry.TABLE_NAME);"
-        let list = getAudioListFromQuery(query: query)
+        let query = "SELECT * from \(DBContracts.AudioEntry.TABLE_NAME) ORDER BY \(DBContracts.AudioEntry.TIMESTAMP) DESC;"
+        let list = self.getAudioListFromQuery(query: query)
         
         semaphore.signal()
         return list
@@ -73,8 +77,8 @@ class DBAudioDao
     {
         semaphore.wait()
         
-        let query = "SELECT * from \(DBContracts.AudioEntry.TABLE_NAME) WHERE \(DBContracts.AudioEntry.AUDIO_ID) = '\(audioId)' ORDER BY \(DBContracts.AudioEntry.TIMESTAMP) DESC;"
-        let model = getAudioFromQuery(query: query)
+        let query = "SELECT * from \(DBContracts.AudioEntry.TABLE_NAME) WHERE \(DBContracts.AudioEntry.AUDIO_ID) = '\(audioId)'"
+        let model = self.getAudioFromQuery(query: query)
         
         semaphore.signal()
         return model

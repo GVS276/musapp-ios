@@ -86,6 +86,7 @@ struct MusApp: App
                     self.miniPlayer()
                         .removed(!self.audioPlayer.audioPlayerReady)
                 }
+                .ignoresSafeArea(.keyboard)
             default:
                 EmptyView()
             }

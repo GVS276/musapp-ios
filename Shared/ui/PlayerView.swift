@@ -127,19 +127,7 @@ struct PlayerView: View
                 }
                 .frame(width: 35, height: 35)
             }
-            .padding(.bottom, 60)
-            
-            Button {
-                
-            } label: {
-                Image("text")
-                    .resizable()
-                    .renderingMode(.template)
-                    .aspectRatio(contentMode: .fill)
-                    .foregroundColor(Color("color_text"))
-            }
-            .frame(width: 35, height: 35)
-            .padding(.bottom, 30)
+            .padding(.bottom, 90)
         }
         .background(Color("color_background").edgesIgnoringSafeArea(.all))
         .transition(.move(edge: .bottom))
