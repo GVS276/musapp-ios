@@ -22,7 +22,7 @@ struct MusApp: App
         coloredAppearance.backgroundColor = UIColor(Color("color_toolbar"))
                 
         let navBar = UINavigationBar.appearance()
-        navBar.tintColor = UIColor(.white)
+        navBar.tintColor = UIColor(Color("color_text"))
         navBar.standardAppearance = coloredAppearance
         navBar.scrollEdgeAppearance = coloredAppearance
         navBar.compactAppearance = coloredAppearance
@@ -112,14 +112,14 @@ struct MusApp: App
             VStack
             {
                 Text(self.audioPlayer.playedModel?.model.artist ?? "Artist")
-                    .foregroundColor(.white)
+                    .foregroundColor(Color("color_text"))
                     .font(.system(size: 16))
                     .lineLimit(1)
                     .multilineTextAlignment(.leading)
                     .onlyLeading()
                 
                 Text(self.audioPlayer.playedModel?.model.title ?? "Title")
-                    .foregroundColor(.white)
+                    .foregroundColor(Color("color_text"))
                     .font(.system(size: 14))
                     .lineLimit(1)
                     .multilineTextAlignment(.leading)
@@ -134,7 +134,7 @@ struct MusApp: App
                     .resizable()
                     .renderingMode(.template)
                     .aspectRatio(contentMode: .fill)
-                    .foregroundColor(.white)
+                    .foregroundColor(Color("color_text"))
             }
             .frame(width: 30, height: 30)
             .padding(15)

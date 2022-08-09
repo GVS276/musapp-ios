@@ -24,17 +24,21 @@ struct PlayerView: View
                 HStack(spacing: 0)
                 {
                     Image("action_down")
+                        .renderingMode(.template)
+                        .foregroundColor(Color("color_text"))
                         .padding(15)
                     
                     Text("Currently playing")
                         .frame(maxWidth: .infinity)
-                        .foregroundColor(.white)
+                        .foregroundColor(Color("color_text"))
                         .font(.system(size: 16))
                         .lineLimit(1)
                         .multilineTextAlignment(.center)
                         .padding(.horizontal, 15)
                     
                     Image("action_down")
+                        .renderingMode(.template)
+                        .foregroundColor(Color("color_text"))
                         .padding(15)
                 }
             }
@@ -49,19 +53,19 @@ struct PlayerView: View
                     .frame(width: 150, height: 150)
             }
             .frame(width: 300, height: 300)
-            .background(Color("color_toolbar"))
+            .background(Color("color_thumb"))
             .cornerRadius(20)
             .padding(30)
             
             Text(self.audioPlayer.playedModel?.model.artist ?? "Artist")
-                .foregroundColor(.white)
+                .foregroundColor(Color("color_text"))
                 .font(.system(size: 18))
                 .padding(.horizontal, 30)
                 .padding(.bottom, 8)
                 .onlyLeading()
             
             Text(self.audioPlayer.playedModel?.model.title ?? "Title")
-                .foregroundColor(.white)
+                .foregroundColor(Color("color_text"))
                 .font(.system(size: 14))
                 .padding(.horizontal, 30)
                 .onlyLeading()
@@ -71,13 +75,13 @@ struct PlayerView: View
             HStack
             {
                 Text(UIUtils.getTimeFromDuration(sec: Int(self.currentTime)))
-                    .foregroundColor(.white)
+                    .foregroundColor(Color("color_text"))
                     .font(.system(size: 14))
                 
                 Spacer()
                 
                 Text(UIUtils.getTimeFromDuration(sec: Int(self.audioPlayer.playedModel?.model.duration ?? 0)))
-                    .foregroundColor(.white)
+                    .foregroundColor(Color("color_text"))
                     .font(.system(size: 14))
             }
             .padding(.horizontal, 30)
@@ -96,7 +100,7 @@ struct PlayerView: View
                         .resizable()
                         .renderingMode(.template)
                         .aspectRatio(contentMode: .fill)
-                        .foregroundColor(.white)
+                        .foregroundColor(Color("color_text"))
                         
                 }
                 .frame(width: 35, height: 35)
@@ -108,7 +112,7 @@ struct PlayerView: View
                         .resizable()
                         .renderingMode(.template)
                         .aspectRatio(contentMode: .fill)
-                        .foregroundColor(.white)
+                        .foregroundColor(Color("color_text"))
                 }
                 .frame(width: 45, height: 45)
                 
@@ -119,7 +123,7 @@ struct PlayerView: View
                         .resizable()
                         .renderingMode(.template)
                         .aspectRatio(contentMode: .fill)
-                        .foregroundColor(.white)
+                        .foregroundColor(Color("color_text"))
                 }
                 .frame(width: 35, height: 35)
             }
@@ -132,7 +136,7 @@ struct PlayerView: View
                     .resizable()
                     .renderingMode(.template)
                     .aspectRatio(contentMode: .fill)
-                    .foregroundColor(.white)
+                    .foregroundColor(Color("color_text"))
             }
             .frame(width: 35, height: 35)
             .padding(.bottom, 30)

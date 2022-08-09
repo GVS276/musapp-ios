@@ -38,12 +38,16 @@ struct MainView: View
                 UINavigation.pushToView(view: SearchView().environmentObject(self.audioPlayer))
             } label: {
                 Image("action_search")
+                    .renderingMode(.template)
+                    .foregroundColor(Color("color_text"))
             }
         } , trailing: HStack {
             Button {
                 
             } label: {
                 Image("action_settings")
+                    .renderingMode(.template)
+                    .foregroundColor(Color("color_text"))
             }
         })
     }
@@ -76,7 +80,7 @@ struct MainView: View
                     .frame(width: 25, height: 25)
                     .padding(10)
             }
-            .background(Color.gray)
+            .background(Color("color_thumb"))
             .overlay(self.playedTrack().removed(!item.isPlaying))
             .cornerRadius(10)
             .padding(.horizontal, 15)
@@ -84,7 +88,7 @@ struct MainView: View
             VStack
             {
                 Text(item.model.artist)
-                    .foregroundColor(.white)
+                    .foregroundColor(Color("color_text"))
                     .font(.system(size: 16))
                     .lineLimit(1)
                     .multilineTextAlignment(.leading)
@@ -93,7 +97,7 @@ struct MainView: View
                 HStack
                 {
                     Text(item.model.title)
-                        .foregroundColor(.white)
+                        .foregroundColor(Color("color_text"))
                         .font(.system(size: 14))
                         .lineLimit(1)
                         .multilineTextAlignment(.leading)
@@ -101,7 +105,7 @@ struct MainView: View
                     Spacer()
                     
                     Text(UIUtils.getTimeFromDuration(sec: Int(item.model.duration)))
-                        .foregroundColor(.white)
+                        .foregroundColor(Color("color_text"))
                         .font(.system(size: 14))
                         .lineLimit(1)
                 }

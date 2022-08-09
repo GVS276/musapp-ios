@@ -28,7 +28,7 @@ struct LoginView: View
                 .padding(.horizontal, 30)
             
             TextField("", text: self.$login)
-                .foregroundColor(.white)
+                .foregroundColor(Color("color_text"))
                 .font(.system(size: 16))
                 .padding(.vertical, 10)
                 .padding(.horizontal, 10)
@@ -38,7 +38,7 @@ struct LoginView: View
                 .onTapGesture {}
             
             SecureField("", text: self.$password)
-                .foregroundColor(.white)
+                .foregroundColor(Color("color_text"))
                 .font(.system(size: 16))
                 .padding(.vertical, 10)
                 .padding(.horizontal, 10)
@@ -62,7 +62,7 @@ struct LoginView: View
             Spacer()
             
             Text("Version: 1.0 - MusApp")
-                .foregroundColor(.white)
+                .foregroundColor(Color("color_text"))
                 .font(.system(size: 12))
                 .padding(.horizontal, 30)
                 .padding(.bottom, 30)

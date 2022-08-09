@@ -26,24 +26,37 @@ struct SearchView: View
     
     var body: some View
     {
-        VStack(spacing: 15)
+        VStack(spacing: 0)
         {
-            TextField("", text: self.$search)
-                .foregroundColor(.white)
-                .font(.system(size: 16))
-                .padding(.vertical, 10)
-                .padding(.horizontal, 10)
-                .placeholder(shouldShow: self.search.isEmpty, title: "Search...", bg: Color("color_toolbar"))
-                .cornerRadius(10)
-                .padding(.top, 15)
-                .padding(.horizontal, 30)
-                .onTapGesture {}
-            
-            Button {
-                self.startSearchAudio()
-            } label: {
-                Text("Start")
+            HStack(spacing: 15)
+            {
+                TextField("", text: self.$search)
+                    .foregroundColor(Color("color_text"))
+                    .font(.system(size: 16))
+                    .padding(.vertical, 10)
+                    .padding(.horizontal, 10)
+                    .placeholder(shouldShow: self.search.isEmpty, title: "For example: slowed", bg: Color("color_toolbar"))
+                    .cornerRadius(10)
+                    .onTapGesture {}
+                
+                Button {
+                    self.hideKeyBoard()
+                    if !self.audioPlayer.searchList.isEmpty
+                    {
+                        self.audioPlayer.stop()
+                        self.audioPlayer.searchList.removeAll()
+                    }
+                    self.startSearchAudio()
+                } label: {
+                    Image("action_search")
+                        .resizable()
+                        .renderingMode(.template)
+                        .foregroundColor(Color("color_text"))
+                }
+                .frame(width: 30, height: 30)
             }
+            .padding(.top, 15)
+            .padding(.horizontal, 15)
 
             ScrollView(.vertical, showsIndicators: false) {
                 LazyVStack(spacing: 0)
@@ -61,7 +74,7 @@ struct SearchView: View
             }
         }
         .background(Color("color_background").edgesIgnoringSafeArea(.all))
-        .viewTitle("Search music", leading: HStack {}, trailing: HStack {})
+        .viewTitle("Search", leading: HStack {}, trailing: HStack {})
         .ignoresSafeArea(.keyboard)
         .onTapGesture {
             self.hideKeyBoard()
@@ -96,7 +109,7 @@ struct SearchView: View
                     .frame(width: 25, height: 25)
                     .padding(10)
             }
-            .background(Color.gray)
+            .background(Color("color_thumb"))
             .overlay(self.playedTrack().removed(!item.isPlaying))
             .cornerRadius(10)
             .padding(.horizontal, 15)
@@ -104,7 +117,7 @@ struct SearchView: View
             VStack
             {
                 Text(item.model.artist)
-                    .foregroundColor(.white)
+                    .foregroundColor(Color("color_text"))
                     .font(.system(size: 16))
                     .lineLimit(1)
                     .multilineTextAlignment(.leading)
@@ -113,7 +126,7 @@ struct SearchView: View
                 HStack
                 {
                     Text(item.model.title)
-                        .foregroundColor(.white)
+                        .foregroundColor(Color("color_text"))
                         .font(.system(size: 14))
                         .lineLimit(1)
                         .multilineTextAlignment(.leading)
@@ -121,7 +134,7 @@ struct SearchView: View
                     Spacer()
                     
                     Text(UIUtils.getTimeFromDuration(sec: Int(item.model.duration)))
-                        .foregroundColor(.white)
+                        .foregroundColor(Color("color_text"))
                         .font(.system(size: 14))
                         .lineLimit(1)
                 }
