@@ -40,7 +40,7 @@ struct AudioSliderView: UIViewRepresentable
         slider.minimumTrackTintColor = UIColor(self.minTrackColor)
         slider.maximumTrackTintColor = UIColor(self.maxTrackColor)
         slider.minimumValue = 0
-        slider.maximumValue = self.maxValue.wrappedValue
+        slider.maximumValue = self.maxValue.wrappedValue == .zero ? 1000 : self.maxValue.wrappedValue
 
         slider.addTarget(
             context.coordinator,
@@ -54,7 +54,7 @@ struct AudioSliderView: UIViewRepresentable
     func updateUIView(_ uiView: UISlider, context: Context)
     {
         uiView.value = self.value.wrappedValue
-        uiView.maximumValue = self.maxValue.wrappedValue
+        uiView.maximumValue = self.maxValue.wrappedValue == .zero ? 1000 : self.maxValue.wrappedValue
     }
     
     class Coordinator: NSObject

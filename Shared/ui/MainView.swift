@@ -30,6 +30,7 @@ struct MainView: View
                         }
                     }
                 }
+                .padding(.vertical, 10)
             }
         }
         .background(Color("color_background").edgesIgnoringSafeArea(.all))
@@ -52,38 +53,14 @@ struct MainView: View
         })
     }
     
-    private func playedTrack() -> some View
-    {
-        ZStack
-        {
-            Color.blue.frame(maxWidth: .infinity, maxHeight: .infinity)
-            Image("play")
-                .resizable()
-                .renderingMode(.template)
-                .foregroundColor(.white)
-                .frame(width: 30, height: 30)
-        }
-    }
     
     private func audioItem(bind: Binding<AudioStruct>) -> some View
     {
         let item = bind.wrappedValue
         return HStack(spacing: 0)
         {
-            ZStack
-            {
-                Image("music")
-                    .resizable()
-                    .renderingMode(.template)
-                    .aspectRatio(contentMode: .fit)
-                    .foregroundColor(.white)
-                    .frame(width: 25, height: 25)
-                    .padding(10)
-            }
-            .background(Color("color_thumb"))
-            .overlay(self.playedTrack().removed(!item.isPlaying))
-            .cornerRadius(10)
-            .padding(.horizontal, 15)
+            AudioThumbView()
+                .padding(.horizontal, 15)
             
             VStack
             {
@@ -112,8 +89,8 @@ struct MainView: View
             }
             .padding(.trailing, 15)
         }
-        .background(Color("color_background"))
-        .padding(.top, 15)
+        .padding(.vertical, 10)
+        .background(item.isPlaying ? Color("color_playing") : Color("color_background"))
         .onTapGesture {
             self.playOrPause(bind: bind)
         }

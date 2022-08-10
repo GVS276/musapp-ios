@@ -95,20 +95,10 @@ struct MusApp: App
     
     private func miniPlayer() -> some View
     {
-        HStack(spacing: 0) {
-            ZStack
-            {
-                Image("music")
-                    .resizable()
-                    .renderingMode(.template)
-                    .aspectRatio(contentMode: .fit)
-                    .foregroundColor(.white)
-                    .frame(width: 25, height: 25)
-                    .padding(10)
-            }
-            .background(Color.blue)
-            .cornerRadius(10)
-            .padding(.horizontal, 15)
+        HStack(spacing: 0)
+        {
+            AudioThumbView(color: .blue)
+                .padding(.horizontal, 15)
             
             VStack
             {

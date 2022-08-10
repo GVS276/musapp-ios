@@ -224,6 +224,36 @@ class AudioPlayerModelView: ObservableObject
         self.player?.seek(to: time, toleranceBefore: .zero, toleranceAfter: .zero)
     }
     
+    func repeatAudio(value: Bool)
+    {
+        UserDefaults.standard.set(value, forKey: "repeat")
+        UserDefaults.standard.synchronize()
+    }
+    
+    func randomAudio(value: Bool)
+    {
+        UserDefaults.standard.set(value, forKey: "random")
+        UserDefaults.standard.synchronize()
+    }
+    
+    func isRepeatAudio() -> Bool
+    {
+        if let value = UserDefaults.standard.object(forKey: "repeat") as? Bool
+        {
+            return value
+        }
+        return false
+    }
+    
+    func isRandomAudio() -> Bool
+    {
+        if let value = UserDefaults.standard.object(forKey: "random") as? Bool
+        {
+            return value
+        }
+        return false
+    }
+    
     private func ready(value: Bool)
     {
         if let callback = self.playerReadyCallback {
@@ -349,7 +379,22 @@ class AudioPlayerModelView: ObservableObject
     {
         if self.playingMode == .FromMain
         {
-            if let index = self.audioList.firstIndex(where: {$0.id == self.playedId}) {
+            if let index = self.audioList.firstIndex(where: {$0.id == self.playedId})
+            {
+                if self.isRepeatAudio()
+                {
+                    self.player?.seek(to: .zero)
+                    self.player?.play()
+                    return
+                }
+                
+                if self.isRandomAudio() {
+                    let randomIndex = Int.random(in: 0..<self.audioList.count - 1)
+                    let audio = self.audioList[randomIndex]
+                    self.startStream(url: audio.model.streamUrl, playedId: audio.id, mode: self.playingMode)
+                    return
+                }
+                
                 let next = index + 1
                 if next > self.audioList.count - 1
                 {
@@ -361,7 +406,22 @@ class AudioPlayerModelView: ObservableObject
                 }
             }
         } else {
-            if let index = self.searchList.firstIndex(where: {$0.id == self.playedId}) {
+            if let index = self.searchList.firstIndex(where: {$0.id == self.playedId})
+            {
+                if self.isRepeatAudio()
+                {
+                    self.player?.seek(to: .zero)
+                    self.player?.play()
+                    return
+                }
+                
+                if self.isRandomAudio() {
+                    let randomIndex = Int.random(in: 0..<self.searchList.count - 1)
+                    let audio = self.searchList[randomIndex]
+                    self.startStream(url: audio.model.streamUrl, playedId: audio.id, mode: self.playingMode)
+                    return
+                }
+                
                 let next = index + 1
                 if next > self.searchList.count - 1
                 {

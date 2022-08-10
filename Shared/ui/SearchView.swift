@@ -28,36 +28,6 @@ struct SearchView: View
     {
         VStack(spacing: 15)
         {
-            HStack(spacing: 15)
-            {
-                TextField("", text: self.$search)
-                    .foregroundColor(Color("color_text"))
-                    .font(.system(size: 16))
-                    .padding(.vertical, 10)
-                    .padding(.horizontal, 10)
-                    .placeholder(shouldShow: self.search.isEmpty, title: "For example: slowed", bg: Color("color_toolbar"))
-                    .cornerRadius(10)
-                    .onTapGesture {}
-                
-                Button {
-                    self.hideKeyBoard()
-                    if !self.audioPlayer.searchList.isEmpty
-                    {
-                        self.audioPlayer.stop()
-                        self.audioPlayer.searchList.removeAll()
-                    }
-                    self.startSearchAudio()
-                } label: {
-                    Image("action_search")
-                        .resizable()
-                        .renderingMode(.template)
-                        .foregroundColor(Color("color_text"))
-                }
-                .frame(width: 30, height: 30)
-            }
-            .padding(.top, 15)
-            .padding(.horizontal, 15)
-
             ScrollView(.vertical, showsIndicators: false) {
                 LazyVStack(spacing: 0)
                 {
@@ -71,25 +41,50 @@ struct SearchView: View
                         }
                     }
                 }
+                .padding(.vertical, 10)
             }
         }
         .background(Color("color_background").edgesIgnoringSafeArea(.all))
-        .viewTitle("Search", leading: HStack {}, trailing: HStack {})
+        .viewTitle("", leading: HStack {}, trailing: HStack {
+            Button {
+                self.search.removeAll()
+            } label: {
+                Image("action_close")
+                    .renderingMode(.template)
+                    .foregroundColor(Color("color_text"))
+            }
+            .hidden(self.search.isEmpty)
+            
+            Button {
+                if self.search.isEmpty
+                {
+                    Toast.shared.show(text: "The request is empty")
+                    return
+                }
+                
+                self.hideKeyBoard()
+                if !self.audioPlayer.searchList.isEmpty
+                {
+                    self.audioPlayer.stop()
+                    self.audioPlayer.searchList.removeAll()
+                }
+                self.startSearchAudio()
+            } label: {
+                Text("Find".uppercased())
+                    .foregroundColor(Color("color_text"))
+                    .font(.system(size: 14))
+            }
+        })
+        .toolbar {
+            ToolbarItem(placement: .principal) {
+                TextField("For example: slowed", text: self.$search)
+                    .foregroundColor(Color("color_text"))
+                    .font(.system(size: 16))
+                    .onTapGesture {}
+            }
+        }
         .onTapGesture {
             self.hideKeyBoard()
-        }
-    }
-    
-    private func playedTrack() -> some View
-    {
-        ZStack
-        {
-            Color.blue.frame(maxWidth: .infinity, maxHeight: .infinity)
-            Image("play")
-                .resizable()
-                .renderingMode(.template)
-                .foregroundColor(.white)
-                .frame(width: 30, height: 30)
         }
     }
     
@@ -98,20 +93,8 @@ struct SearchView: View
         let item = bind.wrappedValue
         return HStack(spacing: 0)
         {
-            ZStack
-            {
-                Image("music")
-                    .resizable()
-                    .renderingMode(.template)
-                    .aspectRatio(contentMode: .fit)
-                    .foregroundColor(.white)
-                    .frame(width: 25, height: 25)
-                    .padding(10)
-            }
-            .background(Color("color_thumb"))
-            .overlay(self.playedTrack().removed(!item.isPlaying))
-            .cornerRadius(10)
-            .padding(.horizontal, 15)
+            AudioThumbView()
+                .padding(.horizontal, 15)
             
             VStack
             {
@@ -140,8 +123,8 @@ struct SearchView: View
             .padding(.vertical, 10)
             .padding(.horizontal, 15)
         }
-        .background(Color("color_background"))
-        .padding(.bottom, 15)
+        .padding(.vertical, 10)
+        .background(item.isPlaying ? Color("color_playing") : Color("color_background"))
         .onTapGesture {
             self.playOrPause(bind: bind)
         }

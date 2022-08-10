@@ -14,6 +14,10 @@ struct PlayerView: View
     @State private var currentTime: Float = .zero
     @State private var currentDuration: Float = .zero
     
+    @State private var repeatAudio = false
+    @State private var randomAudio = false
+    @State private var touchedSlider = false
+    
     var body: some View
     {
         VStack(spacing: 0)
@@ -70,11 +74,44 @@ struct PlayerView: View
             Text(self.audioPlayer.playedModel?.model.title ?? "Title")
                 .foregroundColor(Color("color_text"))
                 .font(.system(size: 14))
-                .lineLimit(4)
+                .lineLimit(3)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 30)
             
             Spacer()
+            
+            HStack(spacing: 0)
+            {
+                Button {
+                    self.randomAudio.toggle()
+                    self.audioPlayer.randomAudio(value: self.randomAudio)
+                } label: {
+                    Image("random")
+                        .resizable()
+                        .renderingMode(.template)
+                        .aspectRatio(contentMode: .fill)
+                        .foregroundColor(self.randomAudio ? .blue : Color("color_text"))
+                        
+                }
+                .frame(width: 30, height: 30)
+                
+                Spacer()
+                
+                Button {
+                    self.repeatAudio.toggle()
+                    self.audioPlayer.repeatAudio(value: self.repeatAudio)
+                } label: {
+                    Image("repeat")
+                        .resizable()
+                        .renderingMode(.template)
+                        .aspectRatio(contentMode: .fill)
+                        .foregroundColor(self.repeatAudio ? .blue : Color("color_text"))
+                        
+                }
+                .frame(width: 30, height: 30)
+            }
+            .padding(.horizontal, 30)
+            .padding(.bottom, 20)
             
             AudioSliderView(value: self.$currentTime, maxValue: self.$currentDuration, touchedHandler: { touched in
                 if !touched {
@@ -83,6 +120,7 @@ struct PlayerView: View
                 } else {
                     self.audioPlayer.pause()
                 }
+                self.touchedSlider = touched
             })
                 .padding(.bottom, 10)
                 .padding(.horizontal, 30)
@@ -143,10 +181,26 @@ struct PlayerView: View
         .background(Color("color_background").edgesIgnoringSafeArea(.all))
         .transition(.move(edge: .bottom))
         .onTapGesture {}
+        .simultaneousGesture(self.touchedSlider ? nil :
+            DragGesture(minimumDistance: 100, coordinateSpace: .local)
+                .onChanged { value in
+                    if value.startLocation.y < value.location.y, self.audioPlayer.playerMode == .FULL
+                    {
+                        withAnimation(.easeInOut) {
+                            self.audioPlayer.playerMode = .MINI
+                        }
+                    }
+                }
+        )
         .onAppear(perform: {
+            self.repeatAudio = self.audioPlayer.isRepeatAudio()
+            self.randomAudio = self.audioPlayer.isRandomAudio()
             self.audioPlayer.addProgress { current, duration in
-                self.currentTime = current
-                self.currentDuration = duration
+                if duration != .zero
+                {
+                    self.currentTime = current
+                    self.currentDuration = duration
+                }
             }
         })
         .removed(self.audioPlayer.playerMode == .MINI)
