@@ -11,9 +11,6 @@ struct PlayerView: View
 {
     @EnvironmentObject var audioPlayer: AudioPlayerModelView
     
-    @State private var currentTime: Float = .zero
-    @State private var currentDuration: Float = .zero
-    
     @State private var repeatAudio = false
     @State private var randomAudio = false
     @State private var touchedSlider = false
@@ -113,12 +110,17 @@ struct PlayerView: View
             .padding(.horizontal, 30)
             .padding(.bottom, 20)
             
-            AudioSliderView(value: self.$currentTime, maxValue: self.$currentDuration, touchedHandler: { touched in
+            AudioSliderView(value: self.audioPlayer.audioCurrentTime,
+                            maxValue: Float(self.audioPlayer.playedModel?.model.duration ?? 0),
+                            touchedHandler: { touched, currentValue in
                 if !touched {
-                    self.audioPlayer.seek(value: self.currentTime)
+                    self.audioPlayer.seek(value: currentValue)
                     self.audioPlayer.play()
                 } else {
-                    self.audioPlayer.pause()
+                    if self.audioPlayer.audioPlaying {
+                        self.audioPlayer.pause()
+                    }
+                    self.audioPlayer.audioCurrentTime = currentValue
                 }
                 self.touchedSlider = touched
             })
@@ -127,7 +129,7 @@ struct PlayerView: View
             
             HStack
             {
-                Text(UIUtils.getTimeFromDuration(sec: Int(self.currentTime)))
+                Text(UIUtils.getTimeFromDuration(sec: Int(self.audioPlayer.audioCurrentTime)))
                     .foregroundColor(Color("color_text"))
                     .font(.system(size: 14))
                 
@@ -195,13 +197,6 @@ struct PlayerView: View
         .onAppear(perform: {
             self.repeatAudio = self.audioPlayer.isRepeatAudio()
             self.randomAudio = self.audioPlayer.isRandomAudio()
-            self.audioPlayer.addProgress { current, duration in
-                if duration != .zero
-                {
-                    self.currentTime = current
-                    self.currentDuration = duration
-                }
-            }
         })
         .removed(self.audioPlayer.playerMode == .MINI)
     }

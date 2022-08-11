@@ -9,16 +9,16 @@ import SwiftUI
 
 struct AudioSliderView: UIViewRepresentable
 {
-    private var value: Binding<Float>
-    private var maxValue: Binding<Float>
+    private var value: Float
+    private var maxValue: Float
     private var thumbColor: Color
     private var minTrackColor: Color
     private var maxTrackColor: Color
-    private var touchedHandler: ((_ touched: Bool) -> Void)!
+    private var touchedHandler: ((_ touched: Bool, _ currentValue: Float) -> Void)!
     
-    init(value: Binding<Float>, maxValue: Binding<Float>,
+    init(value: Float, maxValue: Float,
          thumbColor: Color = .white, minTrackColor: Color = .blue, maxTrackColor: Color = .gray,
-         touchedHandler: @escaping ((_ touched: Bool) -> Void))
+         touchedHandler: @escaping ((_ touched: Bool, _ currentValue: Float) -> Void))
     {
         self.value = value
         self.maxValue = maxValue
@@ -29,18 +29,18 @@ struct AudioSliderView: UIViewRepresentable
     }
     
     func makeCoordinator() -> Coordinator {
-        Coordinator(value: self.value, touchedHandler: self.touchedHandler)
+        Coordinator(touchedHandler: self.touchedHandler)
     }
     
     func makeUIView(context: Context) -> UISlider
     {
         let slider = UISlider()
-        slider.value = self.value.wrappedValue
+        slider.value = self.value
         slider.thumbTintColor = UIColor(self.thumbColor)
         slider.minimumTrackTintColor = UIColor(self.minTrackColor)
         slider.maximumTrackTintColor = UIColor(self.maxTrackColor)
         slider.minimumValue = 0
-        slider.maximumValue = self.maxValue.wrappedValue == .zero ? 1000 : self.maxValue.wrappedValue
+        slider.maximumValue = self.maxValue
 
         slider.addTarget(
             context.coordinator,
@@ -53,17 +53,15 @@ struct AudioSliderView: UIViewRepresentable
     
     func updateUIView(_ uiView: UISlider, context: Context)
     {
-        uiView.value = self.value.wrappedValue
-        uiView.maximumValue = self.maxValue.wrappedValue == .zero ? 1000 : self.maxValue.wrappedValue
+        uiView.value = self.value
+        uiView.maximumValue = self.maxValue
     }
     
     class Coordinator: NSObject
     {
-        var value: Binding<Float>
-        var touchedHandler: ((_ touched: Bool) -> Void)!
+        private var touchedHandler: ((_ touched: Bool, _ currentValue: Float) -> Void)!
 
-        init(value: Binding<Float>, touchedHandler: @escaping ((_ touched: Bool) -> Void)) {
-            self.value = value
+        init(touchedHandler: @escaping ((_ touched: Bool, _ currentValue: Float) -> Void)) {
             self.touchedHandler = touchedHandler
         }
 
@@ -72,22 +70,22 @@ struct AudioSliderView: UIViewRepresentable
             if let touchEvent = event.allTouches?.first {
                 switch touchEvent.phase {
                 case .began:
-                    self.setTouched(value: true)
+                    self.setTouched(touched: true, currentValue: sender.value)
                 case .moved:
-                    self.value.wrappedValue = sender.value
+                    self.setTouched(touched: true, currentValue: sender.value)
                 case .ended:
-                    self.setTouched(value: false)
+                    self.setTouched(touched: false, currentValue: sender.value)
                 default:
                     break
                 }
             }
         }
         
-        private func setTouched(value: Bool)
+        private func setTouched(touched: Bool, currentValue: Float)
         {
             if let callback = self.touchedHandler
             {
-                callback(value)
+                callback(touched, currentValue)
             }
         }
     }

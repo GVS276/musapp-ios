@@ -42,11 +42,11 @@ class AudioPlayerModelView: ObservableObject
     
     @Published var audioPlaying = false
     @Published var audioPlayerReady = false
+    @Published var audioCurrentTime: Float = .zero
     
     @Published var audioList: [AudioStruct] = []
     @Published var searchList: [AudioStruct] = []
     
-    private var playing = false
     private var playingMode: PlayingMode = .FromMain
     private var player: AVPlayer? = nil
     
@@ -54,53 +54,12 @@ class AudioPlayerModelView: ObservableObject
     private var playerProgressObserver: Any? = nil
     private var playerFinishedObserver: Any? = nil
     
-    private var playerReadyCallback: ((_ ready: Bool) -> Void)!
-    private var playerPlayingCallback: ((_ playing: Bool, _ id: String) -> Void)!
-    private var playerProgressCallback: ((_ current: Float, _ duration: Float) -> Void)!
-    private var playerFinishedCallback: (() -> Void)!
-    private var playerControlCallback: ((_ tag: PlayerControl) -> Void)!
-    
     private let DB = DBController.shared
     private var requestReceiveId: Int64? = nil
     private var requestAddId: Int64? = nil
     
-    init()
-    {
+    init() {
         self.receiveAudioList()
-        self.addObserver { ready in
-            self.audioPlayerReady = ready
-        } finishedHandler: {
-            print("finished")
-            self.audioTrackFinished()
-        } playingHandler: { playing, id in
-            self.audioPlaying = playing
-            self.setPlaying(id: id, value: playing)
-        } controlHandler: { tag in
-            if tag == .Next {
-                self.audioTrackNext()
-            }
-            else if tag == .Previous {
-                self.audioTrackPrevious()
-            }
-            else if tag == .PlayOrPause {
-                self.playOrPause()
-            }
-        }
-    }
-    
-    private func addObserver(readyHandler: @escaping ((_ ready: Bool) -> Void),
-                             finishedHandler: @escaping (() -> Void),
-                             playingHandler: @escaping ((_ playing: Bool, _ id: String) -> Void),
-                             controlHandler: @escaping ((_ tag: PlayerControl) -> Void))
-    {
-        self.playerReadyCallback = readyHandler
-        self.playerPlayingCallback = playingHandler
-        self.playerFinishedCallback = finishedHandler
-        self.playerControlCallback = controlHandler
-    }
-    
-    func addProgress(progressHandler: @escaping ((_ current: Float, _ duration: Float) -> Void)) {
-        self.playerProgressCallback = progressHandler
     }
     
     func setSearchList(list: [AudioStruct])
@@ -135,13 +94,11 @@ class AudioPlayerModelView: ObservableObject
             self.player = AVPlayer.init(playerItem: playerItem)
             self.player?.play()
             
-            self.playing = true
+            self.audioPlaying = true
             self.playedId = playedId
             self.playerObservers()
             
-            if let callback = self.playerPlayingCallback {
-                callback(self.playing, self.playedId)
-            }
+            self.setPlaying(id: self.playedId, value: self.audioPlaying)
             
             self.ready(value: true)
         } catch {
@@ -154,17 +111,12 @@ class AudioPlayerModelView: ObservableObject
         if let player = self.player
         {
             self.playerRateObserver = player.observe(\.rate, options:  [.new, .old], changeHandler: { (player, change) in
-                self.playing = player.rate == 1
-                if let callback = self.playerPlayingCallback {
-                    callback(self.playing, self.playedId)
-                }
+                self.audioPlaying = player.rate == 1
+                self.setPlaying(id: self.playedId, value: self.audioPlaying)
             })
             
             self.playerProgressObserver = player.addProgressObserver { current, duration in
-                if let callback = self.playerProgressCallback
-                {
-                    callback(current, duration)
-                }
+                self.audioCurrentTime = current
                 self.nowPlayingInfo(current: Double(current), duration: Double(duration))
             }
             
@@ -174,17 +126,20 @@ class AudioPlayerModelView: ObservableObject
     }
     
     @objc
-    private func playerDidFinishPlaying(note: NSNotification){
-        if let callback = self.playerFinishedCallback
-        {
-            callback()
-        }
+    private func playerDidFinishPlaying(note: NSNotification) {
+        self.audioTrackFinished()
     }
     
     func control(tag: PlayerControl)
     {
-        if let callback = self.playerControlCallback {
-            callback(tag)
+        if tag == .Next {
+            self.audioTrackNext()
+        }
+        else if tag == .Previous {
+            self.audioTrackPrevious()
+        }
+        else if tag == .PlayOrPause {
+            self.playOrPause()
         }
     }
     
@@ -200,6 +155,8 @@ class AudioPlayerModelView: ObservableObject
     
     func stop()
     {
+        self.oldTrackStopped()
+        
         self.playerRateObserver = nil
         self.playerProgressObserver = nil
         self.playerFinishedObserver = nil
@@ -256,9 +213,7 @@ class AudioPlayerModelView: ObservableObject
     
     private func ready(value: Bool)
     {
-        if let callback = self.playerReadyCallback {
-            callback(value)
-        }
+        self.audioPlayerReady = value
     }
     
     /*
@@ -398,7 +353,6 @@ class AudioPlayerModelView: ObservableObject
                 let next = index + 1
                 if next > self.audioList.count - 1
                 {
-                    self.oldTrackStopped()
                     self.stop()
                 } else {
                     let audio = self.audioList[next]
@@ -425,7 +379,6 @@ class AudioPlayerModelView: ObservableObject
                 let next = index + 1
                 if next > self.searchList.count - 1
                 {
-                    self.oldTrackStopped()
                     self.stop()
                 } else {
                     let audio = self.searchList[next]
@@ -439,12 +392,26 @@ class AudioPlayerModelView: ObservableObject
     {
         if self.playingMode == .FromMain
         {
+            if self.isRandomAudio() {
+                let randomIndex = Int.random(in: 0..<self.audioList.count - 1)
+                let audio = self.audioList[randomIndex]
+                self.startStream(url: audio.model.streamUrl, playedId: audio.id, mode: self.playingMode)
+                return
+            }
+            
             if let index = self.audioList.firstIndex(where: {$0.id == self.playedId}) {
                 let next = index + 1 > self.audioList.count - 1 ? 0 : index + 1
                 let audio = self.audioList[next]
                 self.startStream(url: audio.model.streamUrl, playedId: audio.id, mode: self.playingMode)
             }
         } else {
+            if self.isRandomAudio() {
+                let randomIndex = Int.random(in: 0..<self.searchList.count - 1)
+                let audio = self.searchList[randomIndex]
+                self.startStream(url: audio.model.streamUrl, playedId: audio.id, mode: self.playingMode)
+                return
+            }
+            
             if let index = self.searchList.firstIndex(where: {$0.id == self.playedId}) {
                 let next = index + 1 > self.searchList.count - 1 ? 0 : index + 1
                 let audio = self.searchList[next]
@@ -457,12 +424,26 @@ class AudioPlayerModelView: ObservableObject
     {
         if self.playingMode == .FromMain
         {
+            if self.isRandomAudio() {
+                let randomIndex = Int.random(in: 0..<self.audioList.count - 1)
+                let audio = self.audioList[randomIndex]
+                self.startStream(url: audio.model.streamUrl, playedId: audio.id, mode: self.playingMode)
+                return
+            }
+            
             if let index = self.audioList.firstIndex(where: {$0.id == self.playedId}) {
                 let previous = index - 1 < 0 ? self.audioList.count - 1 : index - 1
                 let audio = self.audioList[previous]
                 self.startStream(url: audio.model.streamUrl, playedId: audio.id, mode: self.playingMode)
             }
         } else {
+            if self.isRandomAudio() {
+                let randomIndex = Int.random(in: 0..<self.searchList.count - 1)
+                let audio = self.searchList[randomIndex]
+                self.startStream(url: audio.model.streamUrl, playedId: audio.id, mode: self.playingMode)
+                return
+            }
+            
             if let index = self.searchList.firstIndex(where: {$0.id == self.playedId}) {
                 let previous = index - 1 < 0 ? self.searchList.count - 1 : index - 1
                 let audio = self.searchList[previous]
