@@ -129,13 +129,13 @@ struct PlayerView: View
             
             HStack
             {
-                Text(UIUtils.getTimeFromDuration(sec: Int(self.audioPlayer.audioCurrentTime)))
+                Text(Int32(self.audioPlayer.audioCurrentTime).toTime())
                     .foregroundColor(Color("color_text"))
                     .font(.system(size: 14))
                 
                 Spacer()
                 
-                Text(UIUtils.getTimeFromDuration(sec: Int(self.audioPlayer.playedModel?.model.duration ?? 0)))
+                Text(self.audioPlayer.playedModel?.model.duration.toTime() ?? "--")
                     .foregroundColor(Color("color_text"))
                     .font(.system(size: 14))
             }

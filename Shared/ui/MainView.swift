@@ -11,10 +11,12 @@ struct MainView: View
 {
     @EnvironmentObject var audioPlayer: AudioPlayerModelView
     
-    private func modelBinding(_ item: AudioStruct) -> Binding<AudioStruct>? {
-        guard let index = self.audioPlayer.audioList.firstIndex(where: { $0.id == item.id }) else { return nil }
-        return .init(get: { self.audioPlayer.audioList[index] },
-                     set: { self.audioPlayer.audioList[index] = $0 })
+    private func binding(_ item: AudioStruct) -> Binding<AudioStruct>
+    {
+        guard let index = self.audioPlayer.audioList.firstIndex(where: { $0.id == item.id }) else {
+            fatalError("Can't find item in array")
+        }
+        return self.$audioPlayer.audioList[index]
     }
     
     var body: some View
@@ -25,9 +27,8 @@ struct MainView: View
                 LazyVStack(spacing: 0)
                 {
                     ForEach(self.audioPlayer.audioList, id: \.id) { item in
-                        self.modelBinding(item).map { bind in
-                            self.audioItem(bind: bind).id(item.id)
-                        }
+                        self.audioItem(bind: self.binding(item)).id(item.id)
+                        
                     }
                 }
                 .padding(.vertical, 10)
@@ -81,7 +82,7 @@ struct MainView: View
                     
                     Spacer()
                     
-                    Text(UIUtils.getTimeFromDuration(sec: Int(item.model.duration)))
+                    Text(item.model.duration.toTime())
                         .foregroundColor(Color("color_text"))
                         .font(.system(size: 14))
                         .lineLimit(1)

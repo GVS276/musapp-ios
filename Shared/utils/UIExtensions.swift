@@ -118,15 +118,6 @@ extension AVPlayer
             }
         })
     }
-    
-    func getDurationSeconds() -> Float
-    {
-        if let duration = self.currentItem?.asset.duration {
-            let duration = CMTimeGetSeconds(duration)
-            return Float(duration)
-        }
-        return .zero
-    }
 }
 
 extension String {
@@ -137,5 +128,19 @@ extension String {
     
     var encoded: String? {
         return self.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)
+    }
+}
+
+extension Int32 {
+    func toTime() -> String
+    {
+        let minutes = self % 3600 / 60
+        let seconds = self % 60
+        return "\(minutes.addZero()):\(seconds.addZero())"
+    }
+    
+    private func addZero() -> String
+    {
+        return self < 10 ? "0\(self)" : "\(self)"
     }
 }

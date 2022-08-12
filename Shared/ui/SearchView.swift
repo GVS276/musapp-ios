@@ -18,10 +18,12 @@ struct SearchView: View
     private var searchMax = 25
     private var searchOffset = 10
     
-    private func modelBinding(_ item: AudioStruct) -> Binding<AudioStruct>? {
-        guard let index = self.audioPlayer.searchList.firstIndex(where: { $0.id == item.id }) else { return nil }
-        return .init(get: { self.audioPlayer.searchList[index] },
-                     set: { self.audioPlayer.searchList[index] = $0 })
+    private func binding(_ item: AudioStruct) -> Binding<AudioStruct>
+    {
+        guard let index = self.audioPlayer.searchList.firstIndex(where: { $0.id == item.id }) else {
+            fatalError("Can't find item in array")
+        }
+        return self.$audioPlayer.searchList[index]
     }
     
     var body: some View
@@ -32,13 +34,11 @@ struct SearchView: View
                 LazyVStack(spacing: 0)
                 {
                     ForEach(self.audioPlayer.searchList, id:\.id) { item in
-                        self.modelBinding(item).map { bind in
-                            self.audioItem(bind: bind)
-                                .id(item.id)
-                                .onAppear {
-                                    self.audioAppear(audio: item)
-                                }
-                        }
+                        self.audioItem(bind: self.binding(item))
+                            .id(item.id)
+                            .onAppear {
+                                self.audioAppear(audio: item)
+                            }
                     }
                 }
                 .padding(.vertical, 10)
@@ -77,7 +77,7 @@ struct SearchView: View
         })
         .toolbar {
             ToolbarItem(placement: .principal) {
-                TextField("For example: slowed", text: self.$search)
+                TextField("Search...", text: self.$search)
                     .foregroundColor(Color("color_text"))
                     .font(.system(size: 16))
                     .onTapGesture {}
@@ -105,7 +105,7 @@ struct SearchView: View
                     .multilineTextAlignment(.leading)
                     .onlyLeading()
                 
-                Text("\(item.model.title) / \(UIUtils.getTimeFromDuration(sec: Int(item.model.duration)))")
+                Text("\(item.model.title) / \(item.model.duration.toTime())")
                     .foregroundColor(Color("color_text"))
                     .font(.system(size: 14))
                     .lineLimit(1)
