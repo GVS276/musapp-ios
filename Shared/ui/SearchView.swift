@@ -30,6 +30,44 @@ struct SearchView: View
     {
         VStack(spacing: 15)
         {
+            NavigationToolbar(navBackVisible: true, navLeading: HStack {
+                TextField("Search...", text: self.$search)
+                    .foregroundColor(Color("color_text"))
+                    .font(.system(size: 16))
+                    .onTapGesture {}
+            }, navTrailing: HStack {
+                Spacer()
+                
+                Button {
+                    self.search.removeAll()
+                } label: {
+                    Image("action_close")
+                        .renderingMode(.template)
+                        .foregroundColor(Color("color_text"))
+                }
+                .hidden(self.search.isEmpty)
+                
+                Button {
+                    if self.search.isEmpty
+                    {
+                        Toast.shared.show(text: "The request is empty")
+                        return
+                    }
+                    
+                    self.hideKeyBoard()
+                    if !self.audioPlayer.searchList.isEmpty
+                    {
+                        self.audioPlayer.stop()
+                        self.audioPlayer.searchList.removeAll()
+                    }
+                    self.startSearchAudio()
+                } label: {
+                    Text("Find".uppercased())
+                        .foregroundColor(Color("color_text"))
+                        .font(.system(size: 14))
+                }
+            })
+            
             ScrollView(.vertical, showsIndicators: false) {
                 LazyVStack(spacing: 0)
                 {
@@ -44,45 +82,7 @@ struct SearchView: View
                 .padding(.vertical, 10)
             }
         }
-        .background(Color("color_background").edgesIgnoringSafeArea(.all))
-        .viewTitle("", leading: HStack {}, trailing: HStack {
-            Button {
-                self.search.removeAll()
-            } label: {
-                Image("action_close")
-                    .renderingMode(.template)
-                    .foregroundColor(Color("color_text"))
-            }
-            .hidden(self.search.isEmpty)
-            
-            Button {
-                if self.search.isEmpty
-                {
-                    Toast.shared.show(text: "The request is empty")
-                    return
-                }
-                
-                self.hideKeyBoard()
-                if !self.audioPlayer.searchList.isEmpty
-                {
-                    self.audioPlayer.stop()
-                    self.audioPlayer.searchList.removeAll()
-                }
-                self.startSearchAudio()
-            } label: {
-                Text("Find".uppercased())
-                    .foregroundColor(Color("color_text"))
-                    .font(.system(size: 14))
-            }
-        })
-        .toolbar {
-            ToolbarItem(placement: .principal) {
-                TextField("Search...", text: self.$search)
-                    .foregroundColor(Color("color_text"))
-                    .font(.system(size: 16))
-                    .onTapGesture {}
-            }
-        }
+        .background(Color("color_background"))
         .onTapGesture {
             self.hideKeyBoard()
         }

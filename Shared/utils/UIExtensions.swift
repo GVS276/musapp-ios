@@ -46,15 +46,6 @@ extension View
         if !value { self }
     }
     
-    func viewTitle<Content, Content2>(_ title: String,
-                                      leading: Content,
-                                      trailing: Content2) -> some View where Content: View, Content2: View
-    {
-        self.navigationBarTitle(Text(title), displayMode: .inline)
-            .navigationBarItems(leading: leading.frame(maxWidth: 100),
-                                trailing: trailing.frame(maxWidth: 100))
-    }
-    
     func onlyLeading() -> some View
     {
         HStack

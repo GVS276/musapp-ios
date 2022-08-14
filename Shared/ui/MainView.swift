@@ -23,6 +23,30 @@ struct MainView: View
     {
         VStack(spacing: 0)
         {
+            NavigationToolbar(navTitle: "Music", navLeading: HStack {
+                Button {
+                    withAnimation {
+                        NavigationStackViewModel.shared.setCurrentView(idStack: 2)
+                    }
+                } label: {
+                    Image("action_search")
+                        .renderingMode(.template)
+                        .foregroundColor(Color("color_text"))
+                }
+                
+                Spacer()
+            }, navTrailing: HStack {
+                Spacer()
+                
+                Button {
+                    
+                } label: {
+                    Image("action_settings")
+                        .renderingMode(.template)
+                        .foregroundColor(Color("color_text"))
+                }
+            })
+            
             ScrollView(.vertical, showsIndicators: false) {
                 LazyVStack(spacing: 0)
                 {
@@ -34,24 +58,7 @@ struct MainView: View
                 .padding(.vertical, 10)
             }
         }
-        .background(Color("color_background").edgesIgnoringSafeArea(.all))
-        .viewTitle("Music", leading: HStack {
-            Button {
-                UINavigation.pushToView(view: SearchView().environmentObject(self.audioPlayer))
-            } label: {
-                Image("action_search")
-                    .renderingMode(.template)
-                    .foregroundColor(Color("color_text"))
-            }
-        } , trailing: HStack {
-            Button {
-                
-            } label: {
-                Image("action_settings")
-                    .renderingMode(.template)
-                    .foregroundColor(Color("color_text"))
-            }
-        })
+        .background(Color("color_background"))
     }
     
     

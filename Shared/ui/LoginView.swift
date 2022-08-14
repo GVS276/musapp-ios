@@ -9,8 +9,6 @@ import SwiftUI
 
 struct LoginView: View
 {
-    @EnvironmentObject var mainModel: MainViewModel
-    
     @State private var login = ""
     @State private var password = ""
     
@@ -101,6 +99,8 @@ struct LoginView: View
         UserDefaults.standard.set(self.password, forKey: "password")
         UserDefaults.standard.synchronize()
         // --------
-        self.mainModel.showScene(scene: .main)
+        
+        // Main
+        NavigationStackViewModel.shared.setCurrentView(idStack: 1)
     }
 }
