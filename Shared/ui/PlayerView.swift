@@ -46,19 +46,8 @@ struct PlayerView: View
                 }
             }
             
-            VStack
-            {
-                Image("music")
-                    .resizable()
-                    .renderingMode(.template)
-                    .aspectRatio(contentMode: .fill)
-                    .foregroundColor(.white)
-                    .frame(width: 150, height: 150)
-            }
-            .frame(width: 300, height: 300)
-            .background(Color("color_thumb"))
-            .cornerRadius(20)
-            .padding(30)
+            AudioThumbView(big: true)
+                .padding(30)
             
             Text(self.audioPlayer.playedModel?.model.artist ?? "Artist")
                 .foregroundColor(Color("color_text"))

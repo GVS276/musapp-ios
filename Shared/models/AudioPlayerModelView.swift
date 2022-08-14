@@ -503,3 +503,15 @@ extension AudioPlayerModelView: IDBDelegate
         }
     }
 }
+
+extension AVPlayer
+{
+    func addProgressObserver(action:@escaping ((Float, Float) -> Void)) -> Any {
+        return self.addPeriodicTimeObserver(forInterval: CMTime(value: 1, timescale: 1), queue: .main, using: { time in
+            if let duration = self.currentItem?.duration {
+                let duration = CMTimeGetSeconds(duration), time = CMTimeGetSeconds(time)
+                action(Float(time), Float(duration))
+            }
+        })
+    }
+}

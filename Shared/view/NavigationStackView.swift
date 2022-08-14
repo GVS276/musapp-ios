@@ -67,7 +67,7 @@ struct NavigationToolbar<ContentLeading, ContentTrailing>: View where ContentLea
                 .frame(maxWidth: .infinity)
                 .padding(.trailing, 15)
         }
-        .frame(maxWidth: .infinity, maxHeight: 42)
+        .frame(maxWidth: .infinity, maxHeight: 45)
         .background(Color("color_toolbar").ignoresSafeArea(edges: .top))
     }
 }

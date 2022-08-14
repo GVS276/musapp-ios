@@ -22,18 +22,24 @@ struct MusApp: App
     
     var body: some Scene {
         WindowGroup {
-            NavigationStackView()
-                .environmentObject(self.navStack)
-                .overlay(PlayerView()
-                            .environmentObject(self.audioPlayer))
-                .createToastView()
-                .onAppear {
-                    // Navigation
-                    self.navigationViews()
-                    
-                    // MP Center
-                    self.audioPlayer.setupCommandCenter()
-                }
+            VStack(spacing: 0)
+            {
+                NavigationStackView()
+                    .environmentObject(self.navStack)
+                
+                self.miniPlayer()
+                    .removed(!self.audioPlayer.audioPlayerReady)
+            }
+            .overlay(PlayerView()
+                        .environmentObject(self.audioPlayer))
+            .createToastView()
+            .onAppear {
+                // Navigation
+                self.navigationViews()
+                
+                // MP Center
+                self.audioPlayer.setupCommandCenter()
+            }
         }
     }
     
