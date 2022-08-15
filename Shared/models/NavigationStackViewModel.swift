@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ViewStack: Identifiable {
-    let id: Int
+    let id: String
     let wrappedView: AnyView
 }
 
@@ -23,27 +23,57 @@ class NavigationStackViewModel: ObservableObject
     
     @Published var stacks: [ViewStack] = []
     @Published var currentView: ViewStack? = nil
+    @Published var previousView: ViewStack? = nil
     @Published var navigationType: NavigationType = .push
     
-    func addView(stack: ViewStack)
+    func root(viewStack: ViewStack)
     {
-        self.stacks.append(stack)
+        self.stacks.removeAll()
+        self.stacks.append(viewStack)
+        self.currentView = self.stacks.last
+        self.previousView = nil
     }
     
-    func setCurrentView(idStack: Int, type: NavigationType = .push)
+    func push(viewStack: ViewStack, anim: Bool = false)
     {
-        if let index = self.stacks.firstIndex(where: {$0.id == idStack}) {
-            self.navigationType = type
-            self.currentView = self.stacks[index]
+        self.previousView = self.stacks.last
+        self.stacks.append(viewStack)
+        self.navigationType = .push
+        
+        if !anim {
+            self.currentView = self.stacks.last
+        } else {
+            withAnimation(.easeInOut(duration: 0.3)) {
+                self.currentView = self.stacks.last
+            }
         }
     }
     
-    func back()
+    func back(anim: Bool = false)
     {
-        if let currentId = self.currentView?.id
+        self.navigationType = .back
+        self.stacks.removeLast()
+        if let last = self.stacks.last, let index = self.stacks.firstIndex(where: {$0.id == last.id})
         {
-            let backId = currentId - 1 < 0 ? 0 : currentId - 1
-            self.setCurrentView(idStack: backId, type: .back)
+            if !anim
+            {
+                self.currentView = last
+                self.previousView = index - 1 < 0 ? nil : self.stacks[index - 1]
+            } else {
+                withAnimation(.easeInOut(duration: 0.3)) {
+                    self.currentView = last
+                }
+                
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                    self.previousView = index - 1 < 0 ? nil : self.stacks[index - 1]
+                }
+            }
         }
+    }
+}
+
+extension View {
+    func toAnyView() -> AnyView {
+        return AnyView(self)
     }
 }

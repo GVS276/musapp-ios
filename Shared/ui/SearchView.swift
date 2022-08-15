@@ -9,7 +9,7 @@ import SwiftUI
 
 struct SearchView: View
 {
-    @EnvironmentObject var audioPlayer: AudioPlayerModelView
+    @EnvironmentObject private var audioPlayer: AudioPlayerModelView
 
     @State private var search = ""
     @State private var token = ""

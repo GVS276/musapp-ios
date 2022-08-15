@@ -9,6 +9,8 @@ import SwiftUI
 
 struct LoginView: View
 {
+    @EnvironmentObject private var audioPlayer: AudioPlayerModelView
+    
     @State private var login = ""
     @State private var password = ""
     
@@ -101,6 +103,6 @@ struct LoginView: View
         // --------
         
         // Main
-        NavigationStackViewModel.shared.setCurrentView(idStack: 1)
+        NavigationStackViewModel.shared.root(viewStack: ViewStack(id: "main-view", wrappedView: MainView().environmentObject(self.audioPlayer).toAnyView()))
     }
 }

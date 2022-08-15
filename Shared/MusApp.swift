@@ -92,28 +92,13 @@ struct MusApp: App
     
     private func navigationViews()
     {
-        self.navStack.addView(stack: ViewStack(
-            id: 0,
-            wrappedView: AnyView(LoginView()))
-        )
-        
-        self.navStack.addView(stack: ViewStack(
-            id: 1,
-            wrappedView: AnyView(MainView().environmentObject(self.audioPlayer)))
-        )
-        
-        self.navStack.addView(stack: ViewStack(
-            id: 2,
-            wrappedView: AnyView(SearchView().environmentObject(self.audioPlayer)))
-        )
-        
         // for test
         if UserDefaults.standard.object(forKey: "login") != nil,
            UserDefaults.standard.object(forKey: "password") != nil
         {
-            self.navStack.setCurrentView(idStack: 1) // Main
+            self.navStack.root(viewStack: ViewStack(id: "main-view", wrappedView: MainView().environmentObject(self.audioPlayer).toAnyView()))
         } else {
-            self.navStack.setCurrentView(idStack: 0) // Login
+            self.navStack.root(viewStack: ViewStack(id: "login-view", wrappedView: LoginView().environmentObject(self.audioPlayer).toAnyView()))
         }
         // --------
     }

@@ -9,7 +9,7 @@ import SwiftUI
 
 struct MainView: View
 {
-    @EnvironmentObject var audioPlayer: AudioPlayerModelView
+    @EnvironmentObject private var audioPlayer: AudioPlayerModelView
     
     private func binding(_ item: AudioStruct) -> Binding<AudioStruct>
     {
@@ -25,9 +25,8 @@ struct MainView: View
         {
             NavigationToolbar(navTitle: "Music", navLeading: HStack {
                 Button {
-                    withAnimation {
-                        NavigationStackViewModel.shared.setCurrentView(idStack: 2)
-                    }
+                    NavigationStackViewModel.shared.push(
+                        viewStack: ViewStack(id: "search-view", wrappedView: SearchView().environmentObject(self.audioPlayer).toAnyView()), anim: true)
                 } label: {
                     Image("action_search")
                         .renderingMode(.template)
