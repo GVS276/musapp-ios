@@ -11,59 +11,44 @@ import SwiftUI
 struct NavigationStackView: View
 {
     @EnvironmentObject private var model: NavigationStackViewModel
-    @State private var offset: CGFloat = .zero
     
     var body: some View
     {
         ZStack
         {
-            if let previous = self.model.previousView?.wrappedView
-            {
-                previous
-                    .offset(x: -UIScreen.main.bounds.width + self.offset)
-                    .removed(self.offset == .zero)
-            }
-            
-            if let current = self.model.currentView?.wrappedView
-            {
-                let tran = self.model.navigationType == .push ?
-                AnyTransition.asymmetric(insertion: .move(edge: .trailing), removal: .move(edge: .leading)) :
-                AnyTransition.asymmetric(insertion: .move(edge: .leading), removal: .move(edge: .trailing))
-                
-                current
-                    .transition(tran)
-                    .offset(x: self.offset)
+            ForEach(self.model.stacks) { stack in
+                stack.wrappedView
+                    .transition(.move(edge: .trailing))
+                    .offset(x: self.model.previousId == stack.id ?
+                            -(UIScreen.main.bounds.width / 2) + abs(self.model.offset / 2) : self.model.offset)
                     .simultaneousGesture(self.model.stacks.count <= 1 ? nil :
                         DragGesture(minimumDistance: 10, coordinateSpace: .local)
                             .onChanged { value in
                                 let x = value.startLocation.x
                                 if x >= 0 && x <= 30
                                 {
-                                    self.offset = value.translation.width
+                                    self.model.offset = value.translation.width
                                 } else {
-                                    self.offset = .zero
+                                    self.model.offset = .zero
                                 }
                             }
                             .onEnded { value in
-                                if abs(self.offset) > 30 {
+                                if abs(self.model.offset) > 30 {
                                     withAnimation(.easeInOut(duration: 0.3)) {
-                                        self.offset = UIScreen.main.bounds.width
+                                        self.model.offset = UIScreen.main.bounds.width
                                     }
                                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.3)
                                     {
-                                        self.offset = .zero
-                                        self.model.back()
+                                        self.model.offset = .zero
+                                        self.model.pop()
                                     }
                                 } else {
                                     withAnimation {
-                                        self.offset = .zero
+                                        self.model.offset = .zero
                                     }
                                 }
                             }
                     )
-            } else {
-                // Splash
-                EmptyView()
             }
         }
     }
@@ -79,32 +64,35 @@ struct NavigationToolbar<ContentLeading, ContentTrailing>: View where ContentLea
     
     var body: some View
     {
-        HStack
+        HStack(spacing: 0)
         {
             Button {
-                NavigationStackViewModel.shared.back(anim: true)
+                NavigationStackViewModel.shared.back()
             } label: {
                 Image("action_back")
+                    .renderingMode(.template)
+                    .foregroundColor(Color("color_text"))
             }
             .padding(.horizontal, 15)
             .removed(!self.navBackVisible)
 
             navLeading
-                .frame(maxWidth: .infinity)
+                .frame(maxWidth: 100)
                 .padding(.leading, self.navBackVisible ? 0 : 15)
             
-            Text(navTitle)
-                .foregroundColor(Color("color_text"))
-                .font(.system(size: 16))
-                .lineLimit(1)
-                .multilineTextAlignment(.center)
-                .padding(.horizontal, 15)
+            Spacer()
             
             navTrailing
-                .frame(maxWidth: .infinity)
+                .frame(maxWidth: 100)
                 .padding(.trailing, 15)
         }
         .frame(maxWidth: .infinity, maxHeight: 45)
         .background(Color("color_toolbar").ignoresSafeArea(edges: .top))
+        .overlay(Text(navTitle)
+                    .foregroundColor(Color("color_text"))
+                    .font(.system(size: 16))
+                    .lineLimit(1)
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal, 15), alignment: .center)
     }
 }

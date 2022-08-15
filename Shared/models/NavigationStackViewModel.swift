@@ -12,62 +12,60 @@ struct ViewStack: Identifiable {
     let wrappedView: AnyView
 }
 
-enum NavigationType: Int {
-    case push = 0,
-         back
-}
-
 class NavigationStackViewModel: ObservableObject
 {
     static let shared = NavigationStackViewModel()
     
     @Published var stacks: [ViewStack] = []
-    @Published var currentView: ViewStack? = nil
-    @Published var previousView: ViewStack? = nil
-    @Published var navigationType: NavigationType = .push
+    @Published var previousId = ""
+    @Published var offset: CGFloat = .zero
     
     func root(viewStack: ViewStack)
     {
         self.stacks.removeAll()
         self.stacks.append(viewStack)
-        self.currentView = self.stacks.last
-        self.previousView = nil
+        self.previousId = ""
+        self.offset = .zero
     }
     
     func push(viewStack: ViewStack, anim: Bool = false)
     {
-        self.previousView = self.stacks.last
-        self.stacks.append(viewStack)
-        self.navigationType = .push
+        self.offset = .zero
         
-        if !anim {
-            self.currentView = self.stacks.last
+        if !anim
+        {
+            self.previousId = self.stacks.last?.id ?? ""
+            self.stacks.append(viewStack)
         } else {
             withAnimation(.easeInOut(duration: 0.3)) {
-                self.currentView = self.stacks.last
+                self.previousId = self.stacks.last?.id ?? ""
+                self.stacks.append(viewStack)
             }
         }
     }
     
-    func back(anim: Bool = false)
+    func pop()
     {
-        self.navigationType = .back
         self.stacks.removeLast()
+
         if let last = self.stacks.last, let index = self.stacks.firstIndex(where: {$0.id == last.id})
         {
-            if !anim
-            {
-                self.currentView = last
-                self.previousView = index - 1 < 0 ? nil : self.stacks[index - 1]
-            } else {
-                withAnimation(.easeInOut(duration: 0.3)) {
-                    self.currentView = last
-                }
-                
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                    self.previousView = index - 1 < 0 ? nil : self.stacks[index - 1]
-                }
-            }
+            self.previousId = index - 1 < 0 ? "" : self.stacks[index - 1].id
+        }
+    }
+    
+    func back()
+    {
+        self.offset = 1
+        
+        withAnimation(.easeInOut(duration: 0.3)) {
+            self.offset = UIScreen.main.bounds.width
+        }
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3)
+        {
+            self.offset = .zero
+            self.pop()
         }
     }
 }

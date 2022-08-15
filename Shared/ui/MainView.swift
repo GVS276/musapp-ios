@@ -38,7 +38,8 @@ struct MainView: View
                 Spacer()
                 
                 Button {
-                    
+                    NavigationStackViewModel.shared.push(
+                        viewStack: ViewStack(id: "settings-view", wrappedView: SettingsView().toAnyView()), anim: true)
                 } label: {
                     Image("action_settings")
                         .renderingMode(.template)
