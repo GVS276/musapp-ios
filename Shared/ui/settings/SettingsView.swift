@@ -13,14 +13,9 @@ struct SettingsView: View
     {
         VStack(spacing: 0)
         {
-            NavigationToolbar(navTitle: "Settings", navBackVisible: true, navLeading: HStack {
-                
-            }, navTrailing: HStack {
-                
-            })
-            
             Spacer()
         }
+        .viewTitle(title: "About", back: true, leading: HStack {}, trailing: HStack {})
         .background(Color("color_background"))
     }
 }

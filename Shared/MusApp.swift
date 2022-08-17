@@ -96,9 +96,9 @@ struct MusApp: App
         if UserDefaults.standard.object(forKey: "login") != nil,
            UserDefaults.standard.object(forKey: "password") != nil
         {
-            self.navStack.root(viewStack: ViewStack(id: "main-view", wrappedView: MainView().environmentObject(self.audioPlayer).toAnyView()))
+            self.navStack.root(view: MainView().environmentObject(self.audioPlayer), tag: "main-view")
         } else {
-            self.navStack.root(viewStack: ViewStack(id: "login-view", wrappedView: LoginView().environmentObject(self.audioPlayer).toAnyView()))
+            self.navStack.root(view: LoginView().environmentObject(self.audioPlayer), tag: "login-view")
         }
         // --------
     }

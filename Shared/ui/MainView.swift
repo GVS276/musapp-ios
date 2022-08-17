@@ -21,32 +21,8 @@ struct MainView: View
     
     var body: some View
     {
-        VStack(spacing: 0)
+        VStack
         {
-            NavigationToolbar(navTitle: "Music", navLeading: HStack {
-                Button {
-                    NavigationStackViewModel.shared.push(
-                        viewStack: ViewStack(id: "search-view", wrappedView: SearchView().environmentObject(self.audioPlayer).toAnyView()), anim: true)
-                } label: {
-                    Image("action_search")
-                        .renderingMode(.template)
-                        .foregroundColor(Color("color_text"))
-                }
-                
-                Spacer()
-            }, navTrailing: HStack {
-                Spacer()
-                
-                Button {
-                    NavigationStackViewModel.shared.push(
-                        viewStack: ViewStack(id: "settings-view", wrappedView: SettingsView().toAnyView()), anim: true)
-                } label: {
-                    Image("action_settings")
-                        .renderingMode(.template)
-                        .foregroundColor(Color("color_text"))
-                }
-            })
-            
             ScrollView(.vertical, showsIndicators: false) {
                 LazyVStack(spacing: 0)
                 {
@@ -58,6 +34,33 @@ struct MainView: View
                 .padding(.vertical, 10)
             }
         }
+        .viewTitle(title: "Music", leading: HStack {
+            Button {
+                NavigationStackViewModel.shared.push(
+                    view: SearchView().environmentObject(self.audioPlayer),
+                    tag: "search-view"
+                )
+            } label: {
+                Image("action_search")
+                    .renderingMode(.template)
+                    .foregroundColor(Color("color_text"))
+            }
+            
+            Spacer()
+        }, trailing: HStack {
+            Spacer()
+            
+            Button {
+                NavigationStackViewModel.shared.push(
+                    view: SettingsView(),
+                    tag: "settings-view"
+                )
+            } label: {
+                Image("action_settings")
+                    .renderingMode(.template)
+                    .foregroundColor(Color("color_text"))
+            }
+        })
         .background(Color("color_background"))
     }
     

@@ -103,6 +103,6 @@ struct LoginView: View
         // --------
         
         // Main
-        NavigationStackViewModel.shared.root(viewStack: ViewStack(id: "main-view", wrappedView: MainView().environmentObject(self.audioPlayer).toAnyView()))
+        NavigationStackViewModel.shared.root(view: MainView().environmentObject(self.audioPlayer), tag: "main-view")
     }
 }

@@ -11,58 +11,80 @@ import SwiftUI
 struct NavigationStackView: View
 {
     @EnvironmentObject private var model: NavigationStackViewModel
+    @GestureState private var gestureState: CGSize = .zero
     
     var body: some View
     {
+        let swipeBack = DragGesture(minimumDistance: 10, coordinateSpace: .local)
+            .updating(self.$gestureState) { value, state, _ in
+                if value.startLocation.x <= 30
+                {
+                    let diff = CGSize(
+                        width: value.location.x - value.startLocation.x,
+                        height: value.location.y - value.startLocation.y
+                    )
+                    
+                    state = diff == .zero ? .zero : value.translation
+                } else {
+                    state = .zero
+                }
+            }
+        
         ZStack
         {
+            // ZStack необходим для наложения вью на вью
+            // Для сохранения состояния предыдущего вью, необходимо использовать ForEach
+            // из листа stacks происходит наложения нового вью друг на друга
+            // таким способом добиваемся анимации при открытии / закрытии и также при свайпе вправо (для выхода)
+            // если вью не текущее, то все вью в стеке (до текущего) будут блокированы
             ForEach(self.model.stacks) { stack in
+                let width = UIScreen.main.bounds.width / 2
+                let offset = abs(self.model.offset / 2)
+                
+                let transition = self.model.previousId == stack.id ? -width + offset :
+                                 self.model.currentId == stack.id ? self.model.offset : 0
+                
                 stack.wrappedView
                     .transition(.move(edge: .trailing))
-                    .offset(x: self.model.previousId == stack.id ?
-                            -(UIScreen.main.bounds.width / 2) + abs(self.model.offset / 2) : self.model.offset)
-                    .simultaneousGesture(self.model.stacks.count <= 1 ? nil :
-                        DragGesture(minimumDistance: 10, coordinateSpace: .local)
-                            .onChanged { value in
-                                let x = value.startLocation.x
-                                if x >= 0 && x <= 30
-                                {
-                                    self.model.offset = value.translation.width
-                                } else {
-                                    self.model.offset = .zero
-                                }
-                            }
-                            .onEnded { value in
-                                if abs(self.model.offset) > 30 {
-                                    withAnimation(.easeInOut(duration: 0.3)) {
-                                        self.model.offset = UIScreen.main.bounds.width
-                                    }
-                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3)
-                                    {
-                                        self.model.offset = .zero
-                                        self.model.pop()
-                                    }
-                                } else {
-                                    withAnimation {
-                                        self.model.offset = .zero
-                                    }
-                                }
-                            }
-                    )
+                    .offset(x: transition)
+                    .disabled(self.model.currentId != stack.id)
+            }
+        }
+        .simultaneousGesture(self.model.stacks.count <= 1 ? nil : swipeBack)
+        .highPriorityGesture(self.model.stacks.count <= 1 ? nil : swipeBack)
+        .onChange(of: self.gestureState) { value in
+            if value == .zero
+            {
+                if abs(self.model.offset) > 30 {
+                    self.model.back()
+                } else {
+                    withAnimation {
+                        self.model.offset = .zero
+                    }
+                }
+            } else {
+                let x = value.width
+                
+                if x < 0
+                {
+                    return
+                }
+                
+                self.model.offset = x
             }
         }
     }
 }
 
-struct NavigationToolbar<ContentLeading, ContentTrailing>: View where ContentLeading: View,
-                                                                      ContentTrailing: View
+struct NavigationToolbar<Leading: View, Trailing: View, Content: View>: View
 {
-    var navTitle = ""
-    var navBackVisible = false
-    var navLeading: ContentLeading
-    var navTrailing: ContentTrailing
+    var navTitle: String
+    var navBackVisible: Bool
+    var navLeading: Leading
+    var navTrailing: Trailing
+    var content: Content
     
-    var body: some View
+    var bodyToolbar: some View
     {
         HStack(spacing: 0)
         {
@@ -94,5 +116,43 @@ struct NavigationToolbar<ContentLeading, ContentTrailing>: View where ContentLea
                     .lineLimit(1)
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, 15), alignment: .center)
+    }
+    
+    var body: some View
+    {
+        VStack(spacing: 0)
+        {
+            bodyToolbar
+            content
+        }
+    }
+}
+
+struct NavigationToolbarModifier<Leading: View, Trailing: View>: ViewModifier
+{
+    var navTitle: String
+    var navBackVisible: Bool
+    var navLeading: Leading
+    var navTrailing: Trailing
+    
+    func body(content: Content) -> some View {
+        NavigationToolbar(navTitle: navTitle,
+                          navBackVisible: navBackVisible,
+                          navLeading: navLeading,
+                          navTrailing: navTrailing,
+                          content: content)
+    }
+}
+
+extension View {
+    func viewTitle<Leading: View, Trailing: View>(title: String = "",
+                                                  back: Bool = false,
+                                                  leading: Leading,
+                                                  trailing: Trailing) -> some View
+    {
+        modifier(NavigationToolbarModifier(navTitle: title,
+                                           navBackVisible: back,
+                                           navLeading: leading,
+                                           navTrailing: trailing))
     }
 }

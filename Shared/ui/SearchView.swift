@@ -28,46 +28,8 @@ struct SearchView: View
     
     var body: some View
     {
-        VStack(spacing: 15)
+        VStack
         {
-            NavigationToolbar(navBackVisible: true, navLeading: HStack {
-                TextField("Search...", text: self.$search)
-                    .foregroundColor(Color("color_text"))
-                    .font(.system(size: 16))
-                    .onTapGesture {}
-            }, navTrailing: HStack {
-                Spacer()
-                
-                Button {
-                    self.search.removeAll()
-                } label: {
-                    Image("action_close")
-                        .renderingMode(.template)
-                        .foregroundColor(Color("color_text"))
-                }
-                .hidden(self.search.isEmpty)
-                
-                Button {
-                    if self.search.isEmpty
-                    {
-                        Toast.shared.show(text: "The request is empty")
-                        return
-                    }
-                    
-                    self.hideKeyBoard()
-                    if !self.audioPlayer.searchList.isEmpty
-                    {
-                        self.audioPlayer.stop()
-                        self.audioPlayer.searchList.removeAll()
-                    }
-                    self.startSearchAudio()
-                } label: {
-                    Text("Find".uppercased())
-                        .foregroundColor(Color("color_text"))
-                        .font(.system(size: 14))
-                }
-            })
-            
             ScrollView(.vertical, showsIndicators: false) {
                 LazyVStack(spacing: 0)
                 {
@@ -82,6 +44,43 @@ struct SearchView: View
                 .padding(.vertical, 10)
             }
         }
+        .viewTitle(back: true, leading: HStack {
+            TextField("Search...", text: self.$search)
+                .foregroundColor(Color("color_text"))
+                .font(.system(size: 16))
+                .onTapGesture {}
+        }, trailing: HStack {
+            Spacer()
+            
+            Button {
+                self.search.removeAll()
+            } label: {
+                Image("action_close")
+                    .renderingMode(.template)
+                    .foregroundColor(Color("color_text"))
+            }
+            .hidden(self.search.isEmpty)
+            
+            Button {
+                if self.search.isEmpty
+                {
+                    Toast.shared.show(text: "The request is empty")
+                    return
+                }
+                
+                self.hideKeyBoard()
+                if !self.audioPlayer.searchList.isEmpty
+                {
+                    self.audioPlayer.stop()
+                    self.audioPlayer.searchList.removeAll()
+                }
+                self.startSearchAudio()
+            } label: {
+                Text("Find".uppercased())
+                    .foregroundColor(Color("color_text"))
+                    .font(.system(size: 14))
+            }
+        })
         .background(Color("color_background"))
         .onTapGesture {
             self.hideKeyBoard()

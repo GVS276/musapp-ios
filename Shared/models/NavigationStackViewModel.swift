@@ -17,30 +17,27 @@ class NavigationStackViewModel: ObservableObject
     static let shared = NavigationStackViewModel()
     
     @Published var stacks: [ViewStack] = []
+    @Published var currentId = ""
     @Published var previousId = ""
     @Published var offset: CGFloat = .zero
     
-    func root(viewStack: ViewStack)
+    func root<T: View>(view: T, tag: String)
     {
+        let viewStack = ViewStack(id: tag, wrappedView: view.toAnyView())
         self.stacks.removeAll()
         self.stacks.append(viewStack)
+        self.currentId = viewStack.id
         self.previousId = ""
         self.offset = .zero
     }
     
-    func push(viewStack: ViewStack, anim: Bool = false)
+    func push<T: View>(view: T, tag: String)
     {
-        self.offset = .zero
-        
-        if !anim
-        {
+        let viewStack = ViewStack(id: tag, wrappedView: view.toAnyView())
+        withAnimation(.easeInOut(duration: 0.3)) {
             self.previousId = self.stacks.last?.id ?? ""
+            self.currentId = viewStack.id
             self.stacks.append(viewStack)
-        } else {
-            withAnimation(.easeInOut(duration: 0.3)) {
-                self.previousId = self.stacks.last?.id ?? ""
-                self.stacks.append(viewStack)
-            }
         }
     }
     
@@ -50,14 +47,13 @@ class NavigationStackViewModel: ObservableObject
 
         if let last = self.stacks.last, let index = self.stacks.firstIndex(where: {$0.id == last.id})
         {
+            self.currentId = last.id
             self.previousId = index - 1 < 0 ? "" : self.stacks[index - 1].id
         }
     }
     
     func back()
     {
-        self.offset = 1
-        
         withAnimation(.easeInOut(duration: 0.3)) {
             self.offset = UIScreen.main.bounds.width
         }
