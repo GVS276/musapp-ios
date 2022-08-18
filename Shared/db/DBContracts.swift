@@ -35,6 +35,6 @@ class DBContracts
         IS_DOWNLOADED + " INTEGER," +
         TIMESTAMP + " INTEGER)"
         
-        public static let SQL_UPDATE_AUDIO_TIMESTAMP: String = "ALTER TABLE " + TABLE_NAME + " ADD COLUMN " + TIMESTAMP + " INTEGER DEFAULT 0";
+        //public static let SQL_UPDATE_AUDIO_TIMESTAMP: String = "ALTER TABLE " + TABLE_NAME + " ADD COLUMN " + TIMESTAMP + " INTEGER DEFAULT 0";
     }
 }

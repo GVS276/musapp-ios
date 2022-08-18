@@ -68,7 +68,6 @@ struct LoginView: View
                 .padding(.bottom, 30)
         }
         .background(Color("color_background").edgesIgnoringSafeArea(.all))
-        .ignoresSafeArea(.keyboard)
         .onTapGesture {
             self.hideKeyBoard()
         }
@@ -84,7 +83,9 @@ struct LoginView: View
                                    userId: info.user_id) { success in
                     DispatchQueue.main.async {
                         if success {
-                            self.showMain()
+                            self.showMain(token: refresh.response.token,
+                                          secret: refresh.response.secret,
+                                          userId: info.user_id)
                         } else {
                             Toast.shared.show(text: "Error Auth")
                         }
@@ -94,13 +95,10 @@ struct LoginView: View
         }
     }
     
-    private func showMain()
+    private func showMain(token: String, secret: String, userId: Int64)
     {
-        // for test
-        UserDefaults.standard.set(self.login, forKey: "login")
-        UserDefaults.standard.set(self.password, forKey: "password")
-        UserDefaults.standard.synchronize()
-        // --------
+        // Info
+        UIUtils.updateInfo(token: token, secret: secret, userId: userId)
         
         // Main
         NavigationStackViewModel.shared.root(view: MainView().environmentObject(self.audioPlayer), tag: "main-view")

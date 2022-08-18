@@ -15,12 +15,6 @@ struct AudioStruct: Identifiable {
     var isPlaying = false
 }
 
-enum PlayerMode: Int
-{
-    case FULL = 0,
-         MINI
-}
-
 enum PlayerControl: Int
 {
     case Next = 0,
@@ -37,7 +31,7 @@ enum PlayingMode: Int
 class AudioPlayerModelView: ObservableObject
 {
     @Published var playedId: String = ""
-    @Published var playerMode: PlayerMode = .MINI
+    @Published var playerSheet: Bool = false
     @Published var playedModel: AudioStruct? = nil
     
     @Published var audioPlaying = false

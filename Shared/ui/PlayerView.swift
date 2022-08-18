@@ -20,9 +20,7 @@ struct PlayerView: View
         VStack(spacing: 0)
         {
             Button {
-                withAnimation(.easeInOut) {
-                    self.audioPlayer.playerMode = .MINI
-                }
+                self.audioPlayer.playerSheet = false
             } label: {
                 HStack(spacing: 0)
                 {
@@ -169,25 +167,11 @@ struct PlayerView: View
             }
             .padding(.bottom, 60)
         }
-        .background(Color("color_background").edgesIgnoringSafeArea(.all))
-        .transition(.move(edge: .bottom))
-        .onTapGesture {}
-        .simultaneousGesture(self.touchedSlider ? nil :
-            DragGesture(minimumDistance: 100, coordinateSpace: .local)
-                .onChanged { value in
-                    if value.startLocation.y < value.location.y, self.audioPlayer.playerMode == .FULL
-                    {
-                        withAnimation(.easeInOut) {
-                            self.audioPlayer.playerMode = .MINI
-                        }
-                    }
-                }
-        )
+        .background(Color("color_background"))
         .onAppear(perform: {
             self.repeatAudio = self.audioPlayer.isRepeatAudio()
             self.randomAudio = self.audioPlayer.isRandomAudio()
         })
-        .removed(self.audioPlayer.playerMode == .MINI)
     }
     
     private func playOrPause()

@@ -16,7 +16,6 @@ struct MusApp: App
     
     init()
     {
-        UITextField.appearance().keyboardAppearance = .dark
         UIScrollView.appearance().keyboardDismissMode = .onDrag
     }
     
@@ -30,8 +29,10 @@ struct MusApp: App
                 self.miniPlayer()
                     .removed(!self.audioPlayer.audioPlayerReady)
             }
-            .overlay(PlayerView()
-                        .environmentObject(self.audioPlayer))
+            .sheet(isPresented: self.$audioPlayer.playerSheet, content: {
+                PlayerView().environmentObject(self.audioPlayer)
+            })
+            .ignoresSafeArea(.keyboard)
             .createToastView()
             .onAppear {
                 // Navigation
@@ -84,22 +85,17 @@ struct MusApp: App
         .padding(.vertical, 5)
         .background(Color("color_toolbar").edgesIgnoringSafeArea(.bottom))
         .onTapGesture {
-            withAnimation(.easeInOut) {
-                self.audioPlayer.playerMode = .FULL
-            }
+            self.audioPlayer.playerSheet = true
         }
     }
     
     private func navigationViews()
     {
-        // for test
-        if UserDefaults.standard.object(forKey: "login") != nil,
-           UserDefaults.standard.object(forKey: "password") != nil
+        if UIUtils.getInfo() != nil
         {
             self.navStack.root(view: MainView().environmentObject(self.audioPlayer), tag: "main-view")
         } else {
             self.navStack.root(view: LoginView().environmentObject(self.audioPlayer), tag: "login-view")
         }
-        // --------
     }
 }

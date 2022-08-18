@@ -82,6 +82,13 @@ struct SearchView: View
             }
         })
         .background(Color("color_background"))
+        .onAppear{
+            if let info = UIUtils.getInfo()
+            {
+                self.token = info["token"] as! String
+                self.secret = info["secret"] as! String
+            }
+        }
         .onTapGesture {
             self.hideKeyBoard()
         }
@@ -142,17 +149,8 @@ struct SearchView: View
     
     private func startSearchAudio()
     {
-        if let login = UserDefaults.standard.object(forKey: "login") as? String,
-           let password = UserDefaults.standard.object(forKey: "password") as? String
-        {
-            let model = VKViewModel.shared
-            model.doAuth(login: login, password: password) { info in
-                self.token = info.access_token
-                self.secret = info.secret
-                self.searchAudio(count: self.searchMax, offset: self.searchOffset) { list in
-                    self.audioPlayer.setSearchList(list: list)
-                }
-            }
+        self.searchAudio(count: self.searchMax, offset: self.searchOffset) { list in
+            self.audioPlayer.setSearchList(list: list)
         }
     }
     
@@ -162,6 +160,8 @@ struct SearchView: View
         model.refreshToken(token: self.token, secret: self.secret) { refresh in
             self.token = refresh.response.token
             self.secret = refresh.response.secret
+            
+            UIUtils.updateInfo(token: self.token, secret: self.secret)
             
             model.searchAudio(token: refresh.response.token,
                               secret: refresh.response.secret,
@@ -188,7 +188,7 @@ struct SearchView: View
     
     private func audioAppear(audio: AudioStruct)
     {
-        if self.token.isEmpty && self.secret.isEmpty
+        if self.token.isEmpty || self.secret.isEmpty || self.search.isEmpty
         {
             return
         }
