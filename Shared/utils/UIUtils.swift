@@ -38,6 +38,21 @@ class UIUtils
         }
         return nil
     }
+    
+    static func isPagination(list: [AudioStruct], audio: AudioStruct, offset: Int) -> Bool
+    {
+        guard !list.isEmpty else {
+            return false
+        }
+        
+        guard let itemIndex = list.lastIndex(where: { AnyHashable($0.id) == AnyHashable(audio.id) }) else {
+            return false
+        }
+        
+        let distance = list.distance(from: itemIndex, to: list.endIndex)
+        let offset = offset < list.count ? offset : list.count - 1
+        return offset == (distance - 1)
+    }
 }
 
 

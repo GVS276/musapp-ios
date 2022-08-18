@@ -28,7 +28,6 @@ struct MainView: View
                 {
                     ForEach(self.audioPlayer.audioList, id: \.id) { item in
                         self.audioItem(bind: self.binding(item)).id(item.id)
-                        
                     }
                 }
                 .padding(.vertical, 10)
@@ -101,20 +100,20 @@ struct MainView: View
             .padding(.trailing, 15)
         }
         .padding(.vertical, 10)
-        .background(item.isPlaying ? Color("color_playing") : Color("color_background"))
+        .background(item.id == self.audioPlayer.playedModel?.id ? Color("color_playing") : Color("color_background"))
         .onTapGesture {
-            self.playOrPause(bind: bind)
+            self.playOrPause(item: item)
         }
     }
     
-    private func playOrPause(bind: Binding<AudioStruct>)
+    private func playOrPause(item: AudioStruct)
     {
-        let item = bind.wrappedValue
-        if item.id == self.audioPlayer.playedId
+        if item.id == self.audioPlayer.playedModel?.id
         {
             self.audioPlayer.control(tag: .PlayOrPause)
         } else {
-            self.audioPlayer.startStream(url: item.model.streamUrl, playedId: item.id, mode: .FromMain)
+            self.audioPlayer.startStream(model: item)
+            self.audioPlayer.setPlayerList(list: self.audioPlayer.audioList)
         }
     }
 }

@@ -10,6 +10,7 @@ import SwiftUI
 struct SearchView: View
 {
     @EnvironmentObject private var audioPlayer: AudioPlayerModelView
+    @State private var searchList = [AudioStruct]()
 
     @State private var search = ""
     @State private var token = ""
@@ -20,10 +21,10 @@ struct SearchView: View
     
     private func binding(_ item: AudioStruct) -> Binding<AudioStruct>
     {
-        guard let index = self.audioPlayer.searchList.firstIndex(where: { $0.id == item.id }) else {
+        guard let index = self.searchList.firstIndex(where: { $0.id == item.id }) else {
             fatalError("Can't find item in array")
         }
-        return self.$audioPlayer.searchList[index]
+        return self.$searchList[index]
     }
     
     var body: some View
@@ -33,7 +34,7 @@ struct SearchView: View
             ScrollView(.vertical, showsIndicators: false) {
                 LazyVStack(spacing: 0)
                 {
-                    ForEach(self.audioPlayer.searchList, id:\.id) { item in
+                    ForEach(self.searchList, id:\.id) { item in
                         self.audioItem(bind: self.binding(item))
                             .id(item.id)
                             .onAppear {
@@ -69,10 +70,9 @@ struct SearchView: View
                 }
                 
                 self.hideKeyBoard()
-                if !self.audioPlayer.searchList.isEmpty
+                if !self.searchList.isEmpty
                 {
-                    self.audioPlayer.stop()
-                    self.audioPlayer.searchList.removeAll()
+                    self.searchList.removeAll()
                 }
                 self.startSearchAudio()
             } label: {
@@ -120,7 +120,7 @@ struct SearchView: View
             }
             
             Button {
-                self.audioPlayer.addAudioToDB(model: bind.wrappedValue)
+                self.audioPlayer.addAudioToDB(model: item)
             } label: {
                 Image("action_add")
                     .renderingMode(.template)
@@ -130,27 +130,29 @@ struct SearchView: View
             .padding(.horizontal, 15)
         }
         .padding(.vertical, 10)
-        .background(item.isPlaying ? Color("color_playing") : Color("color_background"))
+        .background(item.id == self.audioPlayer.playedModel?.id ? Color("color_playing") : Color("color_background"))
         .onTapGesture {
-            self.playOrPause(bind: bind)
+            self.playOrPause(item: item)
         }
     }
     
-    private func playOrPause(bind: Binding<AudioStruct>)
+    private func playOrPause(item: AudioStruct)
     {
-        let item = bind.wrappedValue
-        if item.id == self.audioPlayer.playedId
+        if item.id == self.audioPlayer.playedModel?.id
         {
             self.audioPlayer.control(tag: .PlayOrPause)
         } else {
-            self.audioPlayer.startStream(url: item.model.streamUrl, playedId: item.id, mode: .FromSearch)
+            self.audioPlayer.startStream(model: item)
+            self.audioPlayer.setPlayerList(list: self.searchList)
         }
     }
     
     private func startSearchAudio()
     {
         self.searchAudio(count: self.searchMax, offset: self.searchOffset) { list in
-            self.audioPlayer.setSearchList(list: list)
+            DispatchQueue.main.async {
+                self.searchList.append(contentsOf: list)
+            }
         }
     }
     
@@ -171,21 +173,6 @@ struct SearchView: View
         }
     }
     
-    private func isPagination(offset: Int, audio: AudioStruct) -> Bool
-    {
-        guard !self.audioPlayer.searchList.isEmpty else {
-            return false
-        }
-        
-        guard let itemIndex = self.audioPlayer.searchList.lastIndex(where: { AnyHashable($0.id) == AnyHashable(audio.id) }) else {
-            return false
-        }
-        
-        let distance = self.audioPlayer.searchList.distance(from: itemIndex, to: self.audioPlayer.searchList.endIndex)
-        let offset = offset < self.audioPlayer.searchList.count ? offset : self.audioPlayer.searchList.count - 1
-        return offset == (distance - 1)
-    }
-    
     private func audioAppear(audio: AudioStruct)
     {
         if self.token.isEmpty || self.secret.isEmpty || self.search.isEmpty
@@ -193,12 +180,14 @@ struct SearchView: View
             return
         }
         
-        if self.isPagination(offset: self.searchOffset, audio: audio)
+        if UIUtils.isPagination(list: self.searchList, audio: audio, offset: self.searchOffset)
         {
-            let startIndex = self.audioPlayer.searchList.endIndex + 1
+            let startIndex = self.searchList.endIndex + 1
             self.searchAudio(count: self.searchMax, offset: startIndex) { list in
                 guard !list.isEmpty else { return }
-                self.audioPlayer.setSearchList(list: list)
+                DispatchQueue.main.async {
+                    self.searchList.append(contentsOf: list)
+                }
             }
         }
     }

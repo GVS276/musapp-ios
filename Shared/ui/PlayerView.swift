@@ -144,9 +144,9 @@ struct PlayerView: View
                 .frame(width: 35, height: 35)
                 
                 Button {
-                    self.playOrPause()
+                    self.audioPlayer.control(tag: .PlayOrPause)
                 } label: {
-                    Image((self.audioPlayer.playedModel?.isPlaying ?? false) ? "pause" : "play")
+                    Image(self.audioPlayer.audioPlaying ? "pause" : "play")
                         .resizable()
                         .renderingMode(.template)
                         .aspectRatio(contentMode: .fill)
@@ -172,17 +172,5 @@ struct PlayerView: View
             self.repeatAudio = self.audioPlayer.isRepeatAudio()
             self.randomAudio = self.audioPlayer.isRandomAudio()
         })
-    }
-    
-    private func playOrPause()
-    {
-        if let model = self.audioPlayer.playedModel
-        {
-            if model.isPlaying {
-                self.audioPlayer.pause()
-            } else {
-                self.audioPlayer.play()
-            }
-        }
     }
 }
