@@ -26,6 +26,31 @@ struct MainView: View
             ScrollView(.vertical, showsIndicators: false) {
                 LazyVStack(spacing: 0)
                 {
+                    Text("Options")
+                        .foregroundColor(Color("color_text"))
+                        .font(.system(size: 16))
+                        .lineLimit(1)
+                        .multilineTextAlignment(.leading)
+                        .onlyLeading()
+                        .padding(.horizontal, 15)
+                        .padding(.vertical, 10)
+                    
+                    self.optionsItem(iconSet: "listen", title: "Recommendations") {
+                        NavigationStackViewModel.shared.push(
+                            view: RecommendationsView().environmentObject(self.audioPlayer),
+                            tag: "recom-view"
+                        )
+                    }
+                    
+                    Text("Local audio")
+                        .foregroundColor(Color("color_text"))
+                        .font(.system(size: 16))
+                        .lineLimit(1)
+                        .multilineTextAlignment(.leading)
+                        .onlyLeading()
+                        .padding(.horizontal, 15)
+                        .padding(.vertical, 10)
+                    
                     ForEach(self.audioPlayer.audioList, id: \.id) { item in
                         self.audioItem(bind: self.binding(item)).id(item.id)
                     }
@@ -51,8 +76,8 @@ struct MainView: View
             
             Button {
                 NavigationStackViewModel.shared.push(
-                    view: SettingsView(),
-                    tag: "settings-view"
+                    view: AboutView(),
+                    tag: "about-view"
                 )
             } label: {
                 Image("action_settings")
@@ -63,7 +88,40 @@ struct MainView: View
         .background(Color("color_background"))
     }
     
-    
+    private func optionsItem(iconSet: String, title: String, clicked: @escaping () -> Void) -> some View
+    {
+        Button {
+            clicked()
+        } label: {
+            HStack(spacing: 0)
+            {
+                Image(iconSet)
+                    .resizable()
+                    .renderingMode(.template)
+                    .aspectRatio(contentMode: .fit)
+                    .foregroundColor(.white)
+                    .frame(width: 25, height: 25)
+                    .padding(10)
+                    .background(Color("color_thumb"))
+                    .clipShape(Circle())
+                    .padding(.horizontal, 15)
+                
+                Text(title)
+                    .foregroundColor(Color("color_text"))
+                    .font(.system(size: 16))
+                    .lineLimit(1)
+                    .multilineTextAlignment(.leading)
+                
+                Spacer()
+                
+                Image("action_next")
+                    .renderingMode(.template)
+                    .foregroundColor(Color("color_text"))
+                    .padding(.horizontal, 15)
+            }
+            .padding(.vertical, 10)
+        }
+    }
     private func audioItem(bind: Binding<AudioStruct>) -> some View
     {
         let item = bind.wrappedValue
