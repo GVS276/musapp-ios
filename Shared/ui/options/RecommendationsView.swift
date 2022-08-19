@@ -17,7 +17,7 @@ struct RecommendationsView: View
     @State private var userId: Int64 = -1
     
     private var searchMax = 25
-    private var searchOffset = 10
+    private var searchOffset = 0
     
     private func binding(_ item: AudioStruct) -> Binding<AudioStruct>
     {
@@ -124,27 +124,50 @@ struct RecommendationsView: View
     private func startSearchAudio()
     {
         self.searchAudio(count: self.searchMax, offset: self.searchOffset) { list in
-            DispatchQueue.main.async {
-                self.searchList.append(contentsOf: list)
-            }
+            self.searchList.append(contentsOf: list)
         }
     }
     
     private func searchAudio(count: Int, offset: Int, completionHandler: @escaping ((_ list: [AudioStruct]) -> Void))
     {
         let model = VKViewModel.shared
-        model.refreshToken(token: self.token, secret: self.secret) { refresh in
-            self.token = refresh.response.token
-            self.secret = refresh.response.secret
-            
-            UIUtils.updateInfo(token: self.token, secret: self.secret)
-            
-            model.recommendationsAudio(token: self.token,
-                                       secret: self.secret,
-                                       userId: self.userId,
-                                       count: count,
-                                       offset: offset) { list in
-                completionHandler(list)
+        model.refreshToken(token: self.token, secret: self.secret) { refresh, result in
+            switch result {
+            case .ErrorInternet:
+                DispatchQueue.main.async {
+                    Toast.shared.show(text: "Problems with the Internet")
+                }
+            case .ErrorRequest:
+                DispatchQueue.main.async {
+                    Toast.shared.show(text: "An error occurred when accessing the server")
+                }
+            case .Success:
+                if let refresh = refresh
+                {
+                    self.token = refresh.response.token
+                    self.secret = refresh.response.secret
+                    
+                    UIUtils.updateInfo(token: self.token, secret: self.secret)
+                    
+                    model.recommendationsAudio(token: self.token,
+                                               secret: self.secret,
+                                               userId: self.userId,
+                                               count: count,
+                                               offset: offset) { list, listResult in
+                        DispatchQueue.main.async {
+                            switch listResult {
+                            case .ErrorInternet:
+                                Toast.shared.show(text: "Problems with the Internet")
+                            case .ErrorRequest:
+                                Toast.shared.show(text: "An error occurred while accessing the list")
+                            case .Success:
+                                if let list = list {
+                                    completionHandler(list)
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
     }
@@ -158,12 +181,10 @@ struct RecommendationsView: View
         
         if UIUtils.isPagination(list: self.searchList, audio: audio, offset: self.searchOffset)
         {
-            let startIndex = self.searchList.endIndex + 1
+            let startIndex = self.searchList.endIndex
             self.searchAudio(count: self.searchMax, offset: startIndex) { list in
                 guard !list.isEmpty else { return }
-                DispatchQueue.main.async {
-                    self.searchList.append(contentsOf: list)
-                }
+                self.searchList.append(contentsOf: list)
             }
         }
     }

@@ -76,19 +76,16 @@ struct LoginView: View
     private func startExport()
     {
         let model = VKViewModel.shared
-        model.doAuth(login: self.login, password: self.password) { info in
-            model.refreshToken(token: info.access_token, secret: info.secret) { refresh in
-                model.getAudioList(token: refresh.response.token,
-                                   secret: refresh.response.secret,
-                                   userId: info.user_id) { success in
-                    DispatchQueue.main.async {
-                        if success {
-                            self.showMain(token: refresh.response.token,
-                                          secret: refresh.response.secret,
-                                          userId: info.user_id)
-                        } else {
-                            Toast.shared.show(text: "Error Auth")
-                        }
+        model.doAuth(login: self.login, password: self.password) { info, result in
+            DispatchQueue.main.async {
+                switch result {
+                case .ErrorInternet:
+                    Toast.shared.show(text: "Problems with the Internet")
+                case .ErrorRequest:
+                    Toast.shared.show(text: "Invalid password or login")
+                case .Success:
+                    if let info = info {
+                        self.showMain(token: info.access_token, secret: info.secret, userId: info.user_id)
                     }
                 }
             }

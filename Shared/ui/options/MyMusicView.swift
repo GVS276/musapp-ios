@@ -1,20 +1,20 @@
 //
-//  SearchView.swift
+//  MyMusicView.swift
 //  musapp (iOS)
 //
-//  Created by Виктор Губин on 08.08.2022.
+//  Created by Виктор Губин on 19.08.2022.
 //
 
 import SwiftUI
 
-struct SearchView: View
+struct MyMusicView: View
 {
     @EnvironmentObject private var audioPlayer: AudioPlayerModelView
     @State private var searchList = [AudioStruct]()
-
-    @State private var search = ""
+    
     @State private var token = ""
     @State private var secret = ""
+    @State private var userId: Int64 = -1
     
     private var searchMax = 25
     private var searchOffset = 0
@@ -29,8 +29,14 @@ struct SearchView: View
     
     var body: some View
     {
-        VStack
+        ZStack
         {
+            Text("We get tracks....")
+                .foregroundColor(Color("color_text"))
+                .font(.system(size: 16))
+                .padding(30)
+                .removed(!self.searchList.isEmpty)
+            
             ScrollView(.vertical, showsIndicators: false) {
                 LazyVStack(spacing: 0)
                 {
@@ -45,52 +51,20 @@ struct SearchView: View
                 .padding(.vertical, 10)
             }
         }
-        .viewTitle(back: true, leading: HStack {
-            TextField("Search...", text: self.$search)
-                .foregroundColor(Color("color_text"))
-                .font(.system(size: 16))
-                .onTapGesture {}
-        }, trailing: HStack {
-            Spacer()
-            
-            Button {
-                self.search.removeAll()
-            } label: {
-                Image("action_close")
-                    .renderingMode(.template)
-                    .foregroundColor(Color("color_text"))
-            }
-            .hidden(self.search.isEmpty)
-            
-            Button {
-                if self.search.isEmpty
-                {
-                    Toast.shared.show(text: "The request is empty")
-                    return
-                }
-                
-                self.hideKeyBoard()
-                if !self.searchList.isEmpty
-                {
-                    self.searchList.removeAll()
-                }
-                self.startSearchAudio()
-            } label: {
-                Text("Find".uppercased())
-                    .foregroundColor(Color("color_text"))
-                    .font(.system(size: 14))
-            }
-        })
+        .viewTitle(title: "My music", back: true, leading: HStack {}, trailing: HStack {})
         .background(Color("color_background"))
         .onAppear{
             if let info = UIUtils.getInfo()
             {
                 self.token = info["token"] as! String
                 self.secret = info["secret"] as! String
+                self.userId = info["userId"] as! Int64
+                
+                // delay 1 sec
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                    self.startSearchAudio()
+                }
             }
-        }
-        .onTapGesture {
-            self.hideKeyBoard()
         }
     }
     
@@ -175,9 +149,11 @@ struct SearchView: View
                     
                     UIUtils.updateInfo(token: self.token, secret: self.secret)
                     
-                    model.searchAudio(token: refresh.response.token,
-                                      secret: refresh.response.secret,
-                                      q: self.search, count: count, offset: offset) { list, listResult in
+                    model.getAudioList(token: self.token,
+                                       secret: self.secret,
+                                       userId: self.userId,
+                                       count: count,
+                                       offset: offset) { list, listResult in
                         DispatchQueue.main.async {
                             switch listResult {
                             case .ErrorInternet:
@@ -198,7 +174,7 @@ struct SearchView: View
     
     private func audioAppear(audio: AudioStruct)
     {
-        if self.token.isEmpty || self.secret.isEmpty || self.search.isEmpty
+        if self.token.isEmpty || self.secret.isEmpty || self.userId == -1
         {
             return
         }

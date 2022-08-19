@@ -35,10 +35,24 @@ struct MainView: View
                         .padding(.horizontal, 15)
                         .padding(.vertical, 10)
                     
+                    self.optionsItem(iconSet: "chart", title: "Popular") {
+                        NavigationStackViewModel.shared.push(
+                            view: PopularView().environmentObject(self.audioPlayer),
+                            tag: "popular-view"
+                        )
+                    }
+                    
                     self.optionsItem(iconSet: "listen", title: "Recommendations") {
                         NavigationStackViewModel.shared.push(
                             view: RecommendationsView().environmentObject(self.audioPlayer),
                             tag: "recom-view"
+                        )
+                    }
+                    
+                    self.optionsItem(iconSet: "listen", title: "My music") {
+                        NavigationStackViewModel.shared.push(
+                            view: MyMusicView().environmentObject(self.audioPlayer),
+                            tag: "my-music-view"
                         )
                     }
                     
@@ -50,6 +64,15 @@ struct MainView: View
                         .onlyLeading()
                         .padding(.horizontal, 15)
                         .padding(.vertical, 10)
+                    
+                    Text("The list is empty")
+                        .foregroundColor(Color("color_text"))
+                        .font(.system(size: 14))
+                        .lineLimit(1)
+                        .multilineTextAlignment(.leading)
+                        .onlyLeading()
+                        .padding(.horizontal, 15)
+                        .removed(!self.audioPlayer.audioList.isEmpty)
                     
                     ForEach(self.audioPlayer.audioList, id: \.id) { item in
                         self.audioItem(bind: self.binding(item)).id(item.id)

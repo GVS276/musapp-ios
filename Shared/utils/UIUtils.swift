@@ -45,7 +45,7 @@ class UIUtils
             return false
         }
         
-        guard let itemIndex = list.lastIndex(where: { AnyHashable($0.id) == AnyHashable(audio.id) }) else {
+        guard let itemIndex = list.lastIndex(where: { $0.id == audio.id }) else {
             return false
         }
         
