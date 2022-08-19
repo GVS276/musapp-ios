@@ -66,3 +66,19 @@ class AddAudioTask: DBBaseTask
         }
     }
 }
+
+class DeleteAudioTask: DBBaseTask
+{
+    private var audioId: String
+    private var delegate: IDBDelegate?
+    
+    init(audioId: String, delegate: IDBDelegate?) {
+        self.audioId = audioId
+        self.delegate = delegate
+    }
+    
+    override func run() {
+        SQLDataBase.shared.getAudioDao().deleteAudioById(audioId: self.audioId)
+        self.delegate?.onAudioDeleted(requestIdentifier: self.requestIdentifier, audioId: self.audioId)
+    }
+}

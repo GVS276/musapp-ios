@@ -20,4 +20,9 @@ class DBController
     {
         return AddAudioTask(model: model, delegate: delegate).execute()
     }
+    
+    func deleteAudio(audioId: String, delegate: IDBDelegate?) -> Int64
+    {
+        return DeleteAudioTask(audioId: audioId, delegate: delegate).execute()
+    }
 }

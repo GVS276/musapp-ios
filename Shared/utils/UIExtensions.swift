@@ -123,3 +123,9 @@ extension Int32 {
         return self < 10 ? "0\(self)" : "\(self)"
     }
 }
+
+struct AudioButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label.contentShape(Rectangle())
+    }
+}

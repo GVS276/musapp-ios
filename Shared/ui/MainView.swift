@@ -81,7 +81,7 @@ struct MainView: View
                 .padding(.vertical, 10)
             }
         }
-        .viewTitle(title: "Music", leading: HStack {
+        .viewTitle(title: "Home", leading: HStack {
             Button {
                 NavigationStackViewModel.shared.push(
                     view: SearchView().environmentObject(self.audioPlayer),
@@ -150,41 +150,62 @@ struct MainView: View
         let item = bind.wrappedValue
         return HStack(spacing: 0)
         {
-            AudioThumbView()
-                .padding(.horizontal, 15)
-            
-            VStack
-            {
-                Text(item.model.artist)
-                    .foregroundColor(Color("color_text"))
-                    .font(.system(size: 16))
-                    .lineLimit(1)
-                    .multilineTextAlignment(.leading)
-                    .onlyLeading()
-                
-                HStack
+            Button {
+                self.playOrPause(item: item)
+            } label: {
+                HStack(spacing: 15)
                 {
-                    Text(item.model.title)
-                        .foregroundColor(Color("color_text"))
-                        .font(.system(size: 14))
-                        .lineLimit(1)
-                        .multilineTextAlignment(.leading)
+                    AudioThumbView()
                     
-                    Spacer()
+                    VStack
+                    {
+                        Text(item.model.artist)
+                            .foregroundColor(Color("color_text"))
+                            .font(.system(size: 16))
+                            .lineLimit(1)
+                            .multilineTextAlignment(.leading)
+                            .onlyLeading()
+                        
+                        Text(item.model.title)
+                            .foregroundColor(Color("color_text"))
+                            .font(.system(size: 14))
+                            .lineLimit(1)
+                            .multilineTextAlignment(.leading)
+                            .onlyLeading()
+                    }
+                }
+                .padding(.horizontal, 15)
+            }
+            .buttonStyle(AudioButtonStyle())
+            
+            Menu {
+                Button {
+                    self.audioPlayer.deleteAudioFromDB(audioId: item.model.audioId)
+                } label: {
+                    Text("Delete")
+                        .foregroundColor(Color("color_text"))
+                        .font(.system(size: 16))
+                }
+            } label: {
+                VStack(alignment: .trailing)
+                {
+                    Image("action_menu")
+                        .resizable()
+                        .renderingMode(.template)
+                        .foregroundColor(Color("color_text"))
+                        .frame(width: 16, height: 16)
+                        .padding(.trailing, 10)
                     
                     Text(item.model.duration.toTime())
                         .foregroundColor(Color("color_text"))
                         .font(.system(size: 14))
                         .lineLimit(1)
+                        .padding(.trailing, 15)
                 }
             }
-            .padding(.trailing, 15)
         }
         .padding(.vertical, 10)
-        .background(item.model.audioId == self.audioPlayer.playedModel?.model.audioId ? Color("color_playing") : Color("color_background"))
-        .onTapGesture {
-            self.playOrPause(item: item)
-        }
+        .background(item.model.audioId == self.audioPlayer.playedModel?.model.audioId ? Color("color_playing") : Color.clear)
     }
     
     private func playOrPause(item: AudioStruct)

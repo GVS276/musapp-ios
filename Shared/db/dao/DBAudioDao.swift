@@ -84,6 +84,23 @@ class DBAudioDao
         return model
     }
     
+    func deleteAudioById(audioId: String)
+    {
+        semaphore.wait()
+        
+        let query =
+        """
+        DELETE FROM \(DBContracts.AudioEntry.TABLE_NAME) \
+        WHERE \(DBContracts.AudioEntry.AUDIO_ID) = '\(audioId)';
+        """
+        
+        print("deleteAudioById query = \(query)")
+        
+        DBUtils.executeDeleteQuery(dbConnection: dbConnection, query: query)
+        
+        semaphore.signal()
+    }
+    
     private func getAudioListFromQuery(query: String) -> Array<AudioModel>?
     {
         var list = Array<AudioModel>()

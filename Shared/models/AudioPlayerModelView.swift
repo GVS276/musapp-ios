@@ -47,6 +47,7 @@ class AudioPlayerModelView: ObservableObject
     private let DB = DBController.shared
     private var requestReceiveId: Int64? = nil
     private var requestAddId: Int64? = nil
+    private var requestDeleteId: Int64? = nil
     
     init() {
         self.receiveAudioList()
@@ -314,6 +315,11 @@ class AudioPlayerModelView: ObservableObject
     {
         self.requestAddId = self.DB.addAudio(model: model.model, delegate: self)
     }
+    
+    func deleteAudioFromDB(audioId: String)
+    {
+        self.requestDeleteId = self.DB.deleteAudio(audioId: audioId, delegate: self)
+    }
 }
 
 extension AudioPlayerModelView: IDBDelegate
@@ -347,6 +353,17 @@ extension AudioPlayerModelView: IDBDelegate
                     Toast.shared.show(text: "Added to your data base")
                 } else {
                     Toast.shared.show(text: "Not added to your data base")
+                }
+            }
+        }
+    }
+    
+    func onAudioDeleted(requestIdentifier: Int64, audioId: String) {
+        if self.requestDeleteId == requestIdentifier
+        {
+            DispatchQueue.main.async {
+                if let index = self.audioList.firstIndex(where: {$0.model.audioId == audioId}) {
+                    self.audioList.remove(at: index)
                 }
             }
         }
