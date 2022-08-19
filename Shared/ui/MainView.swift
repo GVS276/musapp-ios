@@ -56,7 +56,7 @@ struct MainView: View
                         )
                     }
                     
-                    Text("Local audio")
+                    Text("Added music")
                         .foregroundColor(Color("color_text"))
                         .font(.system(size: 16))
                         .lineLimit(1)
@@ -181,7 +181,7 @@ struct MainView: View
             .padding(.trailing, 15)
         }
         .padding(.vertical, 10)
-        .background(item.id == self.audioPlayer.playedModel?.id ? Color("color_playing") : Color("color_background"))
+        .background(item.model.audioId == self.audioPlayer.playedModel?.model.audioId ? Color("color_playing") : Color("color_background"))
         .onTapGesture {
             self.playOrPause(item: item)
         }
@@ -189,7 +189,7 @@ struct MainView: View
     
     private func playOrPause(item: AudioStruct)
     {
-        if item.id == self.audioPlayer.playedModel?.id
+        if item.model.audioId == self.audioPlayer.playedModel?.model.audioId
         {
             self.audioPlayer.control(tag: .PlayOrPause)
         } else {
