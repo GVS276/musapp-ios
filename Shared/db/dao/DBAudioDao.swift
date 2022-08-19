@@ -33,8 +33,10 @@ class DBAudioDao
                 \(DBContracts.AudioEntry.DOWNLOAD_URL), \
                 \(DBContracts.AudioEntry.DURATION), \
                 \(DBContracts.AudioEntry.IS_DOWNLOADED), \
+                \(DBContracts.AudioEntry.IS_EXPLICIT), \
+                \(DBContracts.AudioEntry.THUMB), \
                 \(DBContracts.AudioEntry.TIMESTAMP)) \
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?);
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
                 """
         
         var insertStatement: OpaquePointer? = nil
@@ -47,7 +49,9 @@ class DBAudioDao
             DBUtils.bindText(opaquePointer: insertStatement!, value: audio.downloadUrl, columnIndex: 5)
             DBUtils.bindInt(opaquePointer: insertStatement!, value: audio.duration, columnIndex: 6)
             DBUtils.bindInt(opaquePointer: insertStatement!, value: audio.isDownloaded, columnIndex: 7)
-            DBUtils.bindInt64(opaquePointer: insertStatement!, value: audio.timestamp, columnIndex: 8)
+            DBUtils.bindInt(opaquePointer: insertStatement!, value: audio.isExplicit ? 1 : 0, columnIndex: 8)
+            DBUtils.bindText(opaquePointer: insertStatement!, value: audio.thumb, columnIndex: 9)
+            DBUtils.bindInt64(opaquePointer: insertStatement!, value: audio.timestamp, columnIndex: 10)
             
             if sqlite3_step(insertStatement) == SQLITE_DONE {
                 success = true
@@ -146,7 +150,9 @@ class DBAudioDao
         model.downloadUrl = DBUtils.getString(dbStatement: stmt, columnIndex: 4)
         model.duration = DBUtils.getInt32(dbStatement: stmt, columnIndex: 5)
         model.isDownloaded = DBUtils.getInt32(dbStatement: stmt, columnIndex: 6)
-        model.timestamp = DBUtils.getInt64(dbStatement: stmt, columnIndex: 7)
+        model.isExplicit = DBUtils.getInt32(dbStatement: stmt, columnIndex: 7) == 1 ? true : false
+        model.thumb = DBUtils.getString(dbStatement: stmt, columnIndex: 8)
+        model.timestamp = DBUtils.getInt64(dbStatement: stmt, columnIndex: 9)
 
         return model
     }

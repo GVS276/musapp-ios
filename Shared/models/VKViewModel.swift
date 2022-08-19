@@ -82,6 +82,54 @@ class VKViewModel: ObservableObject
         }
     }
     
+    private func createAudioList(data: Data) -> [AudioStruct]?
+    {
+        guard let json = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] else
+        {
+            return nil
+        }
+        
+        var list: [AudioStruct] = []
+        
+        if let param = json["response"] as? [String: Any], let items = param["items"] as? NSArray
+        {
+            items.forEach { it in
+                if let item = it as? [String: Any]
+                {
+                    if let audioId = item["id"] as? Int64,
+                       let artist = item["artist"] as? String,
+                       let title = item["title"] as? String,
+                       let streamUrl = item["url"] as? String,
+                       let duration = item["duration"] as? Int
+                    {
+                        var model = AudioModel()
+                        model.audioId = String(audioId)
+                        model.artist = artist
+                        model.title = title
+                        model.streamUrl = streamUrl
+                        model.downloadUrl = ""
+                        model.duration = Int32(duration)
+                        
+                        if let is_explicit = item["is_explicit"] as? Bool
+                        {
+                            model.isExplicit = is_explicit
+                        }
+                        
+                        if let album = item["album"] as? [String: Any],
+                           let thumb = album["thumb"] as? [String: Any]
+                        {
+                            model.thumb = thumb["photo_300"] as? String ?? ""
+                        }
+                        
+                        list.append(AudioStruct(model: model))
+                    }
+                }
+            }
+        }
+        
+        return list
+    }
+    
     func doAuth(login: String,
                 password: String,
                 completionHandler: @escaping ((_ info: AuthInfo?, _ result: RequestResult) -> Void))
@@ -151,40 +199,12 @@ class VKViewModel: ObservableObject
                 return
             }
             
-            guard let json = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] else
+            if let list = self.createAudioList(data: data)
             {
+                completionHandler(list, .Success)
+            } else {
                 completionHandler(nil, .ErrorRequest)
-                return
             }
-            
-            var list: [AudioStruct] = []
-            
-            if let param = json["response"] as? [String: Any], let items = param["items"] as? NSArray
-            {
-                items.forEach { it in
-                    if let item = it as? [String: Any]
-                    {
-                        if let audioId = item["id"] as? Int64,
-                           let artist = item["artist"] as? String,
-                           let title = item["title"] as? String,
-                           let streamUrl = item["url"] as? String,
-                           let duration = item["duration"] as? Int
-                        {
-                            var model = AudioModel()
-                            model.audioId = String(audioId)
-                            model.artist = artist
-                            model.title = title
-                            model.streamUrl = streamUrl
-                            model.downloadUrl = ""
-                            model.duration = Int32(duration)
-                            
-                            list.append(AudioStruct(model: model))
-                        }
-                    }
-                }
-            }
-            
-            completionHandler(list, .Success)
         }
     }
     
@@ -209,40 +229,12 @@ class VKViewModel: ObservableObject
                     return
                 }
                 
-                guard let json = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] else
+                if let list = self.createAudioList(data: data)
                 {
+                    completionHandler(list, .Success)
+                } else {
                     completionHandler(nil, .ErrorRequest)
-                    return
                 }
-                
-                var list: [AudioStruct] = []
-                
-                if let param = json["response"] as? [String: Any], let items = param["items"] as? NSArray
-                {
-                    items.forEach { it in
-                        if let item = it as? [String: Any]
-                        {
-                            if let audioId = item["id"] as? Int64,
-                               let artist = item["artist"] as? String,
-                               let title = item["title"] as? String,
-                               let streamUrl = item["url"] as? String,
-                               let duration = item["duration"] as? Int
-                            {
-                                var model = AudioModel()
-                                model.audioId = String(audioId)
-                                model.artist = artist
-                                model.title = title
-                                model.streamUrl = streamUrl
-                                model.downloadUrl = ""
-                                model.duration = Int32(duration)
-                                
-                                list.append(AudioStruct(model: model))
-                            }
-                        }
-                    }
-                }
-                
-                completionHandler(list, .Success)
             }
         }
     }
@@ -264,40 +256,12 @@ class VKViewModel: ObservableObject
                 return
             }
             
-            guard let json = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] else
+            if let list = self.createAudioList(data: data)
             {
+                completionHandler(list, .Success)
+            } else {
                 completionHandler(nil, .ErrorRequest)
-                return
             }
-            
-            var list: [AudioStruct] = []
-            
-            if let param = json["response"] as? [String: Any], let items = param["items"] as? NSArray
-            {
-                items.forEach { it in
-                    if let item = it as? [String: Any]
-                    {
-                        if let audioId = item["id"] as? Int64,
-                           let artist = item["artist"] as? String,
-                           let title = item["title"] as? String,
-                           let streamUrl = item["url"] as? String,
-                           let duration = item["duration"] as? Int
-                        {
-                            var model = AudioModel()
-                            model.audioId = String(audioId)
-                            model.artist = artist
-                            model.title = title
-                            model.streamUrl = streamUrl
-                            model.downloadUrl = ""
-                            model.duration = Int32(duration)
-                            
-                            list.append(AudioStruct(model: model))
-                        }
-                    }
-                }
-            }
-            
-            completionHandler(list, .Success)
         }
     }
     
@@ -315,40 +279,12 @@ class VKViewModel: ObservableObject
                 return
             }
             
-            guard let json = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] else
+            if let list = self.createAudioList(data: data)
             {
+                completionHandler(list, .Success)
+            } else {
                 completionHandler(nil, .ErrorRequest)
-                return
             }
-            
-            var list: [AudioStruct] = []
-            
-            if let param = json["response"] as? [String: Any], let items = param["items"] as? NSArray
-            {
-                items.forEach { it in
-                    if let item = it as? [String: Any]
-                    {
-                        if let audioId = item["id"] as? Int64,
-                           let artist = item["artist"] as? String,
-                           let title = item["title"] as? String,
-                           let streamUrl = item["url"] as? String,
-                           let duration = item["duration"] as? Int
-                        {
-                            var model = AudioModel()
-                            model.audioId = String(audioId)
-                            model.artist = artist
-                            model.title = title
-                            model.streamUrl = streamUrl
-                            model.downloadUrl = ""
-                            model.duration = Int32(duration)
-                            
-                            list.append(AudioStruct(model: model))
-                        }
-                    }
-                }
-            }
-            
-            completionHandler(list, .Success)
         }
     }
 }

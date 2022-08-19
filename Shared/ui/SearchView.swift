@@ -27,6 +27,13 @@ struct SearchView: View
         return self.$searchList[index]
     }
     
+    private var randomList = ["Slowed",
+                              "Slow",
+                              "Reverb",
+                              "Remix",
+                              "Mix",
+                              "Mixed"].shuffled()
+    
     var body: some View
     {
         VStack
@@ -34,6 +41,16 @@ struct SearchView: View
             ScrollView(.vertical, showsIndicators: false) {
                 LazyVStack(spacing: 0)
                 {
+                    /*if self.searchList.isEmpty
+                    {
+                        ForEach(0..<3) { index in
+                            self.quickSearchItem(title: self.randomList[index]) {
+                                self.search = self.randomList[index]
+                                self.startSearchAudio()
+                            }
+                        }
+                    }*/
+                    
                     ForEach(self.searchList, id:\.id) { item in
                         self.audioItem(bind: self.binding(item))
                             .id(item.id)
@@ -91,6 +108,35 @@ struct SearchView: View
         }
         .onTapGesture {
             self.hideKeyBoard()
+        }
+    }
+    
+    private func quickSearchItem(title: String, clicked: @escaping () -> Void) -> some View
+    {
+        Button {
+            clicked()
+        } label: {
+            HStack(spacing: 0)
+            {
+                Image("action_next")
+                    .resizable()
+                    .renderingMode(.template)
+                    .aspectRatio(contentMode: .fit)
+                    .foregroundColor(.white)
+                    .frame(width: 25, height: 25)
+                    .padding(10)
+                    .background(Color("color_thumb"))
+                    .clipShape(Circle())
+                    .padding(.horizontal, 15)
+                
+                Text(title)
+                    .foregroundColor(Color("color_text"))
+                    .font(.system(size: 16))
+                    .lineLimit(1)
+                    .multilineTextAlignment(.leading)
+                    .onlyLeading()
+            }
+            .padding(.vertical, 10)
         }
     }
     

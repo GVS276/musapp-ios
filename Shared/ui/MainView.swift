@@ -145,6 +145,7 @@ struct MainView: View
             .padding(.vertical, 10)
         }
     }
+    
     private func audioItem(bind: Binding<AudioStruct>) -> some View
     {
         let item = bind.wrappedValue
