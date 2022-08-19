@@ -49,7 +49,7 @@ struct MainView: View
                         )
                     }
                     
-                    self.optionsItem(iconSet: "listen", title: "My music") {
+                    self.optionsItem(iconSet: "user", title: "My music") {
                         NavigationStackViewModel.shared.push(
                             view: MyMusicView().environmentObject(self.audioPlayer),
                             tag: "my-music-view"

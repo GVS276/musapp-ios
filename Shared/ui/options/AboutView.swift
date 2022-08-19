@@ -13,11 +13,51 @@ struct AboutView: View
     {
         VStack(spacing: 0)
         {
-            Text("Music player using music from VK\nThis is not a commercial project (a project for personal use)")
+            Text("MusApp")
+                .foregroundColor(Color("color_text"))
+                .font(.system(size: 20))
+                .padding(.top, 30)
+                .padding(.horizontal, 30)
+                .onlyLeading()
+            
+            Text("Music player using music from VK")
                 .foregroundColor(Color("color_text"))
                 .font(.system(size: 16))
-                .padding(.vertical, 30)
-                .padding(.bottom, 30)
+                .padding(.top, 5)
+                .padding(.horizontal, 30)
+                .onlyLeading()
+            
+            Text("This is not a commercial project (a project for personal use)")
+                .foregroundColor(Color("color_text"))
+                .font(.system(size: 16))
+                .padding(.top, 5)
+                .padding(.horizontal, 30)
+                .onlyLeading()
+            
+            Text("Thanks:")
+                .foregroundColor(Color("color_text"))
+                .font(.system(size: 18))
+                .padding(.top, 30)
+                .padding(.horizontal, 30)
+                .onlyLeading()
+            
+            Link("Social Network (VK)", destination: URL(string: "https://vk.com/")!)
+                .font(.system(size: 14))
+                .padding(.top, 5)
+                .padding(.horizontal, 30)
+                .onlyLeading()
+            
+            Link("Resource with icons (svgrepo)", destination: URL(string: "https://www.svgrepo.com/")!)
+                .font(.system(size: 14))
+                .padding(.top, 5)
+                .padding(.horizontal, 30)
+                .onlyLeading()
+            
+            Link("Author of icon packs (Shannon E. Thomas)", destination: URL(string: "https://dribbble.com/shannonethomas")!)
+                .font(.system(size: 14))
+                .padding(.top, 5)
+                .padding(.horizontal, 30)
+                .onlyLeading()
             
             Spacer()
             
@@ -34,7 +74,7 @@ struct AboutView: View
             .padding(.horizontal, 30)
             .padding(.bottom, 30)
 
-            Text("Version: 1.0 - MusApp")
+            Text("Version: 1.0")
                 .foregroundColor(Color("color_text"))
                 .font(.system(size: 12))
                 .padding(.horizontal, 30)
