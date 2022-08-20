@@ -105,7 +105,9 @@ class AudioPlayerModelView: ObservableObject
                 {
                     handler(current)
                 }
-                //self.nowPlayingInfo(current: Double(current), duration: Double(duration))
+                
+                // info
+                self.nowPlayingInfo(current: current)
             }
             
             NotificationCenter.default.addObserver(self, selector: #selector(self.playerDidFinishPlaying(note:)),
@@ -258,13 +260,14 @@ class AudioPlayerModelView: ObservableObject
         }
     }
     
-    private func nowPlayingInfo(current: Double, duration: Double) {
+    private func nowPlayingInfo(current: Float) {
         var info = [String : Any]()
         info[MPMediaItemPropertyMediaType] = MPMediaType.anyAudio.rawValue
-        info[MPMediaItemPropertyPlaybackDuration] = duration
-        info[MPNowPlayingInfoPropertyElapsedPlaybackTime] = current
+        info[MPMediaItemPropertyPlaybackDuration] = Double(self.playedModel?.model.duration ?? 0)
+        info[MPNowPlayingInfoPropertyElapsedPlaybackTime] = Double(current)
         info[MPMediaItemPropertyTitle] = self.playedModel?.model.title ?? ""
         info[MPMediaItemPropertyArtist] = self.playedModel?.model.artist ?? ""
+        info[MPMediaItemPropertyIsExplicit] = self.playedModel?.model.isExplicit ?? false
         MPNowPlayingInfoCenter.default().nowPlayingInfo = info
     }
     
@@ -310,6 +313,12 @@ class AudioPlayerModelView: ObservableObject
     
     private func audioTrackPrevious()
     {
+        if self.currentTime() >= 5
+        {
+            self.player?.seek(to: .zero)
+            return
+        }
+        
         if self.isRandomAudio() {
             let randomIndex = Int.random(in: 0..<self.playerList.count - 1)
             let audio = self.playerList[randomIndex]
