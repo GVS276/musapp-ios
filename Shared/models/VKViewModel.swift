@@ -116,9 +116,16 @@ class VKViewModel: ObservableObject
                         }
                         
                         if let album = item["album"] as? [String: Any],
-                           let thumb = album["thumb"] as? [String: Any]
+                           let albumId = album["id"] as? Int64,
+                           let albumTitle = album["title"] as? String
                         {
-                            model.thumb = thumb["photo_300"] as? String ?? ""
+                            model.albumId = String(albumId)
+                            model.albumTitle = albumTitle
+                            
+                            if let thumb = album["thumb"] as? [String: Any]
+                            {
+                                model.thumb = thumb["photo_300"] as? String ?? ""
+                            }
                         }
                         
                         list.append(AudioStruct(model: model))

@@ -63,6 +63,13 @@ struct PlayerView: View
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 30)
             
+            Text(self.audioPlayer.playedModel?.model.albumTitle ?? "Album")
+                .foregroundColor(Color("color_text"))
+                .font(.system(size: 10))
+                .lineLimit(3)
+                .multilineTextAlignment(.center)
+                .padding(.horizontal, 30)
+            
             Spacer()
             
             HStack(spacing: 0)
@@ -118,7 +125,7 @@ struct PlayerView: View
             HStack
             {
                 Text(self.currentTime.toTime())
-                    .foregroundColor(Color("color_text"))
+                    .foregroundColor(self.touchedSlider ? .blue : Color("color_text"))
                     .font(.system(size: 14))
                 
                 Spacer()

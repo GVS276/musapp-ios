@@ -18,5 +18,7 @@ struct AudioModel
     var isDownloaded: Int32 = 0
     var isExplicit: Bool = false
     var thumb: String = ""
+    var albumId: String = ""
+    var albumTitle: String = ""
     var timestamp: Int64 = 0
 }

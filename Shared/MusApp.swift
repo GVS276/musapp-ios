@@ -38,7 +38,7 @@ struct MusApp: App
                 PlayerView().environmentObject(self.audioPlayer)
             })
             .ignoresSafeArea(.keyboard)
-            .createToastView()
+            //.createToastView()
             .onAppear {
                 // Root
                 self.rootStack.root = UIUtils.getInfo() != nil ? .Main : .Login
