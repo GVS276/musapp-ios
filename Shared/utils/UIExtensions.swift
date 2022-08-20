@@ -110,17 +110,27 @@ extension String {
     }
 }
 
+extension Int {
+    func addZero() -> String {
+        return self < 10 ? "0\(self)" : "\(self)"
+    }
+}
+
 extension Int32 {
     func toTime() -> String
     {
-        let minutes = self % 3600 / 60
-        let seconds = self % 60
+        let minutes = Int(self % 3600) / 60
+        let seconds = Int(self % 60)
         return "\(minutes.addZero()):\(seconds.addZero())"
     }
-    
-    private func addZero() -> String
+}
+
+extension Float {
+    func toTime() -> String
     {
-        return self < 10 ? "0\(self)" : "\(self)"
+        let minutes = Int(floor(self / 60))
+        let seconds = Int(self) % 60
+        return "\(minutes.addZero()):\(seconds.addZero())"
     }
 }
 

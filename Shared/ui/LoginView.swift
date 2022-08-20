@@ -9,7 +9,7 @@ import SwiftUI
 
 struct LoginView: View
 {
-    @EnvironmentObject private var audioPlayer: AudioPlayerModelView
+    @EnvironmentObject private var rootStack: RootStack
     
     @State private var login = ""
     @State private var password = ""
@@ -98,6 +98,6 @@ struct LoginView: View
         UIUtils.updateInfo(token: token, secret: secret, userId: userId)
         
         // Main
-        NavigationStackViewModel.shared.root(view: MainView().environmentObject(self.audioPlayer), tag: "main-view")
+        self.rootStack.root = .Main
     }
 }

@@ -11,7 +11,7 @@ import SwiftUI
 struct MusApp: App
 {
     @UIApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
-    @ObservedObject private var navStack = NavigationStackViewModel.shared
+    @ObservedObject private var rootStack = RootStack.shared
     @ObservedObject private var audioPlayer = AudioPlayerModelView()
     
     init()
@@ -23,8 +23,13 @@ struct MusApp: App
         WindowGroup {
             VStack(spacing: 0)
             {
-                NavigationStackView()
-                    .environmentObject(self.navStack)
+                NavigationStackView {
+                    switch self.rootStack.root {
+                    case .Main: MainView().environmentObject(self.audioPlayer)
+                    case .Login: LoginView().environmentObject(self.rootStack)
+                    default: EmptyView()
+                    }
+                }
                 
                 self.miniPlayer()
                     .removed(!self.audioPlayer.audioPlayerReady)
@@ -35,8 +40,8 @@ struct MusApp: App
             .ignoresSafeArea(.keyboard)
             .createToastView()
             .onAppear {
-                // Navigation
-                self.navigationViews()
+                // Root
+                self.rootStack.root = UIUtils.getInfo() != nil ? .Main : .Login
                 
                 // MP Center
                 self.audioPlayer.setupCommandCenter()
@@ -86,16 +91,6 @@ struct MusApp: App
         .background(Color("color_toolbar").edgesIgnoringSafeArea(.bottom))
         .onTapGesture {
             self.audioPlayer.playerSheet = true
-        }
-    }
-    
-    private func navigationViews()
-    {
-        if UIUtils.getInfo() != nil
-        {
-            self.navStack.root(view: MainView().environmentObject(self.audioPlayer), tag: "main-view")
-        } else {
-            self.navStack.root(view: LoginView().environmentObject(self.audioPlayer), tag: "login-view")
         }
     }
 }

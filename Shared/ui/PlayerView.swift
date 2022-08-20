@@ -11,6 +11,7 @@ struct PlayerView: View
 {
     @EnvironmentObject var audioPlayer: AudioPlayerModelView
     
+    @State private var currentTime: Float = .zero
     @State private var repeatAudio = false
     @State private var randomAudio = false
     @State private var touchedSlider = false
@@ -97,7 +98,7 @@ struct PlayerView: View
             .padding(.horizontal, 30)
             .padding(.bottom, 20)
             
-            AudioSliderView(value: self.audioPlayer.audioCurrentTime,
+            AudioSliderView(value: self.currentTime,
                             maxValue: Float(self.audioPlayer.playedModel?.model.duration ?? 0),
                             touchedHandler: { touched, currentValue in
                 if !touched {
@@ -107,7 +108,7 @@ struct PlayerView: View
                     if self.audioPlayer.audioPlaying {
                         self.audioPlayer.pause()
                     }
-                    self.audioPlayer.audioCurrentTime = currentValue
+                    self.currentTime = currentValue
                 }
                 self.touchedSlider = touched
             })
@@ -116,7 +117,7 @@ struct PlayerView: View
             
             HStack
             {
-                Text(Int32(self.audioPlayer.audioCurrentTime).toTime())
+                Text(self.currentTime.toTime())
                     .foregroundColor(Color("color_text"))
                     .font(.system(size: 14))
                 
@@ -171,6 +172,18 @@ struct PlayerView: View
         .onAppear(perform: {
             self.repeatAudio = self.audioPlayer.isRepeatAudio()
             self.randomAudio = self.audioPlayer.isRandomAudio()
+            self.initTimer()
         })
+        .onDisappear {
+            self.audioPlayer.removeCurrentTime()
+        }
+    }
+    
+    private func initTimer()
+    {
+        self.currentTime = self.audioPlayer.currentTime()
+        self.audioPlayer.initCurrentTime { current in
+            self.currentTime = current
+        }
     }
 }

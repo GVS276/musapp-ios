@@ -34,11 +34,11 @@ class AudioPlayerModelView: ObservableObject
     
     @Published var audioPlaying = false
     @Published var audioPlayerReady = false
-    @Published var audioCurrentTime: Float = .zero
     
     @Published var audioList: [AudioStruct] = []
     
     private var player: AVPlayer? = nil
+    private var playerCurrentTime: ((_ current: Float) -> Void)? = nil
     private var playerList: [AudioStruct] = []
     
     private var playerRateObserver: NSKeyValueObservation? = nil
@@ -101,8 +101,11 @@ class AudioPlayerModelView: ObservableObject
             })
             
             self.playerProgressObserver = player.addProgressObserver { current, duration in
-                self.audioCurrentTime = current
-                self.nowPlayingInfo(current: Double(current), duration: Double(duration))
+                if let handler = self.playerCurrentTime
+                {
+                    handler(current)
+                }
+                //self.nowPlayingInfo(current: Double(current), duration: Double(duration))
             }
             
             NotificationCenter.default.addObserver(self, selector: #selector(self.playerDidFinishPlaying(note:)),
@@ -159,6 +162,25 @@ class AudioPlayerModelView: ObservableObject
     {
         self.destroy()
         self.ready(value: false)
+    }
+    
+    func currentTime() -> Float
+    {
+        if let currentTime = self.player?.currentTime()
+        {
+            return Float(CMTimeGetSeconds(currentTime))
+        }
+        return .zero
+    }
+    
+    func initCurrentTime(handler: @escaping (_ current: Float) -> Void)
+    {
+        self.playerCurrentTime = handler
+    }
+    
+    func removeCurrentTime()
+    {
+        self.playerCurrentTime = nil
     }
     
     func seek(value: Float)

@@ -5,79 +5,51 @@
 //  Created by Виктор Губин on 12.08.2022.
 //
 
-import Foundation
 import SwiftUI
 
-struct NavigationStackView: View
+enum Stack {
+    case None
+    case Main
+    case Login
+}
+
+class RootStack: ObservableObject
 {
-    @EnvironmentObject private var model: NavigationStackViewModel
-    @GestureState private var gestureState: CGSize = .zero
+    static let shared = RootStack()
+    @Published var root: Stack = .None
+}
+
+struct NavigationStackView<T: View>: View
+{
+    @ViewBuilder let content: T
     
     var body: some View
     {
-        let swipeBack = DragGesture(minimumDistance: 10, coordinateSpace: .local)
-            .updating(self.$gestureState) { value, state, _ in
-                if value.startLocation.x <= 30
-                {
-                    let diff = CGSize(
-                        width: value.location.x - value.startLocation.x,
-                        height: value.location.y - value.startLocation.y
-                    )
-                    
-                    state = diff == .zero ? .zero : value.translation
-                } else {
-                    state = .zero
-                }
-            }
-        
-        ZStack
-        {
-            // ZStack необходим для наложения вью на вью
-            // Для сохранения состояния предыдущего вью, необходимо использовать ForEach
-            // из листа stacks происходит наложения нового вью друг на друга
-            // таким способом добиваемся анимации при открытии / закрытии и также при свайпе вправо (для выхода)
-            // если вью не текущее, то все вью в стеке (до текущего) будут блокированы
-            ForEach(self.model.stacks) { stack in
-                let width = UIScreen.main.bounds.width / 2
-                let offset = abs(self.model.offset / 2)
-                
-                let transition = self.model.previousId == stack.id ? -width + offset :
-                                 self.model.currentId == stack.id ? self.model.offset : 0
-                
-                stack.wrappedView
-                    .transition(.move(edge: .trailing))
-                    .offset(x: transition)
-                    .disabled(self.model.currentId != stack.id)
-            }
+        NavigationView {
+            content
         }
-        .simultaneousGesture(self.model.stacks.count <= 1 ? nil : swipeBack)
-        .highPriorityGesture(self.model.stacks.count <= 1 ? nil : swipeBack)
-        .onChange(of: self.gestureState) { value in
-            if value == .zero
-            {
-                if abs(self.model.offset) > 30 {
-                    self.model.back()
-                } else {
-                    withAnimation {
-                        self.model.offset = .zero
-                    }
-                }
-            } else {
-                let x = value.width
-                
-                if x < 0
-                {
-                    return
-                }
-                
-                self.model.offset = x
-            }
+    }
+}
+
+struct PushView<D: View, L: View>: View
+{
+    @ViewBuilder let destination: D
+    @ViewBuilder let label: L
+    
+    var body: some View
+    {
+        NavigationLink {
+            destination
+        } label: {
+            label
         }
     }
 }
 
 struct NavigationToolbar<Leading: View, Trailing: View, Content: View>: View
 {
+    @Environment(\.presentationMode) private var presentationMode
+    
     var navTitle: String
     var navBackVisible: Bool
     var navLeading: Leading
@@ -89,7 +61,7 @@ struct NavigationToolbar<Leading: View, Trailing: View, Content: View>: View
         HStack(spacing: 0)
         {
             Button {
-                NavigationStackViewModel.shared.back()
+                self.presentationMode.wrappedValue.dismiss()
             } label: {
                 Image("action_back")
                     .renderingMode(.template)
@@ -124,6 +96,8 @@ struct NavigationToolbar<Leading: View, Trailing: View, Content: View>: View
         {
             bodyToolbar
             content
+                .navigationBarHidden(true)
+                .navigationBarBackButtonHidden(true)
         }
     }
 }
@@ -154,5 +128,11 @@ extension View {
                                            navBackVisible: back,
                                            navLeading: leading,
                                            navTrailing: trailing))
+    }
+}
+
+extension UINavigationController {
+    open override func viewDidLoad() {
+        interactivePopGestureRecognizer?.delegate = nil
     }
 }

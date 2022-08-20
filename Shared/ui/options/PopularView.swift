@@ -15,14 +15,6 @@ struct PopularView: View
     @State private var token = ""
     @State private var secret = ""
     
-    private func binding(_ item: AudioStruct) -> Binding<AudioStruct>
-    {
-        guard let index = self.searchList.firstIndex(where: { $0.id == item.id }) else {
-            fatalError("Can't find item in array")
-        }
-        return self.$searchList[index]
-    }
-    
     var body: some View
     {
         ZStack
@@ -37,7 +29,18 @@ struct PopularView: View
                 LazyVStack(spacing: 0)
                 {
                     ForEach(self.searchList, id:\.id) { item in
-                        self.audioItem(bind: self.binding(item)).id(item.id)
+                        AudioItemView(item: item, playedId: self.audioPlayer.playedModel?.model.audioId) {
+                            self.playOrPause(item: item)
+                        } menuContent: {
+                            Button {
+                                self.audioPlayer.addAudioToDB(model: item)
+                            } label: {
+                                Text("Add audio")
+                                    .foregroundColor(Color("color_text"))
+                                    .font(.system(size: 16))
+                            }
+                        }
+                        .id(item.id)
                     }
                 }
                 .padding(.vertical, 10)
@@ -70,48 +73,6 @@ struct PopularView: View
                     self.receivePopularAudio()
                 }
             }
-        }
-    }
-    
-    private func audioItem(bind: Binding<AudioStruct>) -> some View
-    {
-        let item = bind.wrappedValue
-        return HStack(spacing: 0)
-        {
-            AudioThumbView()
-                .padding(.horizontal, 15)
-            
-            VStack
-            {
-                Text(item.model.artist)
-                    .foregroundColor(Color("color_text"))
-                    .font(.system(size: 16))
-                    .lineLimit(1)
-                    .multilineTextAlignment(.leading)
-                    .onlyLeading()
-                
-                Text("\(item.model.title) / \(item.model.duration.toTime())")
-                    .foregroundColor(Color("color_text"))
-                    .font(.system(size: 14))
-                    .lineLimit(1)
-                    .multilineTextAlignment(.leading)
-                    .onlyLeading()
-            }
-            
-            Button {
-                self.audioPlayer.addAudioToDB(model: item)
-            } label: {
-                Image("action_add")
-                    .renderingMode(.template)
-                    .foregroundColor(Color("color_text"))
-            }
-            .padding(.vertical, 10)
-            .padding(.horizontal, 15)
-        }
-        .padding(.vertical, 10)
-        .background(item.model.audioId == self.audioPlayer.playedModel?.model.audioId ? Color("color_playing") : Color("color_background"))
-        .onTapGesture {
-            self.playOrPause(item: item)
         }
     }
     
