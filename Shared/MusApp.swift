@@ -53,7 +53,9 @@ struct MusApp: App
     {
         HStack(spacing: 0)
         {
-            AudioThumbView(color: .blue)
+            ThumbView(url: self.audioPlayer.playedModel?.model.thumb ?? "",
+                      albumId: self.audioPlayer.playedModel?.model.albumId ?? "",
+                      big: false)
                 .padding(.horizontal, 15)
             
             VStack

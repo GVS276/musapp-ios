@@ -32,7 +32,7 @@ struct AudioThumbView: View
             .frame(width: 150, height: 150)
             .padding(75)
             .background(color)
-            .cornerRadius(20)
+            .cornerRadius(10)
             .removed(!self.big)
     }
 }

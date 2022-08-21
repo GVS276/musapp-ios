@@ -39,6 +39,20 @@ class UIUtils
         return nil
     }
     
+    static func isLastAudio(list: [AudioStruct], audio: AudioStruct) -> Bool
+    {
+        guard !list.isEmpty else {
+            return false
+        }
+        
+        guard let itemIndex = list.lastIndex(where: { $0.id == audio.id }) else {
+            return false
+        }
+        
+        let distance = list.distance(from: itemIndex, to: list.endIndex)
+        return distance == 1
+    }
+    
     static func isPagination(list: [AudioStruct], audio: AudioStruct, offset: Int) -> Bool
     {
         guard !list.isEmpty else {

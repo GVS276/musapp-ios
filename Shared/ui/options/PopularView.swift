@@ -19,10 +19,8 @@ struct PopularView: View
     {
         ZStack
         {
-            Text("We get tracks....")
-                .foregroundColor(Color("color_text"))
-                .font(.system(size: 16))
-                .padding(30)
+            ProgressView()
+                .progressViewStyle(CircularProgressViewStyle())
                 .removed(!self.searchList.isEmpty)
             
             ScrollView(.vertical, showsIndicators: false) {

@@ -23,26 +23,10 @@ struct PlayerView: View
             Button {
                 self.audioPlayer.playerSheet = false
             } label: {
-                HStack(spacing: 0)
-                {
-                    Image("action_down")
-                        .renderingMode(.template)
-                        .foregroundColor(Color("color_text"))
-                        .padding(15)
-                    
-                    Text("Currently playing")
-                        .frame(maxWidth: .infinity)
-                        .foregroundColor(Color("color_text"))
-                        .font(.system(size: 16))
-                        .lineLimit(1)
-                        .multilineTextAlignment(.center)
-                        .padding(.horizontal, 15)
-                    
-                    Image("action_down")
-                        .renderingMode(.template)
-                        .foregroundColor(Color("color_text"))
-                        .padding(15)
-                }
+                Image("action_down")
+                    .renderingMode(.template)
+                    .foregroundColor(Color("color_text"))
+                    .padding(15)
             }
             
             ThumbView(url: self.audioPlayer.playedModel?.model.thumb ?? "",

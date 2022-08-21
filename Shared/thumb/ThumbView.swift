@@ -44,7 +44,7 @@ struct ThumbView: View
                 Image(uiImage: image)
                     .resizable()
                     .frame(width: 300, height: 300)
-                    .cornerRadius(20)
+                    .cornerRadius(10)
                     .removed(!self.big)
             } else {
                 AudioThumbView(big: self.big)

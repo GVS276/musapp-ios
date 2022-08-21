@@ -11,22 +11,21 @@ struct MyMusicView: View
 {
     @EnvironmentObject private var audioPlayer: AudioPlayerModelView
     @State private var searchList = [AudioStruct]()
+    @State private var loading: Bool = false
     
     @State private var token = ""
     @State private var secret = ""
     @State private var userId: Int64 = -1
     
     private var searchMax = 25
-    private var searchOffset = 10
+    private var searchOffset = 0
     
     var body: some View
     {
         ZStack
         {
-            Text("We get tracks....")
-                .foregroundColor(Color("color_text"))
-                .font(.system(size: 16))
-                .padding(30)
+            ProgressView()
+                .progressViewStyle(CircularProgressViewStyle())
                 .removed(!self.searchList.isEmpty)
             
             ScrollView(.vertical, showsIndicators: false) {
@@ -48,12 +47,32 @@ struct MyMusicView: View
                         .onAppear {
                             self.audioAppear(audio: item)
                         }
+                        
+                        if self.loading && UIUtils.isLastAudio(list: self.searchList, audio: item) {
+                            ProgressView()
+                                .progressViewStyle(CircularProgressViewStyle())
+                                .padding(10)
+                        }
                     }
                 }
                 .padding(.vertical, 10)
             }
         }
-        .viewTitle(title: "My music", back: true, leading: HStack {}, trailing: HStack {})
+        .viewTitle(title: "My music", back: true, leading: HStack {}, trailing: HStack {
+            Spacer()
+            
+            Button {
+                if !self.searchList.isEmpty
+                {
+                    self.searchList.removeAll()
+                }
+                self.startSearchAudio()
+            } label: {
+                Image("action_refresh")
+                    .renderingMode(.template)
+                    .foregroundColor(Color("color_text"))
+            }
+        })
         .background(Color("color_background"))
         .onAppear{
             if let info = UIUtils.getInfo()
@@ -95,10 +114,12 @@ struct MyMusicView: View
             switch result {
             case .ErrorInternet:
                 DispatchQueue.main.async {
+                    self.hideLoading()
                     Toast.shared.show(text: "Problems with the Internet")
                 }
             case .ErrorRequest:
                 DispatchQueue.main.async {
+                    self.hideLoading()
                     Toast.shared.show(text: "An error occurred when accessing the server")
                 }
             case .Success:
@@ -117,8 +138,10 @@ struct MyMusicView: View
                         DispatchQueue.main.async {
                             switch listResult {
                             case .ErrorInternet:
+                                self.hideLoading()
                                 Toast.shared.show(text: "Problems with the Internet")
                             case .ErrorRequest:
+                                self.hideLoading()
                                 Toast.shared.show(text: "An error occurred while accessing the list")
                             case .Success:
                                 if let list = list {
@@ -142,10 +165,21 @@ struct MyMusicView: View
         if UIUtils.isPagination(list: self.searchList, audio: audio, offset: self.searchOffset)
         {
             let startIndex = self.searchList.endIndex
-            self.searchAudio(count: self.searchMax, offset: startIndex) { list in
-                guard !list.isEmpty else { return }
-                self.searchList.append(contentsOf: list)
+            self.loading = true
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                self.searchAudio(count: self.searchMax, offset: startIndex) { list in
+                    self.hideLoading()
+                    guard !list.isEmpty else { return }
+                    self.searchList.append(contentsOf: list)
+                }
             }
+        }
+    }
+    
+    private func hideLoading()
+    {
+        withAnimation {
+            self.loading = false
         }
     }
 }
