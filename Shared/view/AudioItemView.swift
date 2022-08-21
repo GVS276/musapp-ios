@@ -24,7 +24,7 @@ struct AudioItemView<M: View>: View
             } label: {
                 HStack(spacing: 15)
                 {
-                    AudioThumbView()
+                    ThumbView(url: item.model.thumb, albumId: item.model.albumId, big: false)
                     
                     VStack
                     {

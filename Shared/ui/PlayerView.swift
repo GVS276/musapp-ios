@@ -45,7 +45,9 @@ struct PlayerView: View
                 }
             }
             
-            AudioThumbView(big: true)
+            ThumbView(url: self.audioPlayer.playedModel?.model.thumb ?? "",
+                      albumId: self.audioPlayer.playedModel?.model.albumId ?? "",
+                      big: true)
                 .padding(30)
             
             Text(self.audioPlayer.playedModel?.model.artist ?? "Artist")
@@ -59,13 +61,6 @@ struct PlayerView: View
             Text(self.audioPlayer.playedModel?.model.title ?? "Title")
                 .foregroundColor(Color("color_text"))
                 .font(.system(size: 14))
-                .lineLimit(3)
-                .multilineTextAlignment(.center)
-                .padding(.horizontal, 30)
-            
-            Text(self.audioPlayer.playedModel?.model.albumTitle ?? "Album")
-                .foregroundColor(Color("color_text"))
-                .font(.system(size: 10))
                 .lineLimit(3)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 30)

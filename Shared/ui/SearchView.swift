@@ -17,7 +17,7 @@ struct SearchView: View
     @State private var secret = ""
     
     private var searchMax = 25
-    private var searchOffset = 0
+    private var searchOffset = 10
     
     var body: some View
     {
@@ -109,7 +109,7 @@ struct SearchView: View
     
     private func startSearchAudio()
     {
-        self.searchAudio(count: self.searchMax, offset: self.searchOffset) { list in
+        self.searchAudio(count: self.searchMax, offset: 0) { list in
             self.searchList.append(contentsOf: list)
         }
     }
