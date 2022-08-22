@@ -30,6 +30,7 @@
 		1AA2A3F8289BE56D009A8739 /* Tests_macOSLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AA2A3F7289BE56D009A8739 /* Tests_macOSLaunchTests.swift */; };
 		1AA2A3F9289BE56D009A8739 /* MusApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AA2A3D1289BE56C009A8739 /* MusApp.swift */; };
 		1AA2A3FD289BE56D009A8739 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1AA2A3D3289BE56D009A8739 /* Assets.xcassets */; };
+		1AC9B82228B39C3600037733 /* UIFileUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AC9B82128B39C3600037733 /* UIFileUtils.swift */; };
 		1AD3E955289E6872007745E9 /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AD3E954289E6872007745E9 /* MainView.swift */; };
 		1AD3E959289E6CF7007745E9 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1AD3E958289E6CF7007745E9 /* AudioToolbox.framework */; };
 		1AD3E95B289E717C007745E9 /* UIUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AD3E95A289E717C007745E9 /* UIUtils.swift */; };
@@ -85,6 +86,7 @@
 		1AA2A3F5289BE56D009A8739 /* Tests_macOS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests_macOS.swift; sourceTree = "<group>"; };
 		1AA2A3F7289BE56D009A8739 /* Tests_macOSLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests_macOSLaunchTests.swift; sourceTree = "<group>"; };
 		1AA2A40D289BE632009A8739 /* musapp--iOS--Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "musapp--iOS--Info.plist"; sourceTree = "<group>"; };
+		1AC9B82128B39C3600037733 /* UIFileUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIFileUtils.swift; sourceTree = "<group>"; };
 		1AD3E954289E6872007745E9 /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
 		1AD3E956289E6CF7007745E9 /* musapp (iOS).entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "musapp (iOS).entitlements"; sourceTree = "<group>"; };
 		1AD3E958289E6CF7007745E9 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS15.2.sdk/System/Library/Frameworks/AudioToolbox.framework; sourceTree = DEVELOPER_DIR; };
@@ -259,6 +261,7 @@
 			children = (
 				1AD3E95A289E717C007745E9 /* UIUtils.swift */,
 				1AD3E967289EA2A4007745E9 /* UIExtensions.swift */,
+				1AC9B82128B39C3600037733 /* UIFileUtils.swift */,
 			);
 			path = utils;
 			sourceTree = "<group>";
@@ -484,6 +487,7 @@
 				1A6676A028A3ED39002F708E /* AudioThumbView.swift in Sources */,
 				1A7F961028AE9A2C000171F5 /* PopularView.swift in Sources */,
 				1ADB3F5028A11D6800D44C59 /* VKViewModel.swift in Sources */,
+				1AC9B82228B39C3600037733 /* UIFileUtils.swift in Sources */,
 				1A3C2B8628B242C90079C407 /* ThumbView.swift in Sources */,
 				1A3C2B8428B242350079C407 /* ThumbCache.swift in Sources */,
 				1A3F231528A052F900BF13D3 /* DBUtils.swift in Sources */,

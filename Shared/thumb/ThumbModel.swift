@@ -46,7 +46,6 @@ class ThumbModel: ObservableObject
         }
         
         guard self.thumb?[self.thumbAlbumId] == nil else {
-            print("Thumb cached")
             return
         }
         

@@ -7,6 +7,7 @@
 
 import AVFoundation
 import MediaPlayer
+import SwiftUI
 
 struct AudioStruct: Identifiable, Equatable
 {
@@ -79,11 +80,15 @@ class AudioPlayerModelView: ObservableObject
                 return
             }
             
+            // player init
             let playerItem = AVPlayerItem.init(url: url)
             self.player = AVPlayer.init(playerItem: playerItem)
             self.playedModel = model
             self.playerObservers()
             self.player?.play()
+            
+            // info (about track)
+            self.nowPlayingInfo(current: 0)
             
             self.ready(value: true)
         } catch {
@@ -105,9 +110,6 @@ class AudioPlayerModelView: ObservableObject
                 {
                     handler(current)
                 }
-                
-                // info
-                self.nowPlayingInfo(current: current)
             }
             
             NotificationCenter.default.addObserver(self, selector: #selector(self.playerDidFinishPlaying(note:)),
@@ -189,6 +191,7 @@ class AudioPlayerModelView: ObservableObject
     {
         let time = CMTimeMakeWithSeconds(Float64(value), preferredTimescale: 60000)
         self.player?.seek(to: time, toleranceBefore: .zero, toleranceAfter: .zero)
+        self.nowPlayingInfo(current: value)
     }
     
     func seek(value: TimeInterval)
@@ -262,6 +265,12 @@ class AudioPlayerModelView: ObservableObject
     
     private func nowPlayingInfo(current: Float) {
         var info = [String : Any]()
+        if let img = Environment(\.defaultCache).wrappedValue[self.playedModel?.model.albumId ?? ""]
+        {
+            info[MPMediaItemPropertyArtwork] = MPMediaItemArtwork(boundsSize: img.size) { size in
+                return img.imageWith(newSize: size)
+            }
+        }
         info[MPMediaItemPropertyMediaType] = MPMediaType.anyAudio.rawValue
         info[MPMediaItemPropertyPlaybackDuration] = Double(self.playedModel?.model.duration ?? 0)
         info[MPNowPlayingInfoPropertyElapsedPlaybackTime] = Double(current)
@@ -287,7 +296,7 @@ class AudioPlayerModelView: ObservableObject
     {
         if self.isRepeatAudio()
         {
-            self.player?.seek(to: .zero)
+            self.seek(value: Float.zero)
             self.player?.play()
             return
         }
@@ -315,7 +324,7 @@ class AudioPlayerModelView: ObservableObject
     {
         if self.currentTime() >= 5
         {
-            self.player?.seek(to: .zero)
+            self.seek(value: Float.zero)
             return
         }
         
