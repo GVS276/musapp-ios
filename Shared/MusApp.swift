@@ -51,21 +51,27 @@ struct MusApp: App
     
     private func miniPlayer() -> some View
     {
-        HStack(spacing: 0)
+        HStack(spacing: 20)
         {
-            ThumbView(url: self.audioPlayer.playedModel?.model.thumb ?? "",
-                      albumId: self.audioPlayer.playedModel?.model.albumId ?? "",
-                      big: false)
-                .padding(.horizontal, 15)
-            
             VStack
             {
-                Text(self.audioPlayer.playedModel?.model.artist ?? "Artist")
-                    .foregroundColor(Color("color_text"))
-                    .font(.system(size: 16))
-                    .lineLimit(1)
-                    .multilineTextAlignment(.leading)
-                    .onlyLeading()
+                HStack(spacing: 10)
+                {
+                    Text(self.audioPlayer.playedModel?.model.artist ?? "Artist")
+                        .foregroundColor(Color("color_text"))
+                        .font(.system(size: 18))
+                        .lineLimit(1)
+                        .multilineTextAlignment(.leading)
+                    
+                    Text("E")
+                        .foregroundColor(Color("color_text"))
+                        .font(.system(size: 10))
+                        .padding(.horizontal, 2)
+                        .border(Color("color_text"))
+                        .removed(!(self.audioPlayer.playedModel?.model.isExplicit ?? false))
+                    
+                    Spacer()
+                }
                 
                 Text(self.audioPlayer.playedModel?.model.title ?? "Title")
                     .foregroundColor(Color("color_text"))
@@ -74,7 +80,7 @@ struct MusApp: App
                     .multilineTextAlignment(.leading)
                     .onlyLeading()
             }
-            .padding(.trailing, 15)
+            .padding(.leading, 15)
             
             Button {
                 self.audioPlayer.control(tag: .PlayOrPause)
@@ -86,7 +92,20 @@ struct MusApp: App
                     .foregroundColor(Color("color_text"))
             }
             .frame(width: 30, height: 30)
-            .padding(15)
+            .padding(.vertical, 15)
+            
+            Button {
+                self.audioPlayer.control(tag: .Next)
+            } label: {
+                Image("next")
+                    .resizable()
+                    .renderingMode(.template)
+                    .aspectRatio(contentMode: .fill)
+                    .foregroundColor(Color("color_text"))
+            }
+            .frame(width: 30, height: 30)
+            .padding(.vertical, 15)
+            .padding(.trailing, 15)
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 5)
