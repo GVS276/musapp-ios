@@ -6,13 +6,11 @@
 //
 
 import UIKit
-import SwiftUI
 
-protocol Thumb {
-    subscript(albumId: String) -> UIImage? { get set }
-}
-
-struct ThumbCache: Thumb {
+class ThumbCache
+{
+    static let shared = ThumbCache()
+    
     private let cache: NSCache<NSString, UIImage> = {
         let cache = NSCache<NSString, UIImage>()
         cache.countLimit = 100
@@ -20,7 +18,6 @@ struct ThumbCache: Thumb {
         return cache
     }()
     
-    // TEST
     private func create(albumId: String, image: UIImage)
     {
         guard let data = image.jpegData(compressionQuality: 1) else {
@@ -36,7 +33,7 @@ struct ThumbCache: Thumb {
             UIFileUtils.createFile(path: fileUrl.path, data: data)
         }
         
-        cache.setObject(image, forKey: albumId as NSString)
+        self.cache.setObject(image, forKey: albumId as NSString)
     }
     
     private func remove(albumId: String)
@@ -48,12 +45,27 @@ struct ThumbCache: Thumb {
             }
         }
         
-        cache.removeObject(forKey: albumId as NSString)
+        self.cache.removeObject(forKey: albumId as NSString)
     }
     
-    private func getImage(albumId: String) -> UIImage?
+    func exist(albumId: String) -> Bool
     {
-        if let image = cache.object(forKey: albumId as NSString)
+        if self.cache.object(forKey: albumId as NSString) != nil
+        {
+            return true
+        }
+        
+        if let fileUrl = UIFileUtils.getThumbFilePath(fileName: "\(albumId).jpg")
+        {
+            return UIFileUtils.existFile(fileUrl: fileUrl)
+        }
+        
+        return false
+    }
+    
+    func getImage(albumId: String) -> UIImage?
+    {
+        if let image = self.cache.object(forKey: albumId as NSString)
         {
             print("Thumb: cached from RAM")
             return image
@@ -71,7 +83,7 @@ struct ThumbCache: Thumb {
                 }
                 
                 print("Thumb: cached from Disk")
-                cache.setObject(image, forKey: albumId as NSString)
+                self.cache.setObject(image, forKey: albumId as NSString)
                 return image
             }
         }
@@ -79,31 +91,14 @@ struct ThumbCache: Thumb {
         print("Thumb: not cache")
         return nil
     }
-    //--------
     
-    subscript(albumId: String) -> UIImage? {
-        get {
-            getImage(albumId: albumId)
-            //cache.object(forKey: albumId as NSString)
+    func setImage(albumId: String, image: UIImage?)
+    {
+        if let image = image
+        {
+            self.create(albumId: albumId, image: image)
+        } else {
+            self.remove(albumId: albumId)
         }
-        set {
-            //newValue == nil ?
-            //cache.removeObject(forKey: albumId as NSString) :
-            //cache.setObject(newValue!, forKey: albumId as NSString)
-            newValue == nil ?
-            remove(albumId: albumId) :
-            create(albumId: albumId, image: newValue!)
-        }
-    }
-}
-
-struct DefaultThumbKey: EnvironmentKey {
-    static var defaultValue: Thumb = ThumbCache()
-}
-
-extension EnvironmentValues {
-    var defaultCache: Thumb {
-        get { self[DefaultThumbKey.self] }
-        set { self[DefaultThumbKey.self] = newValue }
     }
 }

@@ -10,7 +10,7 @@ import Combine
 
 class ThumbModel: ObservableObject
 {
-    @Published var thumb: Thumb?
+    @Published var thumb = ThumbCache.shared
     
     private var thumbUrl: String
     private var thumbAlbumId: String
@@ -19,11 +19,10 @@ class ThumbModel: ObservableObject
     private var processPublisher: AnyCancellable? = nil
     private static let processQueue = DispatchQueue(label: "thumb-process-queue")
     
-    init(thumbUrl: String, thumbAlbumId: String, thumb: Thumb)
+    init(thumbUrl: String, thumbAlbumId: String)
     {
         self.thumbUrl = thumbUrl
         self.thumbAlbumId = thumbAlbumId
-        self.thumb = thumb
     }
     
     deinit {
@@ -45,7 +44,7 @@ class ThumbModel: ObservableObject
             return
         }
         
-        guard self.thumb?[self.thumbAlbumId] == nil else {
+        guard !self.thumb.exist(albumId: self.thumbAlbumId) else {
             return
         }
         
@@ -68,7 +67,7 @@ class ThumbModel: ObservableObject
             .subscribe(on: Self.processQueue)
             .receive(on: DispatchQueue.main)
             .sink {
-                self.thumb?[self.thumbAlbumId] = $0
+                self.thumb.setImage(albumId: self.thumbAlbumId, image: $0)
             }
     }
     

@@ -265,7 +265,7 @@ class AudioPlayerModelView: ObservableObject
     
     private func nowPlayingInfo(current: Float) {
         var info = [String : Any]()
-        if let img = Environment(\.defaultCache).wrappedValue[self.playedModel?.model.albumId ?? ""]
+        if let img = ThumbCache.shared.getImage(albumId: self.playedModel?.model.albumId ?? "")
         {
             info[MPMediaItemPropertyArtwork] = MPMediaItemArtwork(boundsSize: img.size) { size in
                 return img.imageWith(newSize: size)

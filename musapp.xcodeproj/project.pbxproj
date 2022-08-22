@@ -30,6 +30,7 @@
 		1AA2A3F8289BE56D009A8739 /* Tests_macOSLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AA2A3F7289BE56D009A8739 /* Tests_macOSLaunchTests.swift */; };
 		1AA2A3F9289BE56D009A8739 /* MusApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AA2A3D1289BE56C009A8739 /* MusApp.swift */; };
 		1AA2A3FD289BE56D009A8739 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1AA2A3D3289BE56D009A8739 /* Assets.xcassets */; };
+		1AB4B06428B3C76B003E3007 /* BaseTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AB4B06328B3C76B003E3007 /* BaseTask.swift */; };
 		1AC9B82228B39C3600037733 /* UIFileUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AC9B82128B39C3600037733 /* UIFileUtils.swift */; };
 		1AD3E955289E6872007745E9 /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AD3E954289E6872007745E9 /* MainView.swift */; };
 		1AD3E959289E6CF7007745E9 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1AD3E958289E6CF7007745E9 /* AudioToolbox.framework */; };
@@ -86,6 +87,7 @@
 		1AA2A3F5289BE56D009A8739 /* Tests_macOS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests_macOS.swift; sourceTree = "<group>"; };
 		1AA2A3F7289BE56D009A8739 /* Tests_macOSLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests_macOSLaunchTests.swift; sourceTree = "<group>"; };
 		1AA2A40D289BE632009A8739 /* musapp--iOS--Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "musapp--iOS--Info.plist"; sourceTree = "<group>"; };
+		1AB4B06328B3C76B003E3007 /* BaseTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseTask.swift; sourceTree = "<group>"; };
 		1AC9B82128B39C3600037733 /* UIFileUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIFileUtils.swift; sourceTree = "<group>"; };
 		1AD3E954289E6872007745E9 /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
 		1AD3E956289E6CF7007745E9 /* musapp (iOS).entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "musapp (iOS).entitlements"; sourceTree = "<group>"; };
@@ -203,6 +205,7 @@
 		1AA2A3D0289BE56C009A8739 /* Shared */ = {
 			isa = PBXGroup;
 			children = (
+				1AB4B06228B3C753003E3007 /* base */,
 				1A3C2B8228B2420B0079C407 /* thumb */,
 				1A3F22FE28A0456A00BF13D3 /* db */,
 				1AEE0031289EB80200F70F29 /* view */,
@@ -273,6 +276,14 @@
 				1ADB3F4F28A11D6800D44C59 /* VKViewModel.swift */,
 			);
 			path = models;
+			sourceTree = "<group>";
+		};
+		1AB4B06228B3C753003E3007 /* base */ = {
+			isa = PBXGroup;
+			children = (
+				1AB4B06328B3C76B003E3007 /* BaseTask.swift */,
+			);
+			path = base;
 			sourceTree = "<group>";
 		};
 		1AD3E957289E6CF7007745E9 /* Frameworks */ = {
@@ -475,6 +486,7 @@
 				1AEE0033289EB81000F70F29 /* ToastView.swift in Sources */,
 				1AD3E95B289E717C007745E9 /* UIUtils.swift in Sources */,
 				1A5BE0BF28AF7A3800CC54F2 /* MyMusicView.swift in Sources */,
+				1AB4B06428B3C76B003E3007 /* BaseTask.swift in Sources */,
 				1AD3E955289E6872007745E9 /* MainView.swift in Sources */,
 				1A818E4F28B12079002A862D /* ThumbModel.swift in Sources */,
 				1AE0830D28A18B2F00ED456B /* SearchView.swift in Sources */,

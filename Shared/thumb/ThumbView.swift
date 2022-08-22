@@ -18,9 +18,7 @@ struct ThumbView: View
     {
         self.big = big
         self.albumId = albumId
-        self._model = StateObject(wrappedValue: ThumbModel(thumbUrl: url,
-                                                           thumbAlbumId: albumId,
-                                                           thumb: Environment(\.defaultCache).wrappedValue))
+        self._model = StateObject(wrappedValue: ThumbModel(thumbUrl: url, thumbAlbumId: albumId))
     }
     
     var body: some View
@@ -34,7 +32,7 @@ struct ThumbView: View
     private var thumb: some View
     {
         Group {
-            if let image = self.model.thumb?[self.albumId] {
+            if let image = self.model.thumb.getImage(albumId: self.albumId) {
                 Image(uiImage: image)
                     .resizable()
                     .frame(width: 45, height: 45)

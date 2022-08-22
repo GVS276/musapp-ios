@@ -7,33 +7,7 @@
 
 import Foundation
 
-protocol ICVBaseTask {
-    func execute() -> CLongLong
-    func run()
-}
-
-class DBBaseTask: ICVBaseTask
-{
-    public var requestIdentifier: Int64
-    static var dqueue: DispatchQueue = DispatchQueue(label: "appdbdispatchqueue")
-    
-    init() {
-        self.requestIdentifier = Int64( Date().timeIntervalSince1970 * 1000 * 1000 * 1000 )
-    }
-    
-    func execute() -> CLongLong {
-        DBBaseTask.dqueue.async {
-            self.run()
-        }
-        return self.requestIdentifier
-    }
-    
-    func run() {
-
-    }
-}
-
-class AllAudioTask: DBBaseTask
+class AllAudioTask: BaseTask
 {
     private let delegate: IDBDelegate
     
@@ -47,7 +21,7 @@ class AllAudioTask: DBBaseTask
     }
 }
 
-class AddAudioTask: DBBaseTask
+class AddAudioTask: BaseTask
 {
     private var model: AudioModel
     private var delegate: IDBDelegate?
@@ -67,7 +41,7 @@ class AddAudioTask: DBBaseTask
     }
 }
 
-class DeleteAudioTask: DBBaseTask
+class DeleteAudioTask: BaseTask
 {
     private var audioId: String
     private var delegate: IDBDelegate?
