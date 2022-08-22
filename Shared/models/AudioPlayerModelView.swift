@@ -194,10 +194,10 @@ class AudioPlayerModelView: ObservableObject
         self.nowPlayingInfo(current: value)
     }
     
-    func seek(value: TimeInterval)
+    func seek(time: TimeInterval)
     {
-        let time = CMTimeMakeWithSeconds(value, preferredTimescale: 60000)
-        self.player?.seek(to: time, toleranceBefore: .zero, toleranceAfter: .zero)
+        let timeMaked = CMTimeMakeWithSeconds(time, preferredTimescale: 60000)
+        self.player?.seek(to: timeMaked, toleranceBefore: .zero, toleranceAfter: .zero)
     }
     
     func repeatAudio(value: Bool)
@@ -257,7 +257,7 @@ class AudioPlayerModelView: ObservableObject
         commandCenter.changePlaybackPositionCommand.isEnabled = true
         commandCenter.changePlaybackPositionCommand.addTarget { event in
             if let event = event as? MPChangePlaybackPositionCommandEvent {
-                self.seek(value: event.positionTime)
+                self.seek(time: event.positionTime)
             }
             return .success
         }
@@ -265,7 +265,7 @@ class AudioPlayerModelView: ObservableObject
     
     private func nowPlayingInfo(current: Float) {
         var info = [String : Any]()
-        if let img = ThumbCache.shared.getImage(albumId: self.playedModel?.model.albumId ?? "")
+        if let img = ThumbCacheObj.cache[self.playedModel?.model.albumId ?? ""]
         {
             info[MPMediaItemPropertyArtwork] = MPMediaItemArtwork(boundsSize: img.size) { size in
                 return img.imageWith(newSize: size)
@@ -296,7 +296,7 @@ class AudioPlayerModelView: ObservableObject
     {
         if self.isRepeatAudio()
         {
-            self.seek(value: Float.zero)
+            self.seek(value: .zero)
             self.player?.play()
             return
         }
@@ -324,7 +324,7 @@ class AudioPlayerModelView: ObservableObject
     {
         if self.currentTime() >= 5
         {
-            self.seek(value: Float.zero)
+            self.seek(value: .zero)
             return
         }
         

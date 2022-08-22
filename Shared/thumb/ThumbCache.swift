@@ -7,10 +7,13 @@
 
 import UIKit
 
-class ThumbCache
+protocol Thumb
 {
-    static let shared = ThumbCache()
-    
+    subscript (albumId: String) -> UIImage? { get set }
+}
+
+struct ThumbCache: Thumb
+{
     private let cache: NSCache<NSString, UIImage> = {
         let cache = NSCache<NSString, UIImage>()
         cache.countLimit = 100
@@ -18,53 +21,13 @@ class ThumbCache
         return cache
     }()
     
-    private func create(albumId: String, image: UIImage)
+    private func getImage(albumId: String) -> UIImage?
     {
-        guard let data = image.jpegData(compressionQuality: 1) else {
-            return
+        guard !albumId.isEmpty else {
+            print("Thumb: id empty")
+            return nil
         }
         
-        if let fileUrl = UIFileUtils.getThumbFilePath(fileName: "\(albumId).jpg")
-        {
-            if UIFileUtils.existFile(fileUrl: fileUrl) {
-                UIFileUtils.removeFile(fileUrl: fileUrl)
-            }
-            
-            UIFileUtils.createFile(path: fileUrl.path, data: data)
-        }
-        
-        self.cache.setObject(image, forKey: albumId as NSString)
-    }
-    
-    private func remove(albumId: String)
-    {
-        if let fileUrl = UIFileUtils.getThumbFilePath(fileName: "\(albumId).jpg")
-        {
-            if UIFileUtils.existFile(fileUrl: fileUrl) {
-                UIFileUtils.removeFile(fileUrl: fileUrl)
-            }
-        }
-        
-        self.cache.removeObject(forKey: albumId as NSString)
-    }
-    
-    func exist(albumId: String) -> Bool
-    {
-        if self.cache.object(forKey: albumId as NSString) != nil
-        {
-            return true
-        }
-        
-        if let fileUrl = UIFileUtils.getThumbFilePath(fileName: "\(albumId).jpg")
-        {
-            return UIFileUtils.existFile(fileUrl: fileUrl)
-        }
-        
-        return false
-    }
-    
-    func getImage(albumId: String) -> UIImage?
-    {
         if let image = self.cache.object(forKey: albumId as NSString)
         {
             print("Thumb: cached from RAM")
@@ -74,11 +37,7 @@ class ThumbCache
         if let fileUrl = UIFileUtils.getThumbFilePath(fileName: "\(albumId).jpg")
         {
             if UIFileUtils.existFile(fileUrl: fileUrl) {
-                guard let data = try? Data(contentsOf: fileUrl) else {
-                    return nil
-                }
-                
-                guard let image = UIImage(data: data) else {
+                guard let image = UIImage(contentsOfFile: fileUrl.path) else {
                     return nil
                 }
                 
@@ -92,13 +51,20 @@ class ThumbCache
         return nil
     }
     
-    func setImage(albumId: String, image: UIImage?)
+    subscript (albumId: String) -> UIImage?
     {
-        if let image = image
-        {
-            self.create(albumId: albumId, image: image)
-        } else {
-            self.remove(albumId: albumId)
+        get {
+            getImage(albumId: albumId)
+        }
+        
+        set {
+            newValue == nil ?
+            cache.removeObject(forKey: albumId as NSString) :
+            cache.setObject(newValue!, forKey: albumId as NSString)
         }
     }
+}
+
+class ThumbCacheObj {
+    static var cache: Thumb = ThumbCache()
 }

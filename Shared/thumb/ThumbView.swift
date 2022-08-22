@@ -32,7 +32,7 @@ struct ThumbView: View
     private var thumb: some View
     {
         Group {
-            if let image = self.model.thumb.getImage(albumId: self.albumId) {
+            if let image = self.model.cache[self.albumId] {
                 Image(uiImage: image)
                     .resizable()
                     .frame(width: 45, height: 45)

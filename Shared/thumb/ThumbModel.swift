@@ -10,7 +10,7 @@ import Combine
 
 class ThumbModel: ObservableObject
 {
-    @Published var thumb = ThumbCache.shared
+    @Published var cache = ThumbCacheObj.cache
     
     private var thumbUrl: String
     private var thumbAlbumId: String
@@ -44,7 +44,7 @@ class ThumbModel: ObservableObject
             return
         }
         
-        guard !self.thumb.exist(albumId: self.thumbAlbumId) else {
+        guard self.cache[self.thumbAlbumId] == nil else {
             return
         }
         
@@ -55,7 +55,9 @@ class ThumbModel: ObservableObject
                 receiveSubscription: { value in
                     self.isProcessPublisher = true
                 }, receiveOutput: { value in
-                    print("Processing (thumb) --")
+                    value.map {
+                        self.create(albumId: self.thumbAlbumId, image: $0)
+                    }
                 }, receiveCompletion: { value in
                     self.isProcessPublisher = false
                 }, receiveCancel: {
@@ -67,7 +69,7 @@ class ThumbModel: ObservableObject
             .subscribe(on: Self.processQueue)
             .receive(on: DispatchQueue.main)
             .sink {
-                self.thumb.setImage(albumId: self.thumbAlbumId, image: $0)
+                self.cache[self.thumbAlbumId] = $0
             }
     }
     
@@ -75,5 +77,22 @@ class ThumbModel: ObservableObject
     {
         self.processPublisher?.cancel()
         self.processPublisher = nil
+    }
+    
+    private func create(albumId: String, image: UIImage)
+    {
+        guard let data = image.jpegData(compressionQuality: 1) else {
+            return
+        }
+        
+        if let fileUrl = UIFileUtils.getThumbFilePath(fileName: "\(albumId).jpg")
+        {
+            if UIFileUtils.existFile(fileUrl: fileUrl) {
+                UIFileUtils.removeFile(fileUrl: fileUrl)
+            }
+            
+            UIFileUtils.createFile(path: fileUrl.path, data: data)
+            print("Processing (thumb): added on disk")
+        }
     }
 }
