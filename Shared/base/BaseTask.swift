@@ -14,8 +14,8 @@ protocol IBaseTask {
 
 class BaseTask: IBaseTask
 {
-    public var requestIdentifier: Int64
-    static var dqueue: DispatchQueue = DispatchQueue(label: "appdbdispatchqueue")
+    var requestIdentifier: Int64
+    static var dqueue: DispatchQueue = DispatchQueue(label: "app-dispatch-queue")
     
     init() {
         self.requestIdentifier = Int64( Date().timeIntervalSince1970 * 1000 * 1000 * 1000 )

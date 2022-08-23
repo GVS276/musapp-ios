@@ -34,22 +34,75 @@ struct PlayerView: View
                       big: true)
                 .padding(30)
             
-            Text(self.audioPlayer.playedModel?.model.artist ?? "Artist")
-                .foregroundColor(Color("color_text"))
-                .font(.system(size: 18))
-                .lineLimit(1)
-                .multilineTextAlignment(.center)
-                .padding(.horizontal, 30)
-                .padding(.bottom, 8)
-            
-            Text(self.audioPlayer.playedModel?.model.title ?? "Title")
-                .foregroundColor(Color("color_text"))
-                .font(.system(size: 14))
-                .lineLimit(3)
-                .multilineTextAlignment(.center)
-                .padding(.horizontal, 30)
-            
             Spacer()
+            
+            HStack(spacing: 20)
+            {
+                VStack
+                {
+                    HStack(spacing: 10)
+                    {
+                        Text(self.audioPlayer.playedModel?.model.artist ?? "Artist")
+                            .foregroundColor(Color("color_text"))
+                            .font(.system(size: 18))
+                            .lineLimit(1)
+                            .multilineTextAlignment(.leading)
+                        
+                        Text("E")
+                            .foregroundColor(Color("color_text"))
+                            .font(.system(size: 11))
+                            .padding(.horizontal, 3)
+                            .border(Color("color_text"))
+                            .removed(!(self.audioPlayer.playedModel?.model.isExplicit ?? false))
+                        
+                        Spacer()
+                    }
+                    
+                    Text(self.audioPlayer.playedModel?.model.title ?? "Title")
+                        .foregroundColor(Color("color_text"))
+                        .font(.system(size: 14))
+                        .lineLimit(3)
+                        .multilineTextAlignment(.leading)
+                        .onlyLeading()
+                }
+                
+                Spacer()
+                
+                Menu {
+                    Button {
+                        
+                    } label: {
+                        Text("Добавить")
+                            .foregroundColor(Color("color_text"))
+                            .font(.system(size: 16))
+                    }
+                    
+                    Button {
+                        
+                    } label: {
+                        Text("Перейти к артисту")
+                            .foregroundColor(Color("color_text"))
+                            .font(.system(size: 16))
+                    }
+                    
+                    Button {
+                        
+                    } label: {
+                        Text("Перейти к альбому")
+                            .foregroundColor(Color("color_text"))
+                            .font(.system(size: 16))
+                    }
+                } label: {
+                    Image("action_menu")
+                        .renderingMode(.template)
+                        .foregroundColor(Color("color_text"))
+                        .padding(5)
+                        .background(Color("color_toolbar"))
+                        .clipShape(RoundedRectangle(cornerRadius: 5))
+                }
+            }
+            .padding(.horizontal, 30)
+            .padding(.bottom, 20)
             
             HStack(spacing: 0)
             {

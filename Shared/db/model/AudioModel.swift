@@ -7,6 +7,14 @@
 
 import Foundation
 
+struct ArtistModel: Codable
+{
+    var name: String = ""
+    var domain: String = ""
+    var id: String = ""
+    var featured: Bool = false
+}
+
 struct AudioModel
 {
     var audioId: String = ""
@@ -20,5 +28,6 @@ struct AudioModel
     var thumb: String = ""
     var albumId: String = ""
     var albumTitle: String = ""
+    var artists: [ArtistModel] = []
     var timestamp: Int64 = 0
 }

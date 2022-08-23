@@ -11,16 +11,14 @@ import SQLite3
 class DBAudioDao
 {
     private var dbConnection: OpaquePointer
-    private var semaphore: DBSemaphore
     
-    init(dbConnection: OpaquePointer, semaphore: DBSemaphore) {
+    init(dbConnection: OpaquePointer) {
         self.dbConnection = dbConnection
-        self.semaphore = semaphore
     }
     
     func insertAudio(audio: AudioModel) -> Bool
     {
-        semaphore.wait()
+        BaseSemaphore.shared.wait()
         
         var success = false
         let insertStatementString =
@@ -37,12 +35,13 @@ class DBAudioDao
                 \(DBContracts.AudioEntry.THUMB), \
                 \(DBContracts.AudioEntry.ALBUM_ID), \
                 \(DBContracts.AudioEntry.ALBUM_TITLE), \
+                \(DBContracts.AudioEntry.ARTISTS), \
                 \(DBContracts.AudioEntry.TIMESTAMP)) \
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
                 """
         
         var insertStatement: OpaquePointer? = nil
-        if(sqlite3_prepare_v2(dbConnection, insertStatementString, -1, &insertStatement, nil) == SQLITE_OK)
+        if sqlite3_prepare_v2(dbConnection, insertStatementString, -1, &insertStatement, nil) == SQLITE_OK
         {
             DBUtils.bindText(opaquePointer: insertStatement!, value: audio.audioId, columnIndex: 1)
             DBUtils.bindText(opaquePointer: insertStatement!, value: audio.artist, columnIndex: 2)
@@ -55,7 +54,8 @@ class DBAudioDao
             DBUtils.bindText(opaquePointer: insertStatement!, value: audio.thumb, columnIndex: 9)
             DBUtils.bindText(opaquePointer: insertStatement!, value: audio.albumId, columnIndex: 10)
             DBUtils.bindText(opaquePointer: insertStatement!, value: audio.albumTitle, columnIndex: 11)
-            DBUtils.bindInt64(opaquePointer: insertStatement!, value: audio.timestamp, columnIndex: 12)
+            DBUtils.bindText(opaquePointer: insertStatement!, value: DBUtils.toJsonFromArtists(artists: audio.artists), columnIndex: 12)
+            DBUtils.bindInt64(opaquePointer: insertStatement!, value: audio.timestamp, columnIndex: 13)
             
             if sqlite3_step(insertStatement) == SQLITE_DONE {
                 success = true
@@ -66,35 +66,37 @@ class DBAudioDao
             }
         }
         
-        semaphore.signal()
+        sqlite3_finalize(insertStatement)
+        
+        BaseSemaphore.shared.signal()
         return success
     }
     
     func getAllAudio() -> Array<AudioModel>?
     {
-        semaphore.wait()
+        BaseSemaphore.shared.wait()
         
         let query = "SELECT * from \(DBContracts.AudioEntry.TABLE_NAME) ORDER BY \(DBContracts.AudioEntry.TIMESTAMP) DESC;"
         let list = self.getAudioListFromQuery(query: query)
         
-        semaphore.signal()
+        BaseSemaphore.shared.signal()
         return list
     }
     
     func getAudioById(audioId: String) -> AudioModel?
     {
-        semaphore.wait()
+        BaseSemaphore.shared.wait()
         
         let query = "SELECT * from \(DBContracts.AudioEntry.TABLE_NAME) WHERE \(DBContracts.AudioEntry.AUDIO_ID) = '\(audioId)'"
         let model = self.getAudioFromQuery(query: query)
         
-        semaphore.signal()
+        BaseSemaphore.shared.signal()
         return model
     }
     
     func deleteAudioById(audioId: String)
     {
-        semaphore.wait()
+        BaseSemaphore.shared.wait()
         
         let query =
         """
@@ -106,7 +108,7 @@ class DBAudioDao
         
         DBUtils.executeDeleteQuery(dbConnection: dbConnection, query: query)
         
-        semaphore.signal()
+        BaseSemaphore.shared.signal()
     }
     
     private func getAudioListFromQuery(query: String) -> Array<AudioModel>?
@@ -158,7 +160,8 @@ class DBAudioDao
         model.thumb = DBUtils.getString(dbStatement: stmt, columnIndex: 8)
         model.albumId = DBUtils.getString(dbStatement: stmt, columnIndex: 9)
         model.albumTitle = DBUtils.getString(dbStatement: stmt, columnIndex: 10)
-        model.timestamp = DBUtils.getInt64(dbStatement: stmt, columnIndex: 11)
+        model.artists = DBUtils.fromJsonToArtists(json: DBUtils.getString(dbStatement: stmt, columnIndex: 11))
+        model.timestamp = DBUtils.getInt64(dbStatement: stmt, columnIndex: 12)
 
         return model
     }

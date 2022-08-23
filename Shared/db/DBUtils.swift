@@ -106,6 +106,37 @@ class DBUtils
         sqlite3_finalize(statement)
     }
     
+    static func toJsonFromArtists(artists: [ArtistModel]) -> String
+    {
+        do
+        {
+            let jsonData = try JSONEncoder().encode(artists)
+            let jsonString = String(data: jsonData, encoding: .utf8)
+            
+            if let jsonString = jsonString {
+                return jsonString
+            }
+        } catch {
+            print("toJsonFromArtists failed")
+        }
+        return ""
+    }
+    
+    static func fromJsonToArtists(json: String) -> [ArtistModel]
+    {
+        do
+        {
+            if let jsonData = json.data(using: .utf8)
+            {
+                let list = try JSONDecoder().decode([ArtistModel].self, from: jsonData)
+                return list
+            }
+        } catch {
+            print("fromJsonToArtists failed")
+        }
+        return []
+    }
+    
     static func getTimestamp() -> Int64
     {
         return Int64(Date().timeIntervalSince1970 * 1000)

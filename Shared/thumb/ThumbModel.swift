@@ -15,9 +15,7 @@ class ThumbModel: ObservableObject
     private var thumbUrl: String
     private var thumbAlbumId: String
     
-    private var isProcessPublisher = false
     private var processPublisher: AnyCancellable? = nil
-    private static let processQueue = DispatchQueue(label: "thumb-process-queue")
     
     init(thumbUrl: String, thumbAlbumId: String)
     {
@@ -36,10 +34,6 @@ class ThumbModel: ObservableObject
             return
         }
         
-        guard !self.isProcessPublisher else {
-            return
-        }
-        
         guard let url = URL(string: self.thumbUrl) else {
             return
         }
@@ -53,20 +47,20 @@ class ThumbModel: ObservableObject
             .replaceError(with: nil)
             .handleEvents(
                 receiveSubscription: { value in
-                    self.isProcessPublisher = true
+                    print("Thumb: received from URL")
                 }, receiveOutput: { value in
                     value.map {
                         self.create(albumId: self.thumbAlbumId, image: $0)
                     }
                 }, receiveCompletion: { value in
-                    self.isProcessPublisher = false
+                    BaseSemaphore.shared.signal()
                 }, receiveCancel: {
-                    self.isProcessPublisher = false
+                    BaseSemaphore.shared.signal()
                 }, receiveRequest: { value in
-                    print("Processing (thumb) ++")
+                    BaseSemaphore.shared.wait()
                 }
             )
-            .subscribe(on: Self.processQueue)
+            .subscribe(on: BaseTask.dqueue)
             .receive(on: DispatchQueue.main)
             .sink {
                 self.cache[self.thumbAlbumId] = $0

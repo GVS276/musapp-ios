@@ -13,13 +13,11 @@ class SQLDataBase
     static let shared = SQLDataBase()
     private let newVersion: Int32 = 1
     
-    private var semaphore: DBSemaphore? = nil
     private var audioDao: DBAudioDao? = nil
     private var db: OpaquePointer?
     
     private init()
     {
-        self.semaphore = DBSemaphore()
         self.db = openDatabase()
         
         self.createDaos()
@@ -139,7 +137,7 @@ class SQLDataBase
     
     private func createDaos()
     {
-        self.audioDao = DBAudioDao(dbConnection: self.db!, semaphore: self.semaphore!)
+        self.audioDao = DBAudioDao(dbConnection: self.db!)
     }
     
     func getAudioDao() -> DBAudioDao {

@@ -27,6 +27,7 @@ class DBContracts
         public static let THUMB: String = "thumb"                       // String
         public static let ALBUM_ID: String = "albumId"                  // String
         public static let ALBUM_TITLE: String = "albumTitle"            // String
+        public static let ARTISTS: String = "artists"                   // String
         public static let TIMESTAMP: String = "timestamp"               // Int64
         
         public static let SQL_CREATE_AUDIO: String = "CREATE TABLE IF NOT EXISTS " + TABLE_NAME + " (" +
@@ -41,8 +42,7 @@ class DBContracts
         THUMB + " TEXT," +
         ALBUM_ID + " TEXT," +
         ALBUM_TITLE + " TEXT," +
+        ARTISTS + " TEXT," +
         TIMESTAMP + " INTEGER)"
-        
-        //public static let SQL_UPDATE_AUDIO_TIMESTAMP: String = "ALTER TABLE " + TABLE_NAME + " ADD COLUMN " + TIMESTAMP + " INTEGER DEFAULT 0";
     }
 }

@@ -9,10 +9,12 @@
 /* Begin PBXBuildFile section */
 		1A09A36328A2FF51009760A6 /* AudioSliderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A09A36228A2FF51009760A6 /* AudioSliderView.swift */; };
 		1A3A198528B0490F00B961D7 /* AudioItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A3A198428B0490F00B961D7 /* AudioItemView.swift */; };
+		1A3B40D528B4E95700A73B0A /* AlbumView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A3B40D428B4E95700A73B0A /* AlbumView.swift */; };
+		1A3B40D828B4E97D00A73B0A /* ArtistView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A3B40D728B4E97D00A73B0A /* ArtistView.swift */; };
 		1A3C2B8428B242350079C407 /* ThumbCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A3C2B8328B242350079C407 /* ThumbCache.swift */; };
 		1A3C2B8628B242C90079C407 /* ThumbView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A3C2B8528B242C90079C407 /* ThumbView.swift */; };
 		1A3F230228A045A500BF13D3 /* SQLDataBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A3F230128A045A500BF13D3 /* SQLDataBase.swift */; };
-		1A3F230A28A048E600BF13D3 /* DBSemaphore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A3F230928A048E600BF13D3 /* DBSemaphore.swift */; };
+		1A3F230A28A048E600BF13D3 /* BaseSemaphore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A3F230928A048E600BF13D3 /* BaseSemaphore.swift */; };
 		1A3F230C28A049F100BF13D3 /* DBContracts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A3F230B28A049F100BF13D3 /* DBContracts.swift */; };
 		1A3F231028A04C9300BF13D3 /* DBAudioDao.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A3F230F28A04C9300BF13D3 /* DBAudioDao.swift */; };
 		1A3F231328A0506700BF13D3 /* AudioModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A3F231228A0506700BF13D3 /* AudioModel.swift */; };
@@ -62,10 +64,12 @@
 		02289A18AB1F5BB3D9652527 /* Pods-musapp (iOS).release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-musapp (iOS).release.xcconfig"; path = "Target Support Files/Pods-musapp (iOS)/Pods-musapp (iOS).release.xcconfig"; sourceTree = "<group>"; };
 		1A09A36228A2FF51009760A6 /* AudioSliderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioSliderView.swift; sourceTree = "<group>"; };
 		1A3A198428B0490F00B961D7 /* AudioItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioItemView.swift; sourceTree = "<group>"; };
+		1A3B40D428B4E95700A73B0A /* AlbumView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumView.swift; sourceTree = "<group>"; };
+		1A3B40D728B4E97D00A73B0A /* ArtistView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArtistView.swift; sourceTree = "<group>"; };
 		1A3C2B8328B242350079C407 /* ThumbCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThumbCache.swift; sourceTree = "<group>"; };
 		1A3C2B8528B242C90079C407 /* ThumbView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThumbView.swift; sourceTree = "<group>"; };
 		1A3F230128A045A500BF13D3 /* SQLDataBase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SQLDataBase.swift; sourceTree = "<group>"; };
-		1A3F230928A048E600BF13D3 /* DBSemaphore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DBSemaphore.swift; sourceTree = "<group>"; };
+		1A3F230928A048E600BF13D3 /* BaseSemaphore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseSemaphore.swift; sourceTree = "<group>"; };
 		1A3F230B28A049F100BF13D3 /* DBContracts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DBContracts.swift; sourceTree = "<group>"; };
 		1A3F230F28A04C9300BF13D3 /* DBAudioDao.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DBAudioDao.swift; sourceTree = "<group>"; };
 		1A3F231228A0506700BF13D3 /* AudioModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioModel.swift; sourceTree = "<group>"; };
@@ -135,6 +139,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		1A3B40D628B4E96700A73B0A /* artist */ = {
+			isa = PBXGroup;
+			children = (
+				1A3B40D428B4E95700A73B0A /* AlbumView.swift */,
+				1A3B40D728B4E97D00A73B0A /* ArtistView.swift */,
+			);
+			path = artist;
+			sourceTree = "<group>";
+		};
 		1A3C2B8228B2420B0079C407 /* thumb */ = {
 			isa = PBXGroup;
 			children = (
@@ -151,7 +164,6 @@
 				1A3F231128A0503A00BF13D3 /* model */,
 				1A3F230E28A04C7A00BF13D3 /* dao */,
 				1A3F230128A045A500BF13D3 /* SQLDataBase.swift */,
-				1A3F230928A048E600BF13D3 /* DBSemaphore.swift */,
 				1A3F230B28A049F100BF13D3 /* DBContracts.swift */,
 				1A3F231428A052F900BF13D3 /* DBUtils.swift */,
 				1ADB3F4728A1063500D44C59 /* DBTasks.swift */,
@@ -250,6 +262,7 @@
 		1AA2A40E289BED02009A8739 /* ui */ = {
 			isa = PBXGroup;
 			children = (
+				1A3B40D628B4E96700A73B0A /* artist */,
 				1A7F960A28AE7DE0000171F5 /* options */,
 				1AD3E954289E6872007745E9 /* MainView.swift */,
 				1AD3E965289EA28D007745E9 /* LoginView.swift */,
@@ -282,6 +295,7 @@
 			isa = PBXGroup;
 			children = (
 				1AB4B06328B3C76B003E3007 /* BaseTask.swift */,
+				1A3F230928A048E600BF13D3 /* BaseSemaphore.swift */,
 			);
 			path = base;
 			sourceTree = "<group>";
@@ -473,6 +487,7 @@
 			files = (
 				1ADB3F5228A128F800D44C59 /* AppDelegate.swift in Sources */,
 				1A3F231028A04C9300BF13D3 /* DBAudioDao.swift in Sources */,
+				1A3B40D828B4E97D00A73B0A /* ArtistView.swift in Sources */,
 				1AD3E961289EA246007745E9 /* PlayerView.swift in Sources */,
 				1ADB3F4A28A1075000D44C59 /* DBDelegates.swift in Sources */,
 				1A7F960E28AE7E3B000171F5 /* AboutView.swift in Sources */,
@@ -489,8 +504,9 @@
 				1AB4B06428B3C76B003E3007 /* BaseTask.swift in Sources */,
 				1AD3E955289E6872007745E9 /* MainView.swift in Sources */,
 				1A818E4F28B12079002A862D /* ThumbModel.swift in Sources */,
+				1A3B40D528B4E95700A73B0A /* AlbumView.swift in Sources */,
 				1AE0830D28A18B2F00ED456B /* SearchView.swift in Sources */,
-				1A3F230A28A048E600BF13D3 /* DBSemaphore.swift in Sources */,
+				1A3F230A28A048E600BF13D3 /* BaseSemaphore.swift in Sources */,
 				1A3F230C28A049F100BF13D3 /* DBContracts.swift in Sources */,
 				1A44B6C328A65B7000CB737D /* NavigationStackView.swift in Sources */,
 				1AD3E966289EA28D007745E9 /* LoginView.swift in Sources */,

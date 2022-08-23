@@ -65,8 +65,8 @@ struct MusApp: App
                     
                     Text("E")
                         .foregroundColor(Color("color_text"))
-                        .font(.system(size: 10))
-                        .padding(.horizontal, 2)
+                        .font(.system(size: 11))
+                        .padding(.horizontal, 3)
                         .border(Color("color_text"))
                         .removed(!(self.audioPlayer.playedModel?.model.isExplicit ?? false))
                     

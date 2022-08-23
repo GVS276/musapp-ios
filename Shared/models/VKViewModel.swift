@@ -128,6 +128,37 @@ class VKViewModel: ObservableObject
                             }
                         }
                         
+                        var artists: [ArtistModel] = []
+                        
+                        if let main_artists = item["main_artists"] as? NSArray
+                        {
+                            main_artists.forEach { artist in
+                                if let artist = artist as? [String: Any]
+                                {
+                                    let model = ArtistModel(name: artist["name"] as? String ?? "",
+                                                            domain: artist["domain"] as? String ?? "",
+                                                            id: artist["id"] as? String ?? "",
+                                                            featured: false)
+                                    artists.append(model)
+                                }
+                            }
+                        }
+                        
+                        if let featured_artists = item["featured_artists"] as? NSArray
+                        {
+                            featured_artists.forEach { artist in
+                                if let artist = artist as? [String: Any]
+                                {
+                                    let model = ArtistModel(name: artist["name"] as? String ?? "",
+                                                            domain: artist["domain"] as? String ?? "",
+                                                            id: artist["id"] as? String ?? "",
+                                                            featured: true)
+                                    artists.append(model)
+                                }
+                            }
+                        }
+                        
+                        model.artists = artists
                         list.append(AudioStruct(model: model))
                     }
                 }
