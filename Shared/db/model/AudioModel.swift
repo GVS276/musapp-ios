@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct ArtistModel: Codable
+struct ArtistModel: Codable, Identifiable
 {
     var name: String = ""
     var domain: String = ""

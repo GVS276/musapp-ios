@@ -68,6 +68,44 @@ extension View
     {
         UIApplication.shared.endEditing()
     }
+    
+    @ViewBuilder
+    func dialogArtistsSheet(isPresented: Binding<Bool>,
+                            artists: [ArtistModel],
+                            clicked: @escaping (_ artist: ArtistModel) -> Void) -> some View
+    {
+        if #available(iOS 15.0, *) {
+            self.confirmationDialog("Artists", isPresented: isPresented, titleVisibility: .visible)
+            {
+                ForEach(artists, id: \.id) { artist in
+                    Button {
+                        clicked(artist)
+                    } label: {
+                        Text(artist.name)
+                    }
+                }
+            }
+        } else {
+            self.actionSheet(isPresented: isPresented) {
+                var buttons: [ActionSheet.Button] = []
+                
+                // convert to button
+                artists.forEach { artist in
+                    buttons.append(.default(Text(artist.name), action: {
+                        clicked(artist)
+                    }))
+                }
+                
+                // cancel
+                buttons.append(.destructive(Text("Cancel")))
+                
+                return ActionSheet(
+                    title: Text("Artists"),
+                    buttons: buttons
+                )
+            }
+        }
+    }
 }
 
 extension UIApplication {

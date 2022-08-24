@@ -112,17 +112,8 @@ struct MainView: View
             }
         })
         .background(Color("color_background"))
-        .confirmationDialog("Artists", isPresented: self.$artistsShow, titleVisibility: .hidden) // iOS 15 (testing)
-        {
-            ForEach(self.artistsList.indices) { index in
-                Button {
-                    RootStack.shared.pushToView(view: ArtistView(artistModel: self.artistsList[index]).environmentObject(self.audioPlayer))
-                } label: {
-                    Text(self.artistsList[index].name)
-                        .foregroundColor(Color("color_text"))
-                        .font(.system(size: 16))
-                }
-            }
+        .dialogArtistsSheet(isPresented: self.$artistsShow, artists: self.artistsList) { artist in
+            RootStack.shared.pushToView(view: ArtistView(artistModel: artist).environmentObject(self.audioPlayer))
         }
     }
     
