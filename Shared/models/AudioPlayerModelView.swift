@@ -346,6 +346,11 @@ class AudioPlayerModelView: ObservableObject
      * Data base
      */
     
+    func isAddedAudio(audioId: String) -> Bool
+    {
+        return self.audioList.firstIndex(where: { $0.model.audioId == audioId }) != nil
+    }
+    
     func receiveAudioList()
     {
         self.requestReceiveId = self.DB.receiveAudioList(delegate: self)

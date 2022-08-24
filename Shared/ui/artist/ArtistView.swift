@@ -7,8 +7,23 @@
 
 import SwiftUI
 
-struct ArtistView: View {
+struct ArtistView: View
+{
+    @EnvironmentObject private var audioPlayer: AudioPlayerModelView
+    
+    var artistModel: ArtistModel
     var body: some View {
-        Text("Hello, World!")
+        VStack
+        {
+            Text(self.artistModel.name)
+                .foregroundColor(Color("color_text"))
+                .font(.system(size: 20))
+                .padding(30)
+                .onlyLeading()
+            
+            Spacer()
+        }
+        .viewTitle(title: "Artist", back: true, leading: HStack {}, trailing: HStack {})
+        .background(Color("color_background"))
     }
 }

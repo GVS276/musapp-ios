@@ -35,13 +35,42 @@ struct MyMusicView: View
                         AudioItemView(item: item, playedId: self.audioPlayer.playedModel?.model.audioId) {
                             self.playOrPause(item: item)
                         } menuContent: {
+                            if self.audioPlayer.isAddedAudio(audioId: item.model.audioId)
+                            {
+                                Button {
+                                    self.audioPlayer.deleteAudioFromDB(audioId: item.model.audioId)
+                                } label: {
+                                    Text("Delete from library")
+                                        .foregroundColor(Color("color_text"))
+                                        .font(.system(size: 16))
+                                }
+                            } else {
+                                Button {
+                                    self.audioPlayer.addAudioToDB(model: item)
+                                } label: {
+                                    Text("Add audio")
+                                        .foregroundColor(Color("color_text"))
+                                        .font(.system(size: 16))
+                                }
+                            }
+                            
                             Button {
-                                self.audioPlayer.addAudioToDB(model: item)
+                                
                             } label: {
-                                Text("Add audio")
+                                Text("Go to artist")
                                     .foregroundColor(Color("color_text"))
                                     .font(.system(size: 16))
                             }
+                            .removed(item.model.artists.isEmpty)
+                            
+                            Button {
+                                
+                            } label: {
+                                Text("Go to album")
+                                    .foregroundColor(Color("color_text"))
+                                    .font(.system(size: 16))
+                            }
+                            .removed(item.model.albumId.isEmpty)
                         }
                         .id(item.id)
                         .onAppear {

@@ -10,6 +10,8 @@ import SwiftUI
 struct MainView: View
 {
     @EnvironmentObject private var audioPlayer: AudioPlayerModelView
+    @State private var artistsShow = false
+    @State private var artistsList: [ArtistModel] = []
     
     var body: some View
     {
@@ -58,10 +60,29 @@ struct MainView: View
                             Button {
                                 self.audioPlayer.deleteAudioFromDB(audioId: item.model.audioId)
                             } label: {
-                                Text("Delete")
+                                Text("Delete from library")
                                     .foregroundColor(Color("color_text"))
                                     .font(.system(size: 16))
                             }
+                            
+                            Button {
+                                self.artistsList = item.model.artists
+                                self.artistsShow = true
+                            } label: {
+                                Text("Go to artist")
+                                    .foregroundColor(Color("color_text"))
+                                    .font(.system(size: 16))
+                            }
+                            .removed(item.model.artists.isEmpty)
+                            
+                            Button {
+                                
+                            } label: {
+                                Text("Go to album")
+                                    .foregroundColor(Color("color_text"))
+                                    .font(.system(size: 16))
+                            }
+                            .removed(item.model.albumId.isEmpty)
                         }
                         .id(item.id)
                     }
@@ -91,6 +112,18 @@ struct MainView: View
             }
         })
         .background(Color("color_background"))
+        .confirmationDialog("Artists", isPresented: self.$artistsShow, titleVisibility: .hidden) // iOS 15 (testing)
+        {
+            ForEach(self.artistsList.indices) { index in
+                Button {
+                    RootStack.shared.pushToView(view: ArtistView(artistModel: self.artistsList[index]).environmentObject(self.audioPlayer))
+                } label: {
+                    Text(self.artistsList[index].name)
+                        .foregroundColor(Color("color_text"))
+                        .font(.system(size: 16))
+                }
+            }
+        }
     }
     
     private func optionsItem<D: View>(iconSet: String, title: String, destination: D) -> some View

@@ -17,6 +17,33 @@ class RootStack: ObservableObject
 {
     static let shared = RootStack()
     @Published var root: Stack = .None
+    
+    // программный переход к новому вью через стандартный Navigation Stack
+    func pushToView<Content: View>(view: Content)
+    {
+        var navigationController: UINavigationController? = nil
+        
+        if let rootViewController = UIApplication.shared.currentWindow?.rootViewController
+        {
+            for children in rootViewController.children {
+                if let result = children as? UINavigationController {
+                    navigationController = result
+                } else {
+                    for children2 in children.children {
+                        if let result = children2 as? UINavigationController {
+                            navigationController = result
+                        }
+                    }
+                }
+            }
+        }
+        
+        if let navigationController = navigationController
+        {
+            let viewController = UIHostingController(rootView: view)
+            navigationController.pushViewController(viewController, animated: true)
+        }
+    }
 }
 
 struct NavigationStackView<T: View>: View
@@ -134,5 +161,19 @@ extension View {
 extension UINavigationController {
     open override func viewDidLoad() {
         interactivePopGestureRecognizer?.delegate = nil
+    }
+}
+
+extension UIApplication {
+    var currentWindow: UIWindow?
+    {
+        get {
+            if #available(iOS 13, *) {
+                // сцен бывает много, поэтому будем искать текущее окно
+                return connectedScenes.compactMap { $0 as? UIWindowScene }.flatMap { $0.windows }.first { $0.isKeyWindow }
+            } else {
+                return keyWindow
+            }
+        }
     }
 }

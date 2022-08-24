@@ -68,30 +68,50 @@ struct PlayerView: View
                 
                 Spacer()
                 
-                Menu {
-                    Button {
-                        
-                    } label: {
-                        Text("Добавить")
-                            .foregroundColor(Color("color_text"))
-                            .font(.system(size: 16))
+                Menu
+                {
+                    if self.audioPlayer.isAddedAudio(audioId: self.audioPlayer.playedModel?.model.audioId ?? "")
+                    {
+                        Button {
+                            if let m = self.audioPlayer.playedModel
+                            {
+                                self.audioPlayer.deleteAudioFromDB(audioId: m.model.audioId)
+                            }
+                        } label: {
+                            Text("Delete from library")
+                                .foregroundColor(Color("color_text"))
+                                .font(.system(size: 16))
+                        }
+                    } else {
+                        Button {
+                            if let m = self.audioPlayer.playedModel
+                            {
+                                self.audioPlayer.addAudioToDB(model: m)
+                            }
+                        } label: {
+                            Text("Add audio")
+                                .foregroundColor(Color("color_text"))
+                                .font(.system(size: 16))
+                        }
                     }
                     
                     Button {
                         
                     } label: {
-                        Text("Перейти к артисту")
+                        Text("Go to artist")
                             .foregroundColor(Color("color_text"))
                             .font(.system(size: 16))
                     }
+                    .removed(self.audioPlayer.playedModel?.model.artists.isEmpty ?? true)
                     
                     Button {
                         
                     } label: {
-                        Text("Перейти к альбому")
+                        Text("Go to album")
                             .foregroundColor(Color("color_text"))
                             .font(.system(size: 16))
                     }
+                    .removed(self.audioPlayer.playedModel?.model.albumId.isEmpty ?? true)
                 } label: {
                     Image("action_menu")
                         .renderingMode(.template)
