@@ -77,11 +77,8 @@ struct PopularView: View
             Spacer()
             
             Button {
-                if !self.searchList.isEmpty
-                {
-                    self.searchList.removeAll()
-                }
-                self.receivePopularAudio()
+                self.searchList.removeAll()
+                self.receiveAudio()
             } label: {
                 Image("action_refresh")
                     .renderingMode(.template)
@@ -97,7 +94,7 @@ struct PopularView: View
                 
                 // delay 1 sec
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                    self.receivePopularAudio()
+                    self.receiveAudio()
                 }
             }
         }
@@ -114,45 +111,55 @@ struct PopularView: View
         }
     }
     
-    private func receivePopularAudio()
+    private func refreshToken(completionHandler: @escaping ((_ success: Bool) -> Void))
+    {
+        let model = VKViewModel.shared
+        model.refreshToken(token: self.token, secret: self.secret) { refresh, result in
+            DispatchQueue.main.async {
+                var success = false
+                
+                switch result {
+                case .ErrorInternet:
+                    Toast.shared.show(text: "Problems with the Internet")
+                case .ErrorRequest:
+                    Toast.shared.show(text: "An error occurred when accessing the server")
+                case .Success:
+                    self.token = refresh!.response.token
+                    self.secret = refresh!.response.secret
+                    
+                    UIUtils.updateInfo(token: self.token, secret: self.secret)
+                    
+                    success = true
+                }
+                
+                completionHandler(success)
+            }
+        }
+    }
+    
+    private func receiveAudio()
     {
         if self.token.isEmpty || self.secret.isEmpty
         {
             return
         }
         
-        let model = VKViewModel.shared
-        model.refreshToken(token: self.token, secret: self.secret) { refresh, result in
-            switch result {
-            case .ErrorInternet:
+        self.refreshToken { success in
+            guard success else {
+                return
+            }
+            
+            let model = VKViewModel.shared
+            model.popularAudio(token: self.token, secret: self.secret) { list, result in
                 DispatchQueue.main.async {
-                    Toast.shared.show(text: "Problems with the Internet")
-                }
-            case .ErrorRequest:
-                DispatchQueue.main.async {
-                    Toast.shared.show(text: "An error occurred when accessing the server")
-                }
-            case .Success:
-                if let refresh = refresh
-                {
-                    self.token = refresh.response.token
-                    self.secret = refresh.response.secret
-                    
-                    UIUtils.updateInfo(token: self.token, secret: self.secret)
-                    
-                    model.popularAudio(token: self.token, secret: self.secret) { list, listResult in
-                        DispatchQueue.main.async {
-                        }
-                        
-                        switch listResult {
-                        case .ErrorInternet:
-                            Toast.shared.show(text: "Problems with the Internet")
-                        case .ErrorRequest:
-                            Toast.shared.show(text: "An error occurred while accessing the list")
-                        case .Success:
-                            if let list = list {
-                                self.searchList.append(contentsOf: list)
-                            }
+                    switch result {
+                    case .ErrorInternet:
+                        Toast.shared.show(text: "Problems with the Internet")
+                    case .ErrorRequest:
+                        Toast.shared.show(text: "An error occurred while accessing the list")
+                    case .Success:
+                        if let list = list {
+                            self.searchList.append(contentsOf: list)
                         }
                     }
                 }

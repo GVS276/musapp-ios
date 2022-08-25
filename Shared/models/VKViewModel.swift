@@ -33,7 +33,7 @@ struct Response: Decodable
     let response: AuthInfoUpdated
 }
 
-class VKViewModel: ObservableObject
+class VKViewModel
 {
     static let shared = VKViewModel()
     
@@ -322,6 +322,94 @@ class VKViewModel: ObservableObject
                 completionHandler(list, .Success)
             } else {
                 completionHandler(nil, .ErrorRequest)
+            }
+        }
+    }
+    
+    func receiveAudioArtist(token: String,
+                            secret: String,
+                            artistId: String,
+                            count: Int = 5,
+                            offset: Int = 0,
+                            completionHandler: @escaping ((_ list: [AudioStruct]?, _ result: RequestResult) -> Void))
+    {
+        let method = "/method/audio.getAudiosByArtist?access_token=\(token)&artist_id=\(artistId)&count=\(count)&offset=\(offset)&v=5.95&https=1&need_blocks=0&lang=ru&device_id=\(self.getDeviceId())"
+        
+        let hash = "\(method)\(secret)".md5
+        
+        self.requestSession(urlString: "https://api.vk.com\(method)&sig=\(hash)", parameters: nil) { data in
+            guard let data = data else {
+                completionHandler(nil, .ErrorInternet)
+                return
+            }
+            
+            if let list = self.createAudioList(data: data)
+            {
+                completionHandler(list, .Success)
+            } else {
+                completionHandler(nil, .ErrorRequest)
+            }
+        }
+    }
+    
+    func receiveAlbumArtist(token: String,
+                            secret: String,
+                            artistId: String,
+                            count: Int = 5,
+                            offset: Int = 0,
+                            completionHandler: @escaping ((_ list: [AlbumModel]?, _ result: RequestResult) -> Void))
+    {
+        let method = "/method/audio.getAlbumsByArtist?access_token=\(token)&artist_id=\(artistId)&count=\(count)&offset=\(offset)&v=5.95&https=1&need_blocks=0&lang=ru&device_id=\(self.getDeviceId())"
+        
+        let hash = "\(method)\(secret)".md5
+        
+        self.requestSession(urlString: "https://api.vk.com\(method)&sig=\(hash)", parameters: nil) { data in
+            guard let data = data else {
+                completionHandler(nil, .ErrorInternet)
+                return
+            }
+            
+            guard let json = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] else
+            {
+                completionHandler(nil, .ErrorRequest)
+                return
+            }
+            
+            var list: [AlbumModel] = []
+            
+            if let param = json["response"] as? [String: Any], let items = param["items"] as? NSArray
+            {
+                items.forEach { it in
+                    if let item = it as? [String: Any]
+                    {
+                        if let albumId = item["id"] as? Int64,
+                           let title = item["title"] as? String,
+                           let description = item["description"] as? String,
+                           let count = item["count"] as? Int,
+                           let create_time = item["create_time"] as? Int64,
+                           let update_time = item["update_time"] as? Int64,
+                           let year = item["year"] as? Int
+                        {
+                            var model = AlbumModel()
+                            model.albumId = String(albumId)
+                            model.title = title
+                            model.description = description
+                            model.count = count
+                            model.create_time = create_time
+                            model.update_time = update_time
+                            model.year = year
+                            
+                            if let thumb = item["photo"] as? [String: Any]
+                            {
+                                model.thumb = thumb["photo_300"] as? String ?? ""
+                            }
+                            
+                            list.append(model)
+                        }
+                    }
+                }
+                
+                completionHandler(list, .Success)
             }
         }
     }

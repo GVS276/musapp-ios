@@ -10,15 +10,17 @@ import SwiftUI
 struct MyMusicView: View
 {
     @EnvironmentObject private var audioPlayer: AudioPlayerModelView
+    
     @State private var searchList = [AudioStruct]()
     @State private var loading: Bool = false
+    @State private var notAnymore: Bool = false
     
     @State private var token = ""
     @State private var secret = ""
     @State private var userId: Int64 = -1
     
-    private var searchMax = 25
-    private var searchOffset = 0
+    private let paginationCount = 50
+    private let paginationOffset = 0
     
     var body: some View
     {
@@ -77,7 +79,7 @@ struct MyMusicView: View
                             self.audioAppear(audio: item)
                         }
                         
-                        if self.loading && UIUtils.isLastAudio(list: self.searchList, audio: item) {
+                        if !self.notAnymore && self.loading && UIUtils.isLastAudio(list: self.searchList, audio: item) {
                             ProgressView()
                                 .progressViewStyle(CircularProgressViewStyle())
                                 .padding(10)
@@ -91,11 +93,8 @@ struct MyMusicView: View
             Spacer()
             
             Button {
-                if !self.searchList.isEmpty
-                {
-                    self.searchList.removeAll()
-                }
-                self.startSearchAudio()
+                self.searchList.removeAll()
+                self.startReceiveAudio()
             } label: {
                 Image("action_refresh")
                     .renderingMode(.template)
@@ -112,7 +111,7 @@ struct MyMusicView: View
                 
                 // delay 1 sec
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                    self.startSearchAudio()
+                    self.startReceiveAudio()
                 }
             }
         }
@@ -129,54 +128,66 @@ struct MyMusicView: View
         }
     }
     
-    private func startSearchAudio()
+    private func startReceiveAudio()
     {
-        self.searchAudio(count: self.searchMax, offset: 0) { list in
+        self.notAnymore = false
+        self.receiveAudio(count: self.paginationCount, offset: 0) { list in
             self.searchList.append(contentsOf: list)
         }
     }
     
-    private func searchAudio(count: Int, offset: Int, completionHandler: @escaping ((_ list: [AudioStruct]) -> Void))
+    private func refreshToken(completionHandler: @escaping ((_ success: Bool) -> Void))
     {
         let model = VKViewModel.shared
         model.refreshToken(token: self.token, secret: self.secret) { refresh, result in
-            switch result {
-            case .ErrorInternet:
-                DispatchQueue.main.async {
+            DispatchQueue.main.async {
+                var success = false
+                
+                switch result {
+                case .ErrorInternet:
                     self.hideLoading()
                     Toast.shared.show(text: "Problems with the Internet")
-                }
-            case .ErrorRequest:
-                DispatchQueue.main.async {
+                case .ErrorRequest:
                     self.hideLoading()
                     Toast.shared.show(text: "An error occurred when accessing the server")
-                }
-            case .Success:
-                if let refresh = refresh
-                {
-                    self.token = refresh.response.token
-                    self.secret = refresh.response.secret
+                case .Success:
+                    self.token = refresh!.response.token
+                    self.secret = refresh!.response.secret
                     
                     UIUtils.updateInfo(token: self.token, secret: self.secret)
                     
-                    model.getAudioList(token: self.token,
-                                       secret: self.secret,
-                                       userId: self.userId,
-                                       count: count,
-                                       offset: offset) { list, listResult in
-                        DispatchQueue.main.async {
-                            switch listResult {
-                            case .ErrorInternet:
-                                self.hideLoading()
-                                Toast.shared.show(text: "Problems with the Internet")
-                            case .ErrorRequest:
-                                self.hideLoading()
-                                Toast.shared.show(text: "An error occurred while accessing the list")
-                            case .Success:
-                                if let list = list {
-                                    completionHandler(list)
-                                }
-                            }
+                    success = true
+                }
+                
+                completionHandler(success)
+            }
+        }
+    }
+    
+    private func receiveAudio(count: Int, offset: Int, completionHandler: @escaping ((_ list: [AudioStruct]) -> Void))
+    {
+        self.refreshToken { success in
+            guard success else {
+                return
+            }
+            
+            let model = VKViewModel.shared
+            model.getAudioList(token: self.token,
+                               secret: self.secret,
+                               userId: self.userId,
+                               count: count,
+                               offset: offset) { list, result in
+                DispatchQueue.main.async {
+                    switch result {
+                    case .ErrorInternet:
+                        self.hideLoading()
+                        Toast.shared.show(text: "Problems with the Internet")
+                    case .ErrorRequest:
+                        self.hideLoading()
+                        Toast.shared.show(text: "An error occurred while accessing the list")
+                    case .Success:
+                        if let list = list {
+                            completionHandler(list)
                         }
                     }
                 }
@@ -186,21 +197,23 @@ struct MyMusicView: View
     
     private func audioAppear(audio: AudioStruct)
     {
-        if self.token.isEmpty || self.secret.isEmpty || self.userId == -1
+        if self.token.isEmpty || self.secret.isEmpty || self.userId == -1 || self.notAnymore
         {
             return
         }
         
-        if UIUtils.isPagination(list: self.searchList, audio: audio, offset: self.searchOffset)
+        if UIUtils.isPagination(list: self.searchList, audio: audio, offset: self.paginationOffset)
         {
             let startIndex = self.searchList.endIndex
             self.loading = true
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                self.searchAudio(count: self.searchMax, offset: startIndex) { list in
-                    self.hideLoading()
-                    guard !list.isEmpty else { return }
-                    self.searchList.append(contentsOf: list)
+            
+            self.receiveAudio(count: self.paginationCount, offset: startIndex) { list in
+                self.hideLoading()
+                guard !list.isEmpty else {
+                    self.notAnymore = true
+                    return
                 }
+                self.searchList.append(contentsOf: list)
             }
         }
     }
