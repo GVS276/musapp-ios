@@ -388,7 +388,9 @@ class VKViewModel
                            let count = item["count"] as? Int,
                            let create_time = item["create_time"] as? Int64,
                            let update_time = item["update_time"] as? Int64,
-                           let year = item["year"] as? Int
+                           let year = item["year"] as? Int,
+                           let owner_id = item["owner_id"] as? Int,
+                           let access_key = item["access_key"] as? String
                         {
                             var model = AlbumModel()
                             model.albumId = String(albumId)
@@ -398,6 +400,13 @@ class VKViewModel
                             model.create_time = create_time
                             model.update_time = update_time
                             model.year = year
+                            model.ownerId = owner_id
+                            model.accessKey = access_key
+                            
+                            if let is_explicit = item["is_explicit"] as? Bool
+                            {
+                                model.isExplicit = is_explicit
+                            }
                             
                             if let thumb = item["photo"] as? [String: Any]
                             {
@@ -410,6 +419,33 @@ class VKViewModel
                 }
                 
                 completionHandler(list, .Success)
+            }
+        }
+    }
+    
+    func getAudioFromAlbum(token: String,
+                           secret: String,
+                           ownerId: Int,
+                           accessKey: String,
+                           albumId: String,
+                           count: Int,
+                           completionHandler: @escaping ((_ list: [AudioStruct]?, _ result: RequestResult) -> Void))
+    {
+        let method = "/method/audio.get?access_token=\(token)&owner_id=\(ownerId)&album_id=\(albumId)&access_key=\(accessKey)&count=\(count)&v=5.95&https=1&need_blocks=0&lang=ru&device_id=\(self.getDeviceId())"
+        
+        let hash = "\(method)\(secret)".md5
+        
+        self.requestSession(urlString: "https://api.vk.com\(method)&sig=\(hash)", parameters: nil) { data in
+            guard let data = data else {
+                completionHandler(nil, .ErrorInternet)
+                return
+            }
+            
+            if let list = self.createAudioList(data: data)
+            {
+                completionHandler(list, .Success)
+            } else {
+                completionHandler(nil, .ErrorRequest)
             }
         }
     }

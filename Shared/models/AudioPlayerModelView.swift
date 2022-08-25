@@ -20,6 +20,9 @@ struct AlbumModel: Identifiable
     var create_time: Int64 = 0
     var update_time: Int64 = 0
     var year: Int = 0
+    var ownerId: Int = 0
+    var accessKey: String = ""
+    var isExplicit: Bool = false
 }
 
 struct AudioStruct: Identifiable, Equatable

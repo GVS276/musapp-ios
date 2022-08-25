@@ -103,15 +103,6 @@ struct PlayerView: View
                             .font(.system(size: 16))
                     }
                     .removed(self.audioPlayer.playedModel?.model.artists.isEmpty ?? true)
-                    
-                    Button {
-                        
-                    } label: {
-                        Text("Go to album")
-                            .foregroundColor(Color("color_text"))
-                            .font(.system(size: 16))
-                    }
-                    .removed(self.audioPlayer.playedModel?.model.albumId.isEmpty ?? true)
                 } label: {
                     Image("action_menu")
                         .renderingMode(.template)

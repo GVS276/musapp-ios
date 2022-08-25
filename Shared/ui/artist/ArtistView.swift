@@ -27,6 +27,11 @@ struct ArtistView: View
         } content: {
             VStack(spacing: 0)
             {
+                ProgressView()
+                    .progressViewStyle(CircularProgressViewStyle())
+                    .padding(30)
+                    .removed(!self.audioList.isEmpty || !self.albumList.isEmpty)
+                
                 if !self.albumList.isEmpty
                 {
                     Text("Recent release")
@@ -48,23 +53,36 @@ struct ArtistView: View
                     .multilineTextAlignment(.leading)
                     .padding(.horizontal, 15)
                     .padding(.vertical, 20)
+                    .removed(self.audioList.isEmpty)
                 
                 ForEach(self.audioList, id: \.id) { item in
                     AudioItemView(item: item, playedId: self.audioPlayer.playedModel?.model.audioId) {
                         self.playOrPause(item: item)
                     } menuContent: {
-                        Button {
-                            self.audioPlayer.deleteAudioFromDB(audioId: item.model.audioId)
-                        } label: {
-                            Text("Delete from library")
-                                .foregroundColor(Color("color_text"))
-                                .font(.system(size: 16))
+                        if self.audioPlayer.isAddedAudio(audioId: item.model.audioId)
+                        {
+                            Button {
+                                self.audioPlayer.deleteAudioFromDB(audioId: item.model.audioId)
+                            } label: {
+                                Text("Delete from library")
+                                    .foregroundColor(Color("color_text"))
+                                    .font(.system(size: 16))
+                            }
+                        } else {
+                            Button {
+                                self.audioPlayer.addAudioToDB(model: item)
+                            } label: {
+                                Text("Add audio")
+                                    .foregroundColor(Color("color_text"))
+                                    .font(.system(size: 16))
+                            }
                         }
                     }
                     .id(item.id)
                 }
                 
                 self.selectorItem(title: "Show more tracks", destination: AboutView())
+                    .removed(self.audioList.isEmpty)
                 
                 Text("Albums")
                     .foregroundColor(Color("color_text"))
@@ -73,12 +91,14 @@ struct ArtistView: View
                     .multilineTextAlignment(.leading)
                     .padding(.horizontal, 15)
                     .padding(.vertical, 20)
+                    .removed(self.albumList.isEmpty)
                 
                 ForEach(self.albumList, id: \.id) { item in
                     self.albumItem(item: item).id(item.id)
                 }
                 
                 self.selectorItem(title: "Show more albums", destination: AboutView())
+                    .removed(self.albumList.isEmpty)
             }
             .background(Color("color_background"))
         }
@@ -88,7 +108,10 @@ struct ArtistView: View
                 self.token = info["token"] as! String
                 self.secret = info["secret"] as! String
                 
-                self.receiveTracks()
+                // delay 1 sec
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                    self.receiveTracks()
+                }
             }
         }
     }
@@ -121,7 +144,11 @@ struct ArtistView: View
     private func albumItem(item: AlbumModel) -> some View
     {
         PushView {
-            AboutView()
+            AlbumView(albumId: item.albumId,
+                      albumName: item.title,
+                      ownerId: item.ownerId,
+                      accessKey: item.accessKey,
+                      count: item.count).environmentObject(self.audioPlayer)
         } label: {
             HStack(spacing: 0)
             {

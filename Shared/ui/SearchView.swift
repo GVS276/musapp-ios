@@ -60,15 +60,6 @@ struct SearchView: View
                                     .font(.system(size: 16))
                             }
                             .removed(item.model.artists.isEmpty)
-                            
-                            Button {
-                                
-                            } label: {
-                                Text("Go to album")
-                                    .foregroundColor(Color("color_text"))
-                                    .font(.system(size: 16))
-                            }
-                            .removed(item.model.albumId.isEmpty)
                         }
                         .id(item.id)
                         .onAppear {
