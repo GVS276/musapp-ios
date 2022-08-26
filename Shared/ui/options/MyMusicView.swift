@@ -93,7 +93,11 @@ struct MyMusicView: View
             }
         })
         .background(Color("color_background"))
-        .onAppear{
+        .onAppear {
+            guard self.token.isEmpty, self.secret.isEmpty, self.userId == -1 else {
+                return
+            }
+            
             if let info = UIUtils.getInfo()
             {
                 self.token = info["token"] as! String

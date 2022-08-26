@@ -16,6 +16,8 @@ struct ProfileHeaderView<Header: View, Content: View>: View
     private let toolbarHeight: CGFloat = 45
     
     let title: String
+    let subTitle: String
+    
     @ViewBuilder let header: Header
     @ViewBuilder let content: Content
     
@@ -51,25 +53,34 @@ struct ProfileHeaderView<Header: View, Content: View>: View
                                     header
                                 }
                                 .frame(width: geometry.size.width, height: stretch)
-                                .opacity(1.0 - per)
                                 
-                                Text(title)
-                                    .foregroundColor(.black)
-                                    .font(.system(size: 20))
-                                    .lineLimit(1)
-                                    .shadow(color: .white, radius: 20, x: 0, y: 0)
-                                    .padding(.vertical, 30)
-                                    .padding(.horizontal, 15)
-                                    .opacity(1.0 - per)
+                                VStack
+                                {
+                                    Text(self.title)
+                                        .foregroundColor(Color("color_text"))
+                                        .font(.system(size: 18))
+                                        .lineLimit(1)
+                                    
+                                    Text(self.subTitle)
+                                        .foregroundColor(Color("color_text"))
+                                        .font(.system(size: 12))
+                                        .lineLimit(1)
+                                        .removed(self.subTitle.isEmpty)
+                                }
+                                .padding(.vertical, 30)
+                                .padding(.horizontal, 15)
                             }
                             .frame(height: stretch)
                             .background(Color("color_toolbar"))
                             .offset(y: -minY)
+                            .opacity(1.0 - per)
                         )
                     }
                     .frame(height: self.headerHeight)
                     
                     content
+                        .frame(minHeight: self.headerHeight)
+                        .background(Color("color_background"))
                 }
             }
             .ignoresSafeArea(edges: .top)

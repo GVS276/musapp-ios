@@ -11,19 +11,20 @@ struct AlbumView: View
 {
     @EnvironmentObject private var audioPlayer: AudioPlayerModelView
     
-    @State private var searchList = [AudioStruct]()
+    @State private var audioList = [AudioStruct]()
     @State private var token = ""
     @State private var secret = ""
     
     var albumId: String
     var albumName: String
+    var artistName: String
     var ownerId: Int
     var accessKey: String
     var count: Int
     
     var body: some View
     {
-        ProfileHeaderView(title: self.albumName) {
+        ProfileHeaderView(title: self.albumName, subTitle: self.artistName) {
             if let image = ThumbCacheObj.cache[self.albumId] {
                 Image(uiImage: image)
                     .resizable()
@@ -42,15 +43,20 @@ struct AlbumView: View
                 ProgressView()
                     .progressViewStyle(CircularProgressViewStyle())
                     .padding(30)
-                    .removed(!self.searchList.isEmpty)
+                    .removed(!self.audioList.isEmpty)
                 
-                ForEach(self.searchList, id:\.id) { item in
+                ForEach(self.audioList, id:\.id) { item in
                     self.audioItem(item: item).id(item.id)
                 }
+                
+                Spacer()
             }
-            .background(Color("color_background"))
         }
-        .onAppear{
+        .onAppear {
+            guard self.token.isEmpty, self.secret.isEmpty else {
+                return
+            }
+            
             if let info = UIUtils.getInfo()
             {
                 self.token = info["token"] as! String
@@ -75,25 +81,33 @@ struct AlbumView: View
                 {
                     Text(self.getIndex(id: item.id))
                         .foregroundColor(Color("color_text"))
-                        .font(.system(size: 18))
+                        .font(.system(size: 12))
                         .frame(width: 25, height: 25)
-                        .padding(10)
                     
                     VStack
                     {
-                        Text(item.model.artist)
+                        Text(item.model.title)
                             .foregroundColor(Color("color_text"))
                             .font(.system(size: 16))
                             .lineLimit(1)
                             .multilineTextAlignment(.leading)
                             .onlyLeading()
                         
-                        Text(item.model.title)
-                            .foregroundColor(Color("color_text"))
-                            .font(.system(size: 14))
-                            .lineLimit(1)
-                            .multilineTextAlignment(.leading)
-                            .onlyLeading()
+                        HStack {
+                            Text("E")
+                                .foregroundColor(Color("color_text"))
+                                .font(.system(size: 8))
+                                .padding(.horizontal, 2)
+                                .border(Color("color_text"))
+                                .removed(!item.model.isExplicit)
+                            
+                            Text(item.model.duration.toTime())
+                                .foregroundColor(Color("color_text"))
+                                .font(.system(size: 14))
+                                .lineLimit(1)
+                            
+                            Spacer()
+                        }
                     }
                 }
                 .padding(.horizontal, 15)
@@ -120,30 +134,11 @@ struct AlbumView: View
                     }
                 }
             } label: {
-                VStack(alignment: .trailing)
-                {
-                    Image("action_menu")
-                        .resizable()
-                        .renderingMode(.template)
-                        .foregroundColor(Color("color_text"))
-                        .frame(width: 16, height: 16)
-                        .padding(.trailing, 10)
-                    
-                    HStack {
-                        Text("E")
-                            .foregroundColor(Color("color_text"))
-                            .font(.system(size: 8))
-                            .padding(.horizontal, 2)
-                            .border(Color("color_text"))
-                            .removed(!item.model.isExplicit)
-                        
-                        Text(item.model.duration.toTime())
-                            .foregroundColor(Color("color_text"))
-                            .font(.system(size: 14))
-                            .lineLimit(1)
-                    }
-                    .padding(.trailing, 15)
-                }
+                Image("action_menu")
+                    .renderingMode(.template)
+                    .foregroundColor(Color("color_text"))
+                    .padding(.horizontal, 15)
+                    .padding(.vertical, 10)
             }
         }
         .padding(.vertical, 10)
@@ -157,7 +152,7 @@ struct AlbumView: View
             self.audioPlayer.control(tag: .PlayOrPause)
         } else {
             self.audioPlayer.startStream(model: item)
-            self.audioPlayer.setPlayerList(list: self.searchList)
+            self.audioPlayer.setPlayerList(list: self.audioList)
         }
     }
     
@@ -209,8 +204,8 @@ struct AlbumView: View
                         Toast.shared.show(text: "An error occurred while accessing the list")
                     case .Success:
                         if let list = list {
-                            self.searchList.removeAll()
-                            self.searchList.append(contentsOf: list)
+                            self.audioList.removeAll()
+                            self.audioList.append(contentsOf: list)
                         }
                     }
                 }
@@ -220,7 +215,7 @@ struct AlbumView: View
     
     private func getIndex(id: String) -> String
     {
-        let index = self.searchList.firstIndex(where: {$0.id == id}) ?? -1
+        let index = self.audioList.firstIndex(where: {$0.id == id}) ?? -1
         return index == -1 ? "•" : String(index + 1)
     }
 }

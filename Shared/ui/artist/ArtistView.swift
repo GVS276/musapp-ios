@@ -20,7 +20,7 @@ struct ArtistView: View
     var artistModel: ArtistModel
     var body: some View
     {
-        ProfileHeaderView(title: self.artistModel.name) {
+        ProfileHeaderView(title: self.artistModel.name, subTitle: "") {
             Image("user")
                 .resizable()
                 .frame(width: 60, height: 60)
@@ -99,10 +99,15 @@ struct ArtistView: View
                 
                 self.selectorItem(title: "Show more albums", destination: AboutView())
                     .removed(self.albumList.isEmpty)
+                
+                Spacer()
             }
-            .background(Color("color_background"))
         }
-        .onAppear{
+        .onAppear {
+            guard self.token.isEmpty, self.secret.isEmpty else {
+                return
+            }
+            
             if let info = UIUtils.getInfo()
             {
                 self.token = info["token"] as! String
@@ -146,6 +151,7 @@ struct ArtistView: View
         PushView {
             AlbumView(albumId: item.albumId,
                       albumName: item.title,
+                      artistName: self.artistModel.name,
                       ownerId: item.ownerId,
                       accessKey: item.accessKey,
                       count: item.count).environmentObject(self.audioPlayer)
@@ -165,9 +171,9 @@ struct ArtistView: View
                         .onlyLeading()
                     
                     let strYear = String(item.year)
-                    let strCount = String(item.count)
+                    let strCount = item.count > 1 ? "\(String(item.count)) tracks" : "single"
                     
-                    Text("\(strYear) • \(strCount) tracks")
+                    Text("\(strYear) • \(strCount)")
                         .foregroundColor(Color("color_text"))
                         .font(.system(size: 14))
                         .lineLimit(1)

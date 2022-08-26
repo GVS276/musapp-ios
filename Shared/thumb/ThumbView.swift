@@ -43,7 +43,6 @@ struct ThumbView: View
                     .resizable()
                     .frame(width: 300, height: 300)
                     .cornerRadius(10)
-                    .shadow(color: .gray, radius: 20, x: 0, y: 0)
                     .removed(!self.big)
             } else {
                 AudioThumbView(big: self.big)
