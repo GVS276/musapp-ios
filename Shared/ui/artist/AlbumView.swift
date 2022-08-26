@@ -35,6 +35,8 @@ struct AlbumView: View
             } else {
                 Image("music")
                     .resizable()
+                    .renderingMode(.template)
+                    .foregroundColor(Color("color_text"))
                     .frame(width: 60, height: 60)
             }
         } content: {

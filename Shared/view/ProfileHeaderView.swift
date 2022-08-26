@@ -10,7 +10,7 @@ import SwiftUI
 struct ProfileHeaderView<Header: View, Content: View>: View
 {
     @Environment(\.presentationMode) private var presentationMode
-    @State private var showToolbar = false
+    @State private var opacity: CGFloat = .zero
     
     private let headerHeight: CGFloat = 350
     private let toolbarHeight: CGFloat = 45
@@ -32,17 +32,10 @@ struct ProfileHeaderView<Header: View, Content: View>: View
                     GeometryReader { geometry -> AnyView in
                         let end: CGFloat = self.headerHeight - (self.toolbarHeight * 2)
                         let minY =  geometry.frame(in: .global).minY
-                        let per = min(1, abs(abs(min(0, minY)) / end))
                         let stretch = minY > 0 ? self.headerHeight + abs(minY / 9) : self.headerHeight
-                        let y = minY + end
                         
                         DispatchQueue.main.async {
-                            if y < 0
-                            {
-                                showToolbar = true
-                            } else {
-                                showToolbar = false
-                            }
+                            self.opacity = min(1, abs(abs(min(0, minY)) / end))
                         }
                         
                         return AnyView(
@@ -73,7 +66,7 @@ struct ProfileHeaderView<Header: View, Content: View>: View
                             .frame(height: stretch)
                             .background(Color("color_toolbar"))
                             .offset(y: -minY)
-                            .opacity(1.0 - per)
+                            .opacity(1.0 - self.opacity)
                         )
                     }
                     .frame(height: self.headerHeight)
@@ -102,12 +95,12 @@ struct ProfileHeaderView<Header: View, Content: View>: View
                     .lineLimit(1)
                     .multilineTextAlignment(.leading)
                     .padding(.trailing, 15)
-                    .removed(!self.showToolbar)
+                    .opacity(self.opacity)
                 
                 Spacer()
             }
             .frame(height: self.toolbarHeight)
-            .background(self.showToolbar ? Color("color_toolbar").ignoresSafeArea(edges: .top) : Color.clear.ignoresSafeArea(edges: .top))
+            .background(Color("color_toolbar").ignoresSafeArea(edges: .top).opacity(self.opacity))
         }
         .navigationBarHidden(true)
         .navigationBarBackButtonHidden(true)

@@ -23,6 +23,8 @@ struct ArtistView: View
         ProfileHeaderView(title: self.artistModel.name, subTitle: "") {
             Image("user")
                 .resizable()
+                .renderingMode(.template)
+                .foregroundColor(Color("color_text"))
                 .frame(width: 60, height: 60)
         } content: {
             VStack(spacing: 0)
