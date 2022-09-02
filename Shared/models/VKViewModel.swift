@@ -277,32 +277,6 @@ class VKViewModel
         }
     }
     
-    func recommendationsAudio(token: String,
-                              secret: String,
-                              userId: Int64,
-                              count: Int = 25,
-                              offset: Int = 0,
-                              completionHandler: @escaping ((_ list: [AudioStruct]?, _ result: RequestResult) -> Void))
-    {
-        let method = "/method/audio.getRecommendations?access_token=\(token)&user_id=\(userId)&count=\(count)&offset=\(offset)&v=5.95&https=1&need_blocks=0&lang=ru&device_id=\(self.getDeviceId())"
-        
-        let hash = "\(method)\(secret)".md5
-        
-        self.requestSession(urlString: "https://api.vk.com\(method)&sig=\(hash)", parameters: nil) { data in
-            guard let data = data else {
-                completionHandler(nil, .ErrorInternet)
-                return
-            }
-            
-            if let list = self.createAudioList(data: data)
-            {
-                completionHandler(list, .Success)
-            } else {
-                completionHandler(nil, .ErrorRequest)
-            }
-        }
-    }
-    
     func popularAudio(token: String,
                       secret: String,
                       completionHandler: @escaping ((_ list: [AudioStruct]?, _ result: RequestResult) -> Void))

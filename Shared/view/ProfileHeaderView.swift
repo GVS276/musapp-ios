@@ -102,8 +102,6 @@ struct ProfileHeaderView<Header: View, Content: View>: View
             .frame(height: self.toolbarHeight)
             .background(Color("color_toolbar").ignoresSafeArea(edges: .top).opacity(self.opacity))
         }
-        .navigationBarHidden(true)
-        .navigationBarBackButtonHidden(true)
         .background(Color("color_background"))
     }
 }

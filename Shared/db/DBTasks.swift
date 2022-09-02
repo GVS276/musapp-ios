@@ -52,7 +52,54 @@ class DeleteAudioTask: BaseTask
     }
     
     override func run() {
-        SQLDataBase.shared.getAudioDao().deleteAudioById(audioId: self.audioId)
+        self.deleteFromDisk()
         self.delegate?.onAudioDeleted(requestIdentifier: self.requestIdentifier, audioId: self.audioId)
+    }
+    
+    private func deleteFromDisk()
+    {
+        BaseSemaphore.shared.wait()
+        
+        if let audioUrl = UIFileUtils.getAnyFileUri(path: AUDIO_PATH, fileName: "\(self.audioId).mp3") {
+            if UIFileUtils.existFile(fileUrl: audioUrl)
+            {
+                UIFileUtils.removeFile(fileUrl: audioUrl)
+            }
+        }
+        
+        SQLDataBase.shared.getAudioDao().deleteAudioById(audioId: self.audioId)
+        
+        BaseSemaphore.shared.signal()
+    }
+}
+
+class DeleteAudioFromDownloadTask: BaseTask
+{
+    private var audioId: String
+    private var delegate: IDBDelegate?
+    
+    init(audioId: String, delegate: IDBDelegate?) {
+        self.audioId = audioId
+        self.delegate = delegate
+    }
+    
+    override func run() {
+        self.deleteFromDisk()
+        self.delegate?.onAudioFromDownloadDeleted(requestIdentifier: self.requestIdentifier, audioId: self.audioId)
+    }
+    
+    private func deleteFromDisk()
+    {
+        BaseSemaphore.shared.wait()
+        
+        if let audioUrl = UIFileUtils.getAnyFileUri(path: AUDIO_PATH, fileName: "\(self.audioId).mp3") {
+            if UIFileUtils.existFile(fileUrl: audioUrl)
+            {
+                UIFileUtils.removeFile(fileUrl: audioUrl)
+                SQLDataBase.shared.getAudioDao().setDownloaded(audioId: self.audioId, value: false)
+            }
+        }
+        
+        BaseSemaphore.shared.signal()
     }
 }

@@ -1,0 +1,49 @@
+{
+  "_buildCommand2" : {
+    "command" : "prepareForIndexing",
+    "enableIndexBuildArena" : false,
+    "targets" : null
+  },
+  "buildCommand" : "build",
+  "configuredTargets" : [
+    {
+      "guid" : "bfdfe7dc352907fc980b868725387e981a063e3091fa7115fc697871b6fe2028"
+    },
+    {
+      "guid" : "bfdfe7dc352907fc980b868725387e9815f76afada78730db3834a0d200478e3"
+    }
+  ],
+  "containerPath" : "/Users/vg276/Projects/musapp/Pods/Pods.xcodeproj",
+  "continueBuildingAfterErrors" : true,
+  "enableIndexBuildArena" : false,
+  "hideShellScriptEnvironment" : false,
+  "parameters" : {
+    "action" : "build",
+    "arenaInfo" : {
+      "buildIntermediatesPath" : "",
+      "buildProductsPath" : "",
+      "derivedDataPath" : "/Users/vg276/Library/Developer/Xcode/DerivedData",
+      "indexDataStoreFolderPath" : "/Users/vg276/Library/Developer/Xcode/DerivedData/Pods-chuoktusifwjsbbywimrfenfhqya/Index/DataStore",
+      "indexEnableDataStore" : true,
+      "indexPCHPath" : "/Users/vg276/Library/Developer/Xcode/DerivedData/Pods-chuoktusifwjsbbywimrfenfhqya/Index/PrecompiledHeaders",
+      "pchPath" : ""
+    },
+    "configurationName" : "Release",
+    "overrides" : {
+      "synthesized" : {
+        "table" : {
+          "ENABLE_PREVIEWS" : "NO"
+        }
+      }
+    }
+  },
+  "qos" : "default",
+  "schemeCommand" : "launch",
+  "schemeCommand2" : "launch",
+  "shouldCollectMetrics" : false,
+  "showNonLoggedProgress" : true,
+  "useDryRun" : true,
+  "useImplicitDependencies" : false,
+  "useLegacyBuildLocations" : false,
+  "useParallelTargets" : false
+}

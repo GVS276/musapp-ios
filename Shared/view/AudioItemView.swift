@@ -7,20 +7,24 @@
 
 import SwiftUI
 
-struct AudioItemView<M: View>: View
+enum AudioItemClick
+{
+    case Item
+    case Menu
+}
+
+struct AudioItemView: View
 {
     let item: AudioStruct
     let playedId: String?
-    let clicked: () -> Void
-    
-    @ViewBuilder var menuContent: M
+    let clicked: (_ type: AudioItemClick) -> Void
     
     var body: some View
     {
         HStack(spacing: 0)
         {
             Button {
-                self.clicked()
+                self.clicked(.Item)
             } label: {
                 HStack(spacing: 15)
                 {
@@ -34,6 +38,7 @@ struct AudioItemView<M: View>: View
                             .lineLimit(1)
                             .multilineTextAlignment(.leading)
                             .onlyLeading()
+                            .removed(item.model.artist.isEmpty)
                         
                         Text(item.model.title)
                             .foregroundColor(Color("color_text"))
@@ -41,39 +46,21 @@ struct AudioItemView<M: View>: View
                             .lineLimit(1)
                             .multilineTextAlignment(.leading)
                             .onlyLeading()
+                            .removed(item.model.title.isEmpty)
                     }
                 }
-                .padding(.horizontal, 15)
+                .padding(.leading, 15)
             }
             .buttonStyle(AudioButtonStyle())
             
-            Menu {
-                menuContent
+            Button {
+                self.clicked(.Menu)
             } label: {
-                VStack(alignment: .trailing)
-                {
-                    Image("action_menu")
-                        .resizable()
-                        .renderingMode(.template)
-                        .foregroundColor(Color("color_text"))
-                        .frame(width: 16, height: 16)
-                        .padding(.trailing, 10)
-                    
-                    HStack {
-                        Text("E")
-                            .foregroundColor(Color("color_text"))
-                            .font(.system(size: 8))
-                            .padding(.horizontal, 2)
-                            .border(Color("color_text"))
-                            .removed(!item.model.isExplicit)
-                        
-                        Text(item.model.duration.toTime())
-                            .foregroundColor(Color("color_text"))
-                            .font(.system(size: 14))
-                            .lineLimit(1)
-                    }
-                    .padding(.trailing, 15)
-                }
+                Image("action_menu")
+                    .renderingMode(.template)
+                    .foregroundColor(Color("color_text"))
+                    .padding(.horizontal, 15)
+                    .padding(.vertical, 10)
             }
         }
         .padding(.vertical, 10)

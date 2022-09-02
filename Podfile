@@ -6,5 +6,6 @@ target 'musapp (iOS)' do
   use_frameworks!
 
   # Pods for musapp (iOS)
+  pod 'mobile-ffmpeg-full', '~> 4.4'
 
 end

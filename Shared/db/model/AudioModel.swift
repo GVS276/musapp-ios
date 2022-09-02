@@ -23,7 +23,7 @@ struct AudioModel
     var streamUrl: String = ""
     var downloadUrl: String = ""
     var duration: Int32 = 0
-    var isDownloaded: Int32 = 0
+    var isDownloaded: Bool = false
     var isExplicit: Bool = false
     var thumb: String = ""
     var albumId: String = ""

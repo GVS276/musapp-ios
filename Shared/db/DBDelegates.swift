@@ -11,4 +11,5 @@ protocol IDBDelegate {
     func onAudioList(requestIdentifier: Int64, list: Array<AudioModel>?)
     func onAudioAdded(requestIdentifier: Int64, model: AudioModel?)
     func onAudioDeleted(requestIdentifier: Int64, audioId: String)
+    func onAudioFromDownloadDeleted(requestIdentifier: Int64, audioId: String)
 }

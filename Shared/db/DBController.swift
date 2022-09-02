@@ -25,4 +25,21 @@ class DBController
     {
         return DeleteAudioTask(audioId: audioId, delegate: delegate).execute()
     }
+    
+    func deleteAudioFromDownload(audioId: String, delegate: IDBDelegate?) -> Int64
+    {
+        return DeleteAudioFromDownloadTask(audioId: audioId, delegate: delegate).execute()
+    }
+    
+    /*
+     * Not main thread
+     */
+    func setDownloaded(audioId: String, value: Bool)
+    {
+        BaseSemaphore.shared.wait()
+        
+        SQLDataBase.shared.getAudioDao().setDownloaded(audioId: audioId, value: value)
+        
+        BaseSemaphore.shared.signal()
+    }
 }

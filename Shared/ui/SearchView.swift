@@ -24,42 +24,19 @@ struct SearchView: View
     
     var body: some View
     {
-        VStack
+        StackView(title: "", back: true)
         {
             ScrollView(.vertical, showsIndicators: false) {
                 LazyVStack(spacing: 0)
                 {
                     ForEach(self.searchList, id:\.id) { item in
-                        AudioItemView(item: item, playedId: self.audioPlayer.playedModel?.model.audioId) {
-                            self.playOrPause(item: item)
-                        } menuContent: {
-                            if self.audioPlayer.isAddedAudio(audioId: item.model.audioId)
-                            {
-                                Button {
-                                    self.audioPlayer.deleteAudioFromDB(audioId: item.model.audioId)
-                                } label: {
-                                    Text("Delete from library")
-                                        .foregroundColor(Color("color_text"))
-                                        .font(.system(size: 16))
-                                }
-                            } else {
-                                Button {
-                                    self.audioPlayer.addAudioToDB(model: item)
-                                } label: {
-                                    Text("Add audio")
-                                        .foregroundColor(Color("color_text"))
-                                        .font(.system(size: 16))
-                                }
+                        AudioItemView(item: item, playedId: self.audioPlayer.playedModel?.model.audioId) { type in
+                            switch type {
+                            case .Menu:
+                                print("Menu show")
+                            case .Item:
+                                self.playOrPause(item: item)
                             }
-                            
-                            Button {
-                                
-                            } label: {
-                                Text("Go to artist")
-                                    .foregroundColor(Color("color_text"))
-                                    .font(.system(size: 16))
-                            }
-                            .removed(item.model.artists.isEmpty)
                         }
                         .id(item.id)
                         .onAppear {
@@ -76,41 +53,6 @@ struct SearchView: View
                 .padding(.vertical, 10)
             }
         }
-        .viewTitle(back: true, leading: HStack {
-            TextField("Search...", text: self.$search)
-                .foregroundColor(Color("color_text"))
-                .font(.system(size: 16))
-                .onTapGesture {}
-        }, trailing: HStack {
-            Spacer()
-            
-            Button {
-                self.search.removeAll()
-            } label: {
-                Image("action_close")
-                    .renderingMode(.template)
-                    .foregroundColor(Color("color_text"))
-            }
-            .hidden(self.search.isEmpty)
-            
-            Button {
-                if self.search.isEmpty
-                {
-                    Toast.shared.show(text: "The request is empty")
-                    return
-                }
-                
-                self.hideKeyBoard()
-                
-                self.searchList.removeAll()
-                self.startReceiveAudio()
-            } label: {
-                Text("Find".uppercased())
-                    .foregroundColor(Color("color_text"))
-                    .font(.system(size: 14))
-            }
-        })
-        .background(Color("color_background"))
         .onAppear {
             guard self.token.isEmpty, self.secret.isEmpty else {
                 return

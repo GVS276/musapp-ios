@@ -58,26 +58,12 @@ struct ArtistView: View
                     .removed(self.audioList.isEmpty)
                 
                 ForEach(self.audioList, id: \.id) { item in
-                    AudioItemView(item: item, playedId: self.audioPlayer.playedModel?.model.audioId) {
-                        self.playOrPause(item: item)
-                    } menuContent: {
-                        if self.audioPlayer.isAddedAudio(audioId: item.model.audioId)
-                        {
-                            Button {
-                                self.audioPlayer.deleteAudioFromDB(audioId: item.model.audioId)
-                            } label: {
-                                Text("Delete from library")
-                                    .foregroundColor(Color("color_text"))
-                                    .font(.system(size: 16))
-                            }
-                        } else {
-                            Button {
-                                self.audioPlayer.addAudioToDB(model: item)
-                            } label: {
-                                Text("Add audio")
-                                    .foregroundColor(Color("color_text"))
-                                    .font(.system(size: 16))
-                            }
+                    AudioItemView(item: item, playedId: self.audioPlayer.playedModel?.model.audioId) { type in
+                        switch type {
+                        case .Menu:
+                            print("Menu show")
+                        case .Item:
+                            self.playOrPause(item: item)
                         }
                     }
                     .id(item.id)
@@ -125,8 +111,8 @@ struct ArtistView: View
     
     private func selectorItem<D: View>(title: String, destination: D) -> some View
     {
-        PushView {
-            destination
+        Button {
+            RootStack.shared.pushToView(view: destination)
         } label: {
             HStack(spacing: 0)
             {
@@ -150,13 +136,13 @@ struct ArtistView: View
     
     private func albumItem(item: AlbumModel) -> some View
     {
-        PushView {
-            AlbumView(albumId: item.albumId,
-                      albumName: item.title,
-                      artistName: self.artistModel.name,
-                      ownerId: item.ownerId,
-                      accessKey: item.accessKey,
-                      count: item.count).environmentObject(self.audioPlayer)
+        Button {
+            RootStack.shared.pushToView(view: AlbumView(albumId: item.albumId,
+                                                        albumName: item.title,
+                                                        artistName: self.artistModel.name,
+                                                        ownerId: item.ownerId,
+                                                        accessKey: item.accessKey,
+                                                        count: item.count).environmentObject(self.audioPlayer))
         } label: {
             HStack(spacing: 0)
             {

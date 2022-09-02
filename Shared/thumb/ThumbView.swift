@@ -41,6 +41,7 @@ struct ThumbView: View
                 
                 Image(uiImage: image)
                     .resizable()
+                    .aspectRatio(contentMode: .fill)
                     .frame(width: 300, height: 300)
                     .cornerRadius(10)
                     .removed(!self.big)

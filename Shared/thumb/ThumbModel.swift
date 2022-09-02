@@ -79,7 +79,7 @@ class ThumbModel: ObservableObject
             return
         }
         
-        if let fileUrl = UIFileUtils.getThumbFilePath(fileName: "\(albumId).jpg")
+        if let fileUrl = UIFileUtils.getAnyFileUri(path: THUMB_PATH, fileName: "\(albumId).jpg")
         {
             if UIFileUtils.existFile(fileUrl: fileUrl) {
                 UIFileUtils.removeFile(fileUrl: fileUrl)

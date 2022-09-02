@@ -49,7 +49,7 @@ class DBAudioDao
             DBUtils.bindText(opaquePointer: insertStatement!, value: audio.streamUrl, columnIndex: 4)
             DBUtils.bindText(opaquePointer: insertStatement!, value: audio.downloadUrl, columnIndex: 5)
             DBUtils.bindInt(opaquePointer: insertStatement!, value: audio.duration, columnIndex: 6)
-            DBUtils.bindInt(opaquePointer: insertStatement!, value: audio.isDownloaded, columnIndex: 7)
+            DBUtils.bindInt(opaquePointer: insertStatement!, value: audio.isDownloaded ? 1 : 0, columnIndex: 7)
             DBUtils.bindInt(opaquePointer: insertStatement!, value: audio.isExplicit ? 1 : 0, columnIndex: 8)
             DBUtils.bindText(opaquePointer: insertStatement!, value: audio.thumb, columnIndex: 9)
             DBUtils.bindText(opaquePointer: insertStatement!, value: audio.albumId, columnIndex: 10)
@@ -96,8 +96,6 @@ class DBAudioDao
     
     func deleteAudioById(audioId: String)
     {
-        BaseSemaphore.shared.wait()
-        
         let query =
         """
         DELETE FROM \(DBContracts.AudioEntry.TABLE_NAME) \
@@ -107,8 +105,20 @@ class DBAudioDao
         print("deleteAudioById query = \(query)")
         
         DBUtils.executeDeleteQuery(dbConnection: dbConnection, query: query)
+    }
+    
+    func setDownloaded(audioId: String, value: Bool)
+    {
+        let query =
+        """
+        UPDATE \(DBContracts.AudioEntry.TABLE_NAME) \
+        SET \(DBContracts.AudioEntry.IS_DOWNLOADED) = \(value ? 1 : 0) \
+        WHERE \(DBContracts.AudioEntry.AUDIO_ID) = '\(audioId)';
+        """
         
-        BaseSemaphore.shared.signal()
+        print("setDownloaded query = \(query)")
+        
+        DBUtils.executeUpdateQuery(dbConnection: dbConnection, query: query)
     }
     
     private func getAudioListFromQuery(query: String) -> Array<AudioModel>?
@@ -155,7 +165,7 @@ class DBAudioDao
         model.streamUrl = DBUtils.getString(dbStatement: stmt, columnIndex: 3)
         model.downloadUrl = DBUtils.getString(dbStatement: stmt, columnIndex: 4)
         model.duration = DBUtils.getInt32(dbStatement: stmt, columnIndex: 5)
-        model.isDownloaded = DBUtils.getInt32(dbStatement: stmt, columnIndex: 6)
+        model.isDownloaded = DBUtils.getInt32(dbStatement: stmt, columnIndex: 6) == 1 ? true : false
         model.isExplicit = DBUtils.getInt32(dbStatement: stmt, columnIndex: 7) == 1 ? true : false
         model.thumb = DBUtils.getString(dbStatement: stmt, columnIndex: 8)
         model.albumId = DBUtils.getString(dbStatement: stmt, columnIndex: 9)

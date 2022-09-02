@@ -24,7 +24,7 @@ struct MyMusicView: View
     
     var body: some View
     {
-        ZStack
+        StackView(title: "My music", back: true)
         {
             ProgressView()
                 .progressViewStyle(CircularProgressViewStyle())
@@ -34,36 +34,13 @@ struct MyMusicView: View
                 LazyVStack(spacing: 0)
                 {
                     ForEach(self.searchList, id:\.id) { item in
-                        AudioItemView(item: item, playedId: self.audioPlayer.playedModel?.model.audioId) {
-                            self.playOrPause(item: item)
-                        } menuContent: {
-                            if self.audioPlayer.isAddedAudio(audioId: item.model.audioId)
-                            {
-                                Button {
-                                    self.audioPlayer.deleteAudioFromDB(audioId: item.model.audioId)
-                                } label: {
-                                    Text("Delete from library")
-                                        .foregroundColor(Color("color_text"))
-                                        .font(.system(size: 16))
-                                }
-                            } else {
-                                Button {
-                                    self.audioPlayer.addAudioToDB(model: item)
-                                } label: {
-                                    Text("Add audio")
-                                        .foregroundColor(Color("color_text"))
-                                        .font(.system(size: 16))
-                                }
+                        AudioItemView(item: item, playedId: self.audioPlayer.playedModel?.model.audioId) { type in
+                            switch type {
+                            case .Menu:
+                                print("Menu show")
+                            case .Item:
+                                self.playOrPause(item: item)
                             }
-                            
-                            Button {
-                                
-                            } label: {
-                                Text("Go to artist")
-                                    .foregroundColor(Color("color_text"))
-                                    .font(.system(size: 16))
-                            }
-                            .removed(item.model.artists.isEmpty)
                         }
                         .id(item.id)
                         .onAppear {
@@ -80,19 +57,6 @@ struct MyMusicView: View
                 .padding(.vertical, 10)
             }
         }
-        .viewTitle(title: "My music", back: true, leading: HStack {}, trailing: HStack {
-            Spacer()
-            
-            Button {
-                self.searchList.removeAll()
-                self.startReceiveAudio()
-            } label: {
-                Image("action_refresh")
-                    .renderingMode(.template)
-                    .foregroundColor(Color("color_text"))
-            }
-        })
-        .background(Color("color_background"))
         .onAppear {
             guard self.token.isEmpty, self.secret.isEmpty, self.userId == -1 else {
                 return

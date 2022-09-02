@@ -11,7 +11,7 @@ struct AboutView: View
 {
     var body: some View
     {
-        VStack(spacing: 0)
+        StackView(title: "About", back: true)
         {
             Text("MusApp")
                 .foregroundColor(Color("color_text"))
@@ -80,7 +80,5 @@ struct AboutView: View
                 .padding(.horizontal, 30)
                 .padding(.bottom, 30)
         }
-        .viewTitle(title: "About", back: true, leading: HStack {}, trailing: HStack {})
-        .background(Color("color_background"))
     }
 }

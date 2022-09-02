@@ -20,15 +20,6 @@ struct PlayerView: View
     {
         VStack(spacing: 0)
         {
-            Button {
-                self.audioPlayer.playerSheet = false
-            } label: {
-                Image("action_down")
-                    .renderingMode(.template)
-                    .foregroundColor(Color("color_text"))
-                    .padding(15)
-            }
-            
             ThumbView(url: self.audioPlayer.playedModel?.model.thumb ?? "",
                       albumId: self.audioPlayer.playedModel?.model.albumId ?? "",
                       big: true)
@@ -180,7 +171,7 @@ struct PlayerView: View
             .padding(.horizontal, 30)
             .padding(.bottom, 30)
             
-            HStack(spacing: 60)
+            HStack(spacing: 45)
             {
                 Button {
                     self.audioPlayer.control(tag: .Previous)
@@ -202,8 +193,11 @@ struct PlayerView: View
                         .renderingMode(.template)
                         .aspectRatio(contentMode: .fill)
                         .foregroundColor(Color("color_text"))
+                        .frame(width: 25, height: 25)
+                        .padding(20)
+                        .background(Color("color_toolbar"))
+                        .clipShape(Circle())
                 }
-                .frame(width: 45, height: 45)
                 
                 Button {
                     self.audioPlayer.control(tag: .Next)

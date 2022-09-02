@@ -47,9 +47,9 @@ struct AlbumView: View
                     .padding(30)
                     .removed(!self.audioList.isEmpty)
                 
-                ForEach(self.audioList, id:\.id) { item in
+                /*ForEach(self.audioList, id:\.id) { item in
                     self.audioItem(item: item).id(item.id)
-                }
+                }*/
                 
                 Spacer()
             }
@@ -72,7 +72,7 @@ struct AlbumView: View
         }
     }
     
-    private func audioItem(item: AudioStruct) -> some View
+    /*private func audioItem(item: AudioStruct) -> some View
     {
         HStack(spacing: 0)
         {
@@ -145,7 +145,7 @@ struct AlbumView: View
         }
         .padding(.vertical, 10)
         .background(item.model.audioId == self.audioPlayer.playedModel?.model.audioId ? Color("color_playing") : Color.clear)
-    }
+    }*/
     
     private func playOrPause(item: AudioStruct)
     {

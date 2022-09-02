@@ -1,0 +1,4 @@
+Target dependency graph (2 targets)
+mobile-ffmpeg-full in Pods, no dependencies
+Pods-musapp (iOS) in Pods, depends on:
+mobile-ffmpeg-full in Pods (explicit)
