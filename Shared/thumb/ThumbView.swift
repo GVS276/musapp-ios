@@ -31,20 +31,24 @@ struct ThumbView: View
     
     private var thumb: some View
     {
-        Group {
-            if let image = self.model.cache[self.albumId] {
-                Image(uiImage: image)
-                    .resizable()
-                    .frame(width: 45, height: 45)
-                    .clipShape(Circle())
-                    .removed(self.big)
-                
-                Image(uiImage: image)
-                    .resizable()
-                    .aspectRatio(contentMode: .fill)
-                    .frame(width: 300, height: 300)
-                    .cornerRadius(10)
-                    .removed(!self.big)
+        ZStack
+        {
+            if let image = self.model.cache[self.albumId]
+            {
+                if big
+                {
+                    Image(uiImage: image)
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                        .frame(width: 300, height: 300)
+                        .cornerRadius(10)
+                } else {
+                    Image(uiImage: image)
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 45, height: 45)
+                        .clipShape(Circle())
+                }
             } else {
                 AudioThumbView(big: self.big)
             }

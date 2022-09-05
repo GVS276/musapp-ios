@@ -59,12 +59,13 @@ struct RootNavigationView<Root: View>: UIViewControllerRepresentable
     }
 }
 
-struct StackView<Content: View>: View
+struct StackView<Content: View, Trailing: View>: View
 {
-    var title: String = ""
-    var back: Bool = true
+    var title: String
+    var back: Bool
     
     @ViewBuilder let content: Content
+    @ViewBuilder let menu: Trailing
     
     var body: some View
     {
@@ -82,11 +83,14 @@ struct StackView<Content: View>: View
                 .removed(!back)
 
                 Text(title)
+                    .frame(maxWidth: .infinity, alignment: .leading)
                     .foregroundColor(Color("color_text"))
                     .font(.system(size: 16, weight: .bold))
+                    .lineLimit(1)
+                    .multilineTextAlignment(.leading)
                     .removed(title.isEmpty)
                 
-                Spacer()
+                menu
             }
             .frame(height: 45)
             .padding(.horizontal, 15)
@@ -94,6 +98,6 @@ struct StackView<Content: View>: View
             
             content
         }
-        .background(Color("color_background"))
+        .background(Color("color_background").ignoresSafeArea(edges: .all))
     }
 }

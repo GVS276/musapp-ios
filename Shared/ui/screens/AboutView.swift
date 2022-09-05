@@ -14,50 +14,50 @@ struct AboutView: View
         StackView(title: "About", back: true)
         {
             Text("MusApp")
+                .frame(maxWidth: .infinity, alignment: .leading)
                 .foregroundColor(Color("color_text"))
                 .font(.system(size: 20))
                 .padding(.top, 30)
                 .padding(.horizontal, 30)
-                .onlyLeading()
             
             Text("Music player using music from VK")
+                .frame(maxWidth: .infinity, alignment: .leading)
                 .foregroundColor(Color("color_text"))
                 .font(.system(size: 16))
                 .padding(.top, 5)
                 .padding(.horizontal, 30)
-                .onlyLeading()
             
             Text("This is not a commercial project (a project for personal use)")
+                .frame(maxWidth: .infinity, alignment: .leading)
                 .foregroundColor(Color("color_text"))
                 .font(.system(size: 16))
                 .padding(.top, 5)
                 .padding(.horizontal, 30)
-                .onlyLeading()
             
             Text("Thanks:")
+                .frame(maxWidth: .infinity, alignment: .leading)
                 .foregroundColor(Color("color_text"))
                 .font(.system(size: 18))
                 .padding(.top, 30)
                 .padding(.horizontal, 30)
-                .onlyLeading()
             
             Link("Social Network (VK)", destination: URL(string: "https://vk.com/")!)
+                .frame(maxWidth: .infinity, alignment: .leading)
                 .font(.system(size: 14))
                 .padding(.top, 5)
                 .padding(.horizontal, 30)
-                .onlyLeading()
             
             Link("Resource with icons (svgrepo)", destination: URL(string: "https://www.svgrepo.com/")!)
+                .frame(maxWidth: .infinity, alignment: .leading)
                 .font(.system(size: 14))
                 .padding(.top, 5)
                 .padding(.horizontal, 30)
-                .onlyLeading()
             
             Link("Author of icon packs (Shannon E. Thomas)", destination: URL(string: "https://dribbble.com/shannonethomas")!)
+                .frame(maxWidth: .infinity, alignment: .leading)
                 .font(.system(size: 14))
                 .padding(.top, 5)
                 .padding(.horizontal, 30)
-                .onlyLeading()
             
             Spacer()
             
@@ -79,6 +79,8 @@ struct AboutView: View
                 .font(.system(size: 12))
                 .padding(.horizontal, 30)
                 .padding(.bottom, 30)
+        } menu: {
+            EmptyView()
         }
     }
 }

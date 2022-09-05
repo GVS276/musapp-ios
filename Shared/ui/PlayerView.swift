@@ -18,126 +18,32 @@ struct PlayerView: View
     
     var body: some View
     {
-        VStack(spacing: 0)
+        VStack(spacing: 10)
         {
+            Image("subtract")
+                .renderingMode(.template)
+                .foregroundColor(Color("color_text"))
+                .padding(.top, 10)
+            
             ThumbView(url: self.audioPlayer.playedModel?.model.thumb ?? "",
                       albumId: self.audioPlayer.playedModel?.model.albumId ?? "",
                       big: true)
-                .padding(30)
+                .padding(.top, 20)
+            
+            Text(self.audioPlayer.playedModel?.model.artist ?? "Artist")
+                .foregroundColor(Color("color_text"))
+                .font(.system(size: 16, weight: .bold))
+                .lineLimit(1)
+                .multilineTextAlignment(.center)
+                .padding(.top, 20)
+            
+            Text(self.audioPlayer.playedModel?.model.title ?? "Title")
+                .foregroundColor(Color("color_text"))
+                .font(.system(size: 14))
+                .lineLimit(4)
+                .multilineTextAlignment(.center)
             
             Spacer()
-            
-            HStack(spacing: 20)
-            {
-                VStack
-                {
-                    HStack(spacing: 10)
-                    {
-                        Text(self.audioPlayer.playedModel?.model.artist ?? "Artist")
-                            .foregroundColor(Color("color_text"))
-                            .font(.system(size: 18))
-                            .lineLimit(1)
-                            .multilineTextAlignment(.leading)
-                        
-                        Text("E")
-                            .foregroundColor(Color("color_text"))
-                            .font(.system(size: 11))
-                            .padding(.horizontal, 3)
-                            .border(Color("color_text"))
-                            .removed(!(self.audioPlayer.playedModel?.model.isExplicit ?? false))
-                        
-                        Spacer()
-                    }
-                    
-                    Text(self.audioPlayer.playedModel?.model.title ?? "Title")
-                        .foregroundColor(Color("color_text"))
-                        .font(.system(size: 14))
-                        .lineLimit(3)
-                        .multilineTextAlignment(.leading)
-                        .onlyLeading()
-                }
-                
-                Spacer()
-                
-                Menu
-                {
-                    if self.audioPlayer.isAddedAudio(audioId: self.audioPlayer.playedModel?.model.audioId ?? "")
-                    {
-                        Button {
-                            if let m = self.audioPlayer.playedModel
-                            {
-                                self.audioPlayer.deleteAudioFromDB(audioId: m.model.audioId)
-                            }
-                        } label: {
-                            Text("Delete from library")
-                                .foregroundColor(Color("color_text"))
-                                .font(.system(size: 16))
-                        }
-                    } else {
-                        Button {
-                            if let m = self.audioPlayer.playedModel
-                            {
-                                self.audioPlayer.addAudioToDB(model: m)
-                            }
-                        } label: {
-                            Text("Add audio")
-                                .foregroundColor(Color("color_text"))
-                                .font(.system(size: 16))
-                        }
-                    }
-                    
-                    Button {
-                        
-                    } label: {
-                        Text("Go to artist")
-                            .foregroundColor(Color("color_text"))
-                            .font(.system(size: 16))
-                    }
-                    .removed(self.audioPlayer.playedModel?.model.artists.isEmpty ?? true)
-                } label: {
-                    Image("action_menu")
-                        .renderingMode(.template)
-                        .foregroundColor(Color("color_text"))
-                        .padding(5)
-                        .background(Color("color_toolbar"))
-                        .clipShape(RoundedRectangle(cornerRadius: 5))
-                }
-            }
-            .padding(.horizontal, 30)
-            .padding(.bottom, 20)
-            
-            HStack(spacing: 0)
-            {
-                Button {
-                    self.randomAudio.toggle()
-                    self.audioPlayer.randomAudio(value: self.randomAudio)
-                } label: {
-                    Image("random")
-                        .resizable()
-                        .renderingMode(.template)
-                        .aspectRatio(contentMode: .fill)
-                        .foregroundColor(self.randomAudio ? .blue : Color("color_text"))
-                        
-                }
-                .frame(width: 30, height: 30)
-                
-                Spacer()
-                
-                Button {
-                    self.repeatAudio.toggle()
-                    self.audioPlayer.repeatAudio(value: self.repeatAudio)
-                } label: {
-                    Image("repeat")
-                        .resizable()
-                        .renderingMode(.template)
-                        .aspectRatio(contentMode: .fill)
-                        .foregroundColor(self.repeatAudio ? .blue : Color("color_text"))
-                        
-                }
-                .frame(width: 30, height: 30)
-            }
-            .padding(.horizontal, 30)
-            .padding(.bottom, 20)
             
             AudioSliderView(value: self.currentTime,
                             maxValue: Float(self.audioPlayer.playedModel?.model.duration ?? 0),
@@ -153,8 +59,6 @@ struct PlayerView: View
                 }
                 self.touchedSlider = touched
             })
-                .padding(.bottom, 10)
-                .padding(.horizontal, 30)
             
             HStack
             {
@@ -168,50 +72,63 @@ struct PlayerView: View
                     .foregroundColor(Color("color_text"))
                     .font(.system(size: 14))
             }
-            .padding(.horizontal, 30)
-            .padding(.bottom, 30)
+            .padding(.bottom, 10)
             
-            HStack(spacing: 45)
+            HStack(spacing: 0)
             {
+                Button {
+                    self.randomAudio.toggle()
+                    self.audioPlayer.randomAudio(value: self.randomAudio)
+                } label: {
+                    Image("random")
+                        .renderingMode(.template)
+                        .foregroundColor(self.randomAudio ? .blue : .secondary)
+                }
+                
+                Spacer()
+                
                 Button {
                     self.audioPlayer.control(tag: .Previous)
                 } label: {
                     Image("previous")
-                        .resizable()
                         .renderingMode(.template)
-                        .aspectRatio(contentMode: .fill)
                         .foregroundColor(Color("color_text"))
-                        
                 }
-                .frame(width: 35, height: 35)
                 
                 Button {
                     self.audioPlayer.control(tag: .PlayOrPause)
                 } label: {
                     Image(self.audioPlayer.audioPlaying ? "pause" : "play")
-                        .resizable()
                         .renderingMode(.template)
-                        .aspectRatio(contentMode: .fill)
-                        .foregroundColor(Color("color_text"))
-                        .frame(width: 25, height: 25)
-                        .padding(20)
-                        .background(Color("color_toolbar"))
+                        .foregroundColor(.white)
+                        .padding(15)
+                        .background(Color("color_text"))
                         .clipShape(Circle())
                 }
+                .padding(.horizontal, 30)
                 
                 Button {
                     self.audioPlayer.control(tag: .Next)
                 } label: {
                     Image("next")
-                        .resizable()
                         .renderingMode(.template)
-                        .aspectRatio(contentMode: .fill)
                         .foregroundColor(Color("color_text"))
                 }
-                .frame(width: 35, height: 35)
+                
+                Spacer()
+                
+                Button {
+                    self.repeatAudio.toggle()
+                    self.audioPlayer.repeatAudio(value: self.repeatAudio)
+                } label: {
+                    Image("repeat")
+                        .renderingMode(.template)
+                        .foregroundColor(self.repeatAudio ? .blue : .secondary)
+                }
             }
             .padding(.bottom, 60)
         }
+        .padding(.horizontal, 30)
         .background(Color("color_background"))
         .onAppear(perform: {
             self.repeatAudio = self.audioPlayer.isRepeatAudio()

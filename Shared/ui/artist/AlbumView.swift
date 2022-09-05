@@ -20,7 +20,6 @@ struct AlbumView: View
     var artistName: String
     var ownerId: Int
     var accessKey: String
-    var count: Int
     
     var body: some View
     {
@@ -196,8 +195,7 @@ struct AlbumView: View
                                     secret: self.secret,
                                     ownerId: self.ownerId,
                                     accessKey: self.accessKey,
-                                    albumId: self.albumId,
-                                    count: self.count) { list, result in
+                                    albumId: self.albumId) { list, result in
                 DispatchQueue.main.async {
                     switch result {
                     case .ErrorInternet:

@@ -33,19 +33,19 @@ struct AudioItemView: View
                     VStack
                     {
                         Text(item.model.artist)
+                            .frame(maxWidth: .infinity, alignment: .leading)
                             .foregroundColor(Color("color_text"))
                             .font(.system(size: 16))
                             .lineLimit(1)
                             .multilineTextAlignment(.leading)
-                            .onlyLeading()
                             .removed(item.model.artist.isEmpty)
                         
                         Text(item.model.title)
+                            .frame(maxWidth: .infinity, alignment: .leading)
                             .foregroundColor(Color("color_text"))
                             .font(.system(size: 14))
                             .lineLimit(1)
                             .multilineTextAlignment(.leading)
-                            .onlyLeading()
                             .removed(item.model.title.isEmpty)
                     }
                 }

@@ -29,7 +29,7 @@ struct MusApp: App
                     RootNavigationView(
                         root: MainView().environmentObject(self.audioPlayer),
                         model: self.rootStack
-                    ).edgesIgnoringSafeArea([.top, .bottom])
+                    ).ignoresSafeArea()
                 case .Login:
                     LoginView().environmentObject(self.rootStack)
                 default:
@@ -39,6 +39,7 @@ struct MusApp: App
                 self.miniPlayer()
                     .removed(!self.audioPlayer.audioPlayerReady)
             }
+            .ignoresSafeArea(.keyboard)
             .sheet(isPresented: self.$audioPlayer.playerSheet, content: {
                 PlayerView().environmentObject(self.audioPlayer)
             })
@@ -59,30 +60,27 @@ struct MusApp: App
             VStack
             {
                 Text(self.audioPlayer.playedModel?.model.artist ?? "Artist")
+                    .frame(maxWidth: .infinity, alignment: .leading)
                     .foregroundColor(Color("color_text"))
                     .font(.system(size: 16, weight: .bold))
                     .lineLimit(1)
                     .multilineTextAlignment(.leading)
-                    .onlyLeading()
                 
                 Text(self.audioPlayer.playedModel?.model.title ?? "Title")
+                    .frame(maxWidth: .infinity, alignment: .leading)
                     .foregroundColor(Color("color_text"))
                     .font(.system(size: 14))
                     .lineLimit(1)
                     .multilineTextAlignment(.leading)
-                    .onlyLeading()
             }
             
             Button {
                 self.audioPlayer.control(tag: .PlayOrPause)
             } label: {
                 Image(self.audioPlayer.audioPlaying ? "pause" : "play")
-                    .resizable()
                     .renderingMode(.template)
-                    .aspectRatio(contentMode: .fill)
                     .foregroundColor(Color("color_text"))
             }
-            .frame(width: 30, height: 30)
             .padding(.vertical, 15)
         }
         .padding(.horizontal, 15)

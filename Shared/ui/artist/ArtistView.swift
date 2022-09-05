@@ -141,8 +141,7 @@ struct ArtistView: View
                                                         albumName: item.title,
                                                         artistName: self.artistModel.name,
                                                         ownerId: item.ownerId,
-                                                        accessKey: item.accessKey,
-                                                        count: item.count).environmentObject(self.audioPlayer))
+                                                        accessKey: item.accessKey).environmentObject(self.audioPlayer))
         } label: {
             HStack(spacing: 0)
             {
@@ -152,21 +151,21 @@ struct ArtistView: View
                 VStack
                 {
                     Text(item.title)
+                        .frame(maxWidth: .infinity, alignment: .leading)
                         .foregroundColor(Color("color_text"))
                         .font(.system(size: 16))
                         .lineLimit(1)
                         .multilineTextAlignment(.leading)
-                        .onlyLeading()
                     
                     let strYear = String(item.year)
                     let strCount = item.count > 1 ? "\(String(item.count)) tracks" : "single"
                     
                     Text("\(strYear) • \(strCount)")
+                        .frame(maxWidth: .infinity, alignment: .leading)
                         .foregroundColor(Color("color_text"))
                         .font(.system(size: 14))
                         .lineLimit(1)
                         .multilineTextAlignment(.leading)
-                        .onlyLeading()
                 }
                 
                 Image("action_next")
