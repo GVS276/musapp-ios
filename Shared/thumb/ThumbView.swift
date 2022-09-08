@@ -37,20 +37,28 @@ struct ThumbView: View
             {
                 if big
                 {
-                    Image(uiImage: image)
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                        .frame(width: 300, height: 300)
-                        .cornerRadius(10)
+                    Image(uiImage: image.imageWith(newSize: CGSize(width: 300, height: 300)))
+                        .clipShape(RoundedRectangle(cornerRadius: 10))
                 } else {
-                    Image(uiImage: image)
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: 45, height: 45)
+                    Image(uiImage: image.imageWith(newSize: CGSize(width: 45, height: 45)))
                         .clipShape(Circle())
                 }
             } else {
-                AudioThumbView(big: self.big)
+                if big {
+                    Image("music")
+                        .renderingMode(.template)
+                        .foregroundColor(.white)
+                        .frame(width: 300, height: 300)
+                        .background(Color("color_thumb"))
+                        .clipShape(RoundedRectangle(cornerRadius: 10))
+                } else {
+                    Image("music")
+                        .renderingMode(.template)
+                        .foregroundColor(.white)
+                        .frame(width: 45, height: 45)
+                        .background(Color("color_thumb"))
+                        .clipShape(Circle())
+                }
             }
         }
     }

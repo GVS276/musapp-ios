@@ -28,11 +28,8 @@ struct AlbumView: View
     {
         ProfileHeaderView(title: self.albumName, subTitle: self.artistName) {
             if let image = ThumbCacheObj.cache[self.albumId] {
-                Image(uiImage: image)
-                    .resizable()
-                    .aspectRatio(contentMode: .fill)
-                    .frame(maxWidth: 150, maxHeight: 150)
-                    .cornerRadius(10)
+                Image(uiImage: image.imageWith(newSize: CGSize(width: 150, height: 150)))
+                    .clipShape(RoundedRectangle(cornerRadius: 10))
                     .shadow(color: .gray, radius: 20, x: 0, y: 0)
             } else {
                 Image("music")

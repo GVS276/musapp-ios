@@ -71,7 +71,6 @@
 		1A4BCC9A28BE7F2A009E9E6C /* wavpack.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A4BCC3D28BE7F29009E9E6C /* wavpack.xcframework */; };
 		1A5416AE28C554FB0090580F /* SearchTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A5416AD28C554FB0090580F /* SearchTextField.swift */; };
 		1A5BE0BF28AF7A3800CC54F2 /* MyMusicView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A5BE0BE28AF7A3800CC54F2 /* MyMusicView.swift */; };
-		1A6676A028A3ED39002F708E /* AudioThumbView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A66769F28A3ED39002F708E /* AudioThumbView.swift */; };
 		1A7F39A928C9E67E00B1A0E1 /* AlbumViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A7F39A828C9E67E00B1A0E1 /* AlbumViewModel.swift */; };
 		1A7F39AD28C9E7D400B1A0E1 /* AudioAlbumItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A7F39AC28C9E7D400B1A0E1 /* AudioAlbumItemView.swift */; };
 		1A7F960E28AE7E3B000171F5 /* AboutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A7F960D28AE7E3B000171F5 /* AboutView.swift */; };
@@ -189,7 +188,6 @@
 		1A4BCC3D28BE7F29009E9E6C /* wavpack.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = wavpack.xcframework; path = "Pods/mobile-ffmpeg-full/wavpack.xcframework"; sourceTree = "<group>"; };
 		1A5416AD28C554FB0090580F /* SearchTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchTextField.swift; sourceTree = "<group>"; };
 		1A5BE0BE28AF7A3800CC54F2 /* MyMusicView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyMusicView.swift; sourceTree = "<group>"; };
-		1A66769F28A3ED39002F708E /* AudioThumbView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioThumbView.swift; sourceTree = "<group>"; };
 		1A7F39A828C9E67E00B1A0E1 /* AlbumViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumViewModel.swift; sourceTree = "<group>"; };
 		1A7F39AC28C9E7D400B1A0E1 /* AudioAlbumItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioAlbumItemView.swift; sourceTree = "<group>"; };
 		1A7F960D28AE7E3B000171F5 /* AboutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutView.swift; sourceTree = "<group>"; };
@@ -314,7 +312,6 @@
 		1A30A72228C7F00E00A91B4A /* audio */ = {
 			isa = PBXGroup;
 			children = (
-				1A66769F28A3ED39002F708E /* AudioThumbView.swift */,
 				1A3A198428B0490F00B961D7 /* AudioItemView.swift */,
 				1A7F39AC28C9E7D400B1A0E1 /* AudioAlbumItemView.swift */,
 				1A09A36228A2FF51009760A6 /* AudioSliderView.swift */,
@@ -796,7 +793,6 @@
 				1AA2A3F9289BE56D009A8739 /* MusApp.swift in Sources */,
 				1AD4EB0B28C90F93000BCB24 /* SearchViewModel.swift in Sources */,
 				1A902B5D28BB933300E2B82F /* AudioPlayerItem.swift in Sources */,
-				1A6676A028A3ED39002F708E /* AudioThumbView.swift in Sources */,
 				1ADB3F5028A11D6800D44C59 /* VKViewModel.swift in Sources */,
 				1AC9B82228B39C3600037733 /* UIFileUtils.swift in Sources */,
 				1AD4EB1728C92CEF000BCB24 /* ArtistAlbumsView.swift in Sources */,
