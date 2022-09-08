@@ -1,21 +1,26 @@
 //
-//  MyMusicView.swift
+//  ArtistTracksView.swift
 //  musapp (iOS)
 //
-//  Created by Виктор Губин on 19.08.2022.
+//  Created by Виктор Губин on 07.09.2022.
 //
 
 import SwiftUI
 
-struct MyMusicView: View
+struct ArtistTracksView: View
 {
     @EnvironmentObject private var audioPlayer: AudioPlayerModelView
-    @StateObject private var model = MyMusicViewModel()
+    @StateObject private var model: ArtistTracksViewModel
+    
+    private var artistId: String
+    init(artistId: String) {
+        self.artistId = artistId
+        self._model = StateObject(wrappedValue: ArtistTracksViewModel(artistId: artistId))
+    }
     
     var body: some View
     {
-        StackView(title: "My music", back: true)
-        {
+        StackView(title: "All tracks", back: true) {
             ProgressView()
                 .progressViewStyle(CircularProgressViewStyle())
                 .padding(30)
@@ -25,10 +30,16 @@ struct MyMusicView: View
                 LazyVStack(spacing: 0)
                 {
                     ForEach(self.model.list, id:\.id) { item in
-                        AudioItemView(item: item, playedId: self.audioPlayer.playedModel?.model.audioId) { type in
+                        let isAddedAudio = self.audioPlayer.isAddedAudio(audioId: item.model.audioId)
+                        AudioItemView(item: item, playedId: self.audioPlayer.playedModel?.model.audioId,
+                                      menuIconRes: isAddedAudio ? "action_finish" : "action_add") { type in
                             switch type {
                             case .Menu:
-                                MenuDialog.shared.showMenu(audio: item)
+                                if isAddedAudio {
+                                    self.audioPlayer.deleteAudioFromDB(audioId: item.model.audioId)
+                                } else {
+                                    self.audioPlayer.addAudioToDB(model: item)
+                                }
                             case .Item:
                                 self.playOrPause(item: item)
                             }
@@ -38,7 +49,7 @@ struct MyMusicView: View
                             if item.id == self.model.list.last?.id && self.model.list.count >= 50 && self.model.isLoading
                             {
                                 let end = self.model.list.endIndex
-                                self.model.receiveAudio(count: 50, offset: end)
+                                self.model.receiveAudio(artistId: self.artistId, count: 50, offset: end)
                             }
                         }
                     }

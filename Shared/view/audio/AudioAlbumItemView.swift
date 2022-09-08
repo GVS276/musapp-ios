@@ -1,22 +1,17 @@
 //
-//  AudioItemView.swift
+//  AudioAlbumItemView.swift
 //  musapp (iOS)
 //
-//  Created by Виктор Губин on 20.08.2022.
+//  Created by Виктор Губин on 08.09.2022.
 //
 
 import SwiftUI
 
-enum AudioItemClick
-{
-    case Item
-    case Menu
-}
-
-struct AudioItemView: View
+struct AudioAlbumItemView: View
 {
     let item: AudioStruct
     let playedId: String?
+    var menuIconRes: String = "action_menu"
     let clicked: (_ type: AudioItemClick) -> Void
     
     var body: some View
@@ -28,25 +23,21 @@ struct AudioItemView: View
             } label: {
                 HStack(spacing: 15)
                 {
-                    ThumbView(url: item.model.thumb, albumId: item.model.albumId, big: false)
-                    
                     VStack
                     {
-                        Text(item.model.artist)
+                        Text(item.model.title)
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .foregroundColor(Color("color_text"))
                             .font(.system(size: 16))
                             .lineLimit(1)
                             .multilineTextAlignment(.leading)
-                            .removed(item.model.artist.isEmpty)
                         
-                        Text(item.model.title)
+                        Text(item.model.duration.toTime())
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .foregroundColor(Color("color_text"))
                             .font(.system(size: 14))
                             .lineLimit(1)
                             .multilineTextAlignment(.leading)
-                            .removed(item.model.title.isEmpty)
                     }
                 }
                 .padding(.leading, 15)
@@ -56,7 +47,7 @@ struct AudioItemView: View
             Button {
                 self.clicked(.Menu)
             } label: {
-                Image("action_menu")
+                Image(menuIconRes)
                     .renderingMode(.template)
                     .foregroundColor(Color("color_text"))
                     .padding(.horizontal, 15)

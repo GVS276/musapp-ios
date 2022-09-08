@@ -72,13 +72,11 @@ struct ProfileHeaderView<Header: View, Content: View>: View
                     .frame(height: self.headerHeight)
                     
                     content
-                        .frame(minHeight: self.headerHeight)
-                        .background(Color("color_background"))
                 }
             }
             .ignoresSafeArea(edges: .top)
             
-            HStack(spacing: 0)
+            HStack(spacing: 15)
             {
                 Button {
                     self.presentationMode.wrappedValue.dismiss()
@@ -87,21 +85,19 @@ struct ProfileHeaderView<Header: View, Content: View>: View
                         .renderingMode(.template)
                         .foregroundColor(Color("color_text"))
                 }
-                .padding(.horizontal, 15)
                 
                 Text(title)
+                    .frame(maxWidth: .infinity, alignment: .leading)
                     .foregroundColor(Color("color_text"))
-                    .font(.system(size: 16))
+                    .font(.system(size: 16, weight: .bold))
                     .lineLimit(1)
                     .multilineTextAlignment(.leading)
-                    .padding(.trailing, 15)
                     .opacity(self.opacity)
-                
-                Spacer()
             }
             .frame(height: self.toolbarHeight)
+            .padding(.horizontal, 15)
             .background(Color("color_toolbar").ignoresSafeArea(edges: .top).opacity(self.opacity))
         }
-        .background(Color("color_background"))
+        .background(Color("color_background").ignoresSafeArea(edges: .all))
     }
 }

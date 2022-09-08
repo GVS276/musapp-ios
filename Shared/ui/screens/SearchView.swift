@@ -7,104 +7,6 @@
 
 import SwiftUI
 
-fileprivate class SearchViewModel: ObservableObject
-{
-    @Published var list = [AudioStruct]()
-    @Published var isLoading = true
-    
-    private let model = VKViewModel.shared
-    private var token = ""
-    private var secret = ""
-    private var query: String = ""
-    
-    private var isRequest = true
-    
-    init()
-    {
-        if let info = UIUtils.getInfo()
-        {
-            self.token = info["token"] as! String
-            self.secret = info["secret"] as! String
-        }
-    }
-    
-    deinit
-    {
-        self.list.removeAll()
-    }
-    
-    func startReceiveAudio(q: String)
-    {
-        self.query = q
-        self.list.removeAll()
-        self.receiveAudio(count: 50, offset: 0)
-    }
-    
-    private func refreshToken(completionHandler: @escaping ((_ success: Bool) -> Void))
-    {
-        if !self.isRequest {
-            return
-        }
-        
-        self.isRequest = false
-        self.model.refreshToken(token: self.token, secret: self.secret) { refresh, result in
-            DispatchQueue.main.async {
-                var success = false
-                
-                switch result {
-                case .ErrorInternet:
-                    print("Problems with the Internet")
-                case .ErrorRequest:
-                    print("An error occurred when accessing the server")
-                case .Success:
-                    self.token = refresh!.response.token
-                    self.secret = refresh!.response.secret
-                    
-                    UIUtils.updateInfo(token: self.token, secret: self.secret)
-                    
-                    success = true
-                }
-                
-                completionHandler(success)
-            }
-        }
-    }
-    
-    func receiveAudio(count: Int, offset: Int)
-    {
-        self.refreshToken { success in
-            guard success else {
-                self.isRequest = true
-                return
-            }
-            
-            self.model.searchAudio(token: self.token,
-                                   secret: self.secret,
-                                   q: self.query, count: count, offset: offset) { list, result in
-                DispatchQueue.main.async {
-                    switch result {
-                    case .ErrorInternet:
-                        print("Problems with the Internet")
-                    case .ErrorRequest:
-                        print("An error occurred while accessing the list")
-                    case .Success:
-                        if let list = list {
-                            guard !list.isEmpty else {
-                                self.isLoading = false
-                                return
-                            }
-                            
-                            self.isLoading = true
-                            self.list.append(contentsOf: list)
-                        }
-                    }
-                    self.isRequest = true
-                }
-            }
-        }
-    }
-}
-
 struct SearchView: View
 {
     @EnvironmentObject private var audioPlayer: AudioPlayerModelView
@@ -122,7 +24,7 @@ struct SearchView: View
                         AudioItemView(item: item, playedId: self.audioPlayer.playedModel?.model.audioId) { type in
                             switch type {
                             case .Menu:
-                                print("Menu show")
+                                MenuDialog.shared.showMenu(audio: item)
                             case .Item:
                                 self.playOrPause(item: item)
                             }

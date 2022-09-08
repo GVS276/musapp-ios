@@ -99,6 +99,7 @@ class VKViewModel
                 if let item = it as? [String: Any]
                 {
                     if let audioId = item["id"] as? Int64,
+                       let audioOwnerId = item["owner_id"] as? Int,
                        let artist = item["artist"] as? String,
                        let title = item["title"] as? String,
                        let streamUrl = item["url"] as? String,
@@ -106,6 +107,7 @@ class VKViewModel
                     {
                         var model = AudioModel()
                         model.audioId = String(audioId)
+                        model.audioOwnerId = String(audioOwnerId)
                         model.artist = artist
                         model.title = title
                         model.streamUrl = streamUrl
@@ -404,4 +406,33 @@ class VKViewModel
             }
         }
     }
+    
+    /*private func verifyUrl(urlString: String) -> Bool {
+        if let url = URL(string: urlString) {
+            return UIApplication.shared.canOpenURL(url)
+        }
+        return false
+    }
+    
+    func getAudioUrl(token: String,
+                     secret: String,
+                     audios: String,
+                     completionHandler: @escaping ((_ urlString: String?, _ result: RequestResult) -> Void))
+    {
+        if let encoded = audios.encoded
+        {
+            let method = "/method/audio.getById?access_token=\(token)&audios=\(encoded)&v=5.95&https=1&need_blocks=0&lang=ru&device_id=\(self.getDeviceId())"
+            
+            let methodForHash = "/method/audio.getById?access_token=\(token)&audios=\(audios)&v=5.95&https=1&need_blocks=0&lang=ru&device_id=\(self.getDeviceId())"
+            
+            let hash = "\(methodForHash)\(secret)".md5
+            
+            self.requestSession(urlString: "https://api.vk.com\(method)&sig=\(hash)", parameters: nil) { data in
+                guard let data = data else {
+                    completionHandler(nil, .ErrorInternet)
+                    return
+                }
+            }
+        }
+    }*/
 }

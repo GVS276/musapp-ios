@@ -17,6 +17,7 @@ class DBContracts
         public static let TABLE_NAME: String = "audio"
 
         public static let AUDIO_ID: String = "audioId"                  // String
+        public static let AUDIO_OWNER_ID: String = "audioOwnerId"       // String
         public static let ARTIST: String = "artist"                     // String
         public static let TITLE: String = "title"                       // String
         public static let STREAM_URL: String = "streamUrl"              // String
@@ -33,6 +34,7 @@ class DBContracts
         
         public static let SQL_CREATE_AUDIO: String = "CREATE TABLE IF NOT EXISTS " + TABLE_NAME + " (" +
         AUDIO_ID + " TEXT PRIMARY KEY," +
+        AUDIO_OWNER_ID + " TEXT," +
         ARTIST + " TEXT," +
         TITLE + " TEXT," +
         STREAM_URL + " TEXT," +

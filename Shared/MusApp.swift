@@ -40,6 +40,7 @@ struct MusApp: App
                     .removed(!self.audioPlayer.audioPlayerReady)
             }
             .ignoresSafeArea(.keyboard)
+            .overlay(MenuDialogView().environmentObject(self.audioPlayer))
             .sheet(isPresented: self.$audioPlayer.playerSheet, content: {
                 PlayerView().environmentObject(self.audioPlayer)
             })

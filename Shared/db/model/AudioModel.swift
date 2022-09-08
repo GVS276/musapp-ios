@@ -18,6 +18,7 @@ struct ArtistModel: Codable, Identifiable
 struct AudioModel
 {
     var audioId: String = ""
+    var audioOwnerId: String = ""
     var artist: String = ""
     var title: String = ""
     var streamUrl: String = ""

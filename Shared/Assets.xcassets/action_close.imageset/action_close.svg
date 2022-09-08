@@ -1,20 +1,7 @@
-<svg
-    xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 25 25"
-    id="vector">
-    <defs>
-        <clipPath id="clip_path">
-            <path d="M -15.426 -15.469 L 359.574 -15.469 L 359.574 40.531 L -15.426 40.531 Z"/>
-        </clipPath>
-    </defs>
-    <g id="group_1">
-        <path
-            id="path"
-            clip-path="url(#clip_path)"
-            d="M 19.574 6.941 L 18.164 5.531 L 12.574 11.121 L 6.984 5.531 L 5.574 6.941 L 11.164 12.531 L 5.574 18.121 L 6.984 19.531 L 12.574 13.941 L 18.164 19.531 L 19.574 18.121 L 13.984 12.531 Z"
-            fill="#ffffff"
-            stroke="#00000000"
-            stroke-width="1"
-            fill-rule="evenodd"/>
-    </g>
+<svg width="20" height="20" xmlns="http://www.w3.org/2000/svg" fill="none">
+
+ <g>
+  <title>Layer 1</title>
+  <path transform="rotate(45 9.99998 9.99998)" id="svg_1" fill="black" d="m15.8333,10.8333l-5,0l0,5l-1.66664,0l0,-5l-5,0l0,-1.66663l5,0l0,-5l1.66664,0l0,5l5,0l0,1.66663z"/>
+ </g>
 </svg>

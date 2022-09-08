@@ -22,7 +22,7 @@ struct MainView: View
                         AudioItemView(item: item, playedId: self.audioPlayer.playedModel?.model.audioId) { type in
                             switch type {
                             case .Menu:
-                                print("Menu show")
+                                MenuDialog.shared.showMenu(audio: item)
                             case .Item:
                                 self.playOrPause(item: item)
                             }
