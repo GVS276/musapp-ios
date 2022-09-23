@@ -11,8 +11,8 @@ struct ThumbView: View
 {
     @StateObject private var model: ThumbModel
     
-    private var big: Bool
-    private var albumId: String
+    private let big: Bool
+    private let albumId: String
     
     init(url: String, albumId: String, big: Bool)
     {
@@ -45,14 +45,14 @@ struct ThumbView: View
                 }
             } else {
                 if big {
-                    Image("music")
+                    Image("audio")
                         .renderingMode(.template)
                         .foregroundColor(.white)
                         .frame(width: 300, height: 300)
                         .background(Color("color_thumb"))
                         .clipShape(RoundedRectangle(cornerRadius: 10))
                 } else {
-                    Image("music")
+                    Image("audio")
                         .renderingMode(.template)
                         .foregroundColor(.white)
                         .frame(width: 45, height: 45)

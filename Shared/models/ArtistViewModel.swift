@@ -21,7 +21,11 @@ class ArtistViewModel: ObservableObject
         {
             let token = info["token"] as! String
             let secret = info["secret"] as! String
-            self.receiveTracks(token: token, secret: secret, artistId: artistId)
+            
+            // задержка на 200 мс
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                self.receiveTracks(token: token, secret: secret, artistId: artistId)
+            }
         } else {
             self.isLoading = false
         }

@@ -33,63 +33,29 @@ struct ArtistAlbumsView: View
                 LazyVStack(spacing: 0)
                 {
                     ForEach(self.model.list, id: \.id) { item in
-                        self.albumItem(item: item)
-                            .id(item.id)
-                            .onAppear {
-                                if item.id == self.model.list.last?.id && self.model.list.count >= 50 && self.model.isLoading
-                                {
-                                    let end = self.model.list.endIndex
-                                    self.model.receiveAlbums(artistId: self.artistId, count: 50, offset: end)
-                                }
+                        AlbumItemView(item: item) {
+                            RootStack.shared.pushToView(
+                                view: AlbumView(albumId: item.albumId,
+                                                albumName: item.title,
+                                                artistName: self.artistName,
+                                                ownerId: item.ownerId,
+                                                accessKey: item.accessKey).environmentObject(self.audioPlayer)
+                            )
+                        }
+                        .id(item.id)
+                        .onAppear {
+                            if item.id == self.model.list.last?.id && self.model.list.count >= 50 && self.model.isLoading
+                            {
+                                let end = self.model.list.endIndex
+                                self.model.receiveAlbums(artistId: self.artistId, count: 50, offset: end)
                             }
+                        }
                     }
                 }
                 .padding(.vertical, 10)
             }
         } menu: {
             EmptyView()
-        }
-    }
-    
-    private func albumItem(item: AlbumModel) -> some View
-    {
-        Button {
-            RootStack.shared.pushToView(view:AlbumView(albumId: item.albumId,
-                                                       albumName: item.title,
-                                                       artistName: self.artistName,
-                                                       ownerId: item.ownerId,
-                                                       accessKey: item.accessKey).environmentObject(self.audioPlayer))
-        } label: {
-            HStack(spacing: 15)
-            {
-                ThumbView(url: item.thumb, albumId: item.albumId, big: false)
-                
-                VStack
-                {
-                    Text(item.title)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .foregroundColor(Color("color_text"))
-                        .font(.system(size: 16))
-                        .lineLimit(1)
-                        .multilineTextAlignment(.leading)
-                    
-                    let strYear = String(item.year)
-                    let strCount = item.count > 1 ? "\(String(item.count)) tracks" : "single"
-                    
-                    Text("\(strYear) • \(strCount)")
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .foregroundColor(Color("color_text"))
-                        .font(.system(size: 14))
-                        .lineLimit(1)
-                        .multilineTextAlignment(.leading)
-                }
-                
-                Image("action_next")
-                    .renderingMode(.template)
-                    .foregroundColor(Color("color_text"))
-            }
-            .padding(.vertical, 10)
-            .padding(.horizontal, 15)
         }
     }
 }

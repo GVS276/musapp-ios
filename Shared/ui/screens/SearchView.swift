@@ -21,7 +21,9 @@ struct SearchView: View
                 LazyVStack(spacing: 0)
                 {
                     ForEach(self.model.list, id:\.id) { item in
-                        AudioItemView(item: item, playedId: self.audioPlayer.playedModel?.model.audioId) { type in
+                        let playedId = self.audioPlayer.playedModel?.model.audioId
+                        
+                        AudioItemView(item: item, source: .OtherAudio, playedId: playedId) { type in
                             switch type {
                             case .Menu:
                                 MenuDialog.shared.showMenu(audio: item)

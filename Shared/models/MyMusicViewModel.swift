@@ -26,7 +26,11 @@ class MyMusicViewModel: ObservableObject
             self.token = info["token"] as! String
             self.secret = info["secret"] as! String
             self.userId = info["userId"] as! Int64
-            self.receiveAudio(count: 50, offset: 0)
+            
+            // задержка на 200 мс
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                self.receiveAudio(count: 50, offset: 0)
+            }
         }
     }
     

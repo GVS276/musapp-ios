@@ -26,13 +26,9 @@ class AudioPlayerModelView: ObservableObject
     
     @Published var audioList: [AudioStruct] = []
     
-    private var player: AVPlayer? = nil
-    private var playerItem: AudioPlayerItem? = nil
+    private var player: AudioPlayer? = nil
     private var playerCurrentTime: ((_ current: Float) -> Void)? = nil
     private var playerList: [AudioStruct] = []
-    
-    private var playerRateObserver: NSKeyValueObservation? = nil
-    private var playerProgressObserver: Any? = nil
     
     private let DB = DBController.shared
     private var requestReceiveId: Int64? = nil
@@ -71,36 +67,9 @@ class AudioPlayerModelView: ObservableObject
             try audioSession.setCategory(.playback)
             try audioSession.setActive(true)
             
-            // init cached audio
-            if let audioUrl = UIFileUtils.getAnyFileUri(path: AUDIO_PATH,
-                                                        fileName: "\(model.model.audioId).mp3") {
-                if UIFileUtils.existFile(fileUrl: audioUrl)
-                {
-                    guard let data = try? Data(contentsOf: audioUrl) else {
-                        return
-                    }
-                    
-                    print("Audio: cached")
-                    self.playerItem = AudioPlayerItem(data: data, delegate: self)
-                } else {
-                    guard let url = URL.init(string: model.model.streamUrl) else {
-                        return
-                    }
-                    
-                    print("Audio: streaming")
-                    self.playerItem = AudioPlayerItem(url: url, delegate: self)
-                }
-            } else {
-                return
-            }
-            
             // player init
-            self.player = AVPlayer(playerItem: self.playerItem)
-            self.player?.automaticallyWaitsToMinimizeStalling = false
-            
-            // add observers
             self.playedModel = model
-            self.playerObservers()
+            self.player = AudioPlayer(model: model.model, delegate: self)
             
             // info (about track)
             self.nowPlayingInfo(current: 0)
@@ -111,22 +80,10 @@ class AudioPlayerModelView: ObservableObject
         }
     }
     
-    private func playerObservers()
+    private func setAudioPlaying(value: Bool)
     {
-        if let player = self.player
-        {
-            self.playerRateObserver = player.observe(\.rate, options:  [.new, .old], changeHandler: { (player, change) in
-                self.audioPlaying = player.rate == 1
-                self.playedModel?.isPlaying = self.audioPlaying
-            })
-            
-            self.playerProgressObserver = player.addProgressObserver { current, duration in
-                if let handler = self.playerCurrentTime
-                {
-                    handler(current)
-                }
-            }
-        }
+        self.audioPlaying = value
+        self.playedModel?.isPlaying = value
     }
     
     private func ready(value: Bool)
@@ -136,16 +93,12 @@ class AudioPlayerModelView: ObservableObject
     
     private func destroy()
     {
-        self.playerRateObserver = nil
-        self.playerProgressObserver = nil
+        self.audioPlaying = false
         
-        self.player?.pause()
-        self.player?.seek(to: .zero)
+        self.player?.release()
         self.player = nil
 
-        self.playerItem?.clear()
-        self.playerItem = nil
-        
+        self.playedModel?.isPlaying = self.audioPlaying
         self.playedModel = nil
     }
     
@@ -469,13 +422,27 @@ extension AudioPlayerModelView: AudioPlayerItemDelegate
     func onStatus(status: AudioPlayerItemStatus) {
         switch status {
         case .Started:
+            print("Audio: Started")
             self.play()
-        case .Stalled:
-            self.play()
+        case .Paused:
+            self.setAudioPlaying(value: false)
+        case .Playing:
+            self.setAudioPlaying(value: true)
+        case .Buffering:
+            print("Audio: Buffering")
+        case .MinimizeStalls:
+            print("Audio: MinimizeStalls")
         case .Finished:
             self.audioTrackFinished()
         case .Failed:
             print("Audio: player failed")
+        }
+    }
+    
+    func onCurrentPosition(seconds: Float) {
+        if let handler = self.playerCurrentTime
+        {
+            handler(seconds)
         }
     }
 }
@@ -498,17 +465,5 @@ extension AudioPlayerModelView: DownloadDelegate
         case .Failed:
             print("Audio: Downloading failed")
         }
-    }
-}
-
-extension AVPlayer
-{
-    func addProgressObserver(action:@escaping ((Float, Float) -> Void)) -> Any {
-        return self.addPeriodicTimeObserver(forInterval: CMTime(value: 1, timescale: 1), queue: .main, using: { time in
-            if let duration = self.currentItem?.duration {
-                let duration = CMTimeGetSeconds(duration), time = CMTimeGetSeconds(time)
-                action(Float(time), Float(duration))
-            }
-        })
     }
 }

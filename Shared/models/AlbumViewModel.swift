@@ -20,8 +20,12 @@ class AlbumViewModel: ObservableObject
         {
             let token = info["token"] as! String
             let secret = info["secret"] as! String
-            self.receiveAudio(token: token, secret: secret,
-                              albumId: albumId, ownerId: ownerId, accessKey: accessKey)
+            
+            // задержка на 200 мс
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                self.receiveAudio(token: token, secret: secret,
+                                  albumId: albumId, ownerId: ownerId, accessKey: accessKey)
+            }
         } else {
             self.isLoading = false
         }

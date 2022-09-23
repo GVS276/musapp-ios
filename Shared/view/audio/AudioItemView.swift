@@ -13,11 +13,17 @@ enum AudioItemClick
     case Menu
 }
 
+enum AudioItemSource
+{
+    case AudioFromAlbum
+    case OtherAudio
+}
+
 struct AudioItemView: View
 {
     let item: AudioStruct
+    let source: AudioItemSource
     let playedId: String?
-    var menuIconRes: String = "action_menu"
     let clicked: (_ type: AudioItemClick) -> Void
     
     var body: some View
@@ -29,11 +35,17 @@ struct AudioItemView: View
             } label: {
                 HStack(spacing: 15)
                 {
-                    ThumbView(url: item.model.thumb, albumId: item.model.albumId, big: false)
-                    
-                    VStack
+                    if (source != .AudioFromAlbum)
                     {
-                        Text(item.model.artist)
+                        ThumbView(url: item.model.thumb, albumId: item.model.albumId, big: false)
+                    }
+                    
+                    VStack(spacing: 2)
+                    {
+                        let title = source == .AudioFromAlbum ? item.model.title : item.model.artist
+                        let subTitle = source == .AudioFromAlbum ? item.model.duration.toTime() : item.model.title
+                        
+                        Text(title)
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .foregroundColor(Color("color_text"))
                             .font(.system(size: 16))
@@ -41,13 +53,23 @@ struct AudioItemView: View
                             .multilineTextAlignment(.leading)
                             .removed(item.model.artist.isEmpty)
                         
-                        Text(item.model.title)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .foregroundColor(Color("color_text"))
-                            .font(.system(size: 14))
-                            .lineLimit(1)
-                            .multilineTextAlignment(.leading)
-                            .removed(item.model.title.isEmpty)
+                        HStack(spacing: 5)
+                        {
+                            Image("action_explicit")
+                                .resizable()
+                                .renderingMode(.template)
+                                .foregroundColor(Color("color_text"))
+                                .frame(width: 14, height: 14)
+                                .removed(!item.model.isExplicit)
+                            
+                            Text(subTitle)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .foregroundColor(Color("color_text"))
+                                .font(.system(size: 14))
+                                .lineLimit(1)
+                                .multilineTextAlignment(.leading)
+                                .removed(item.model.title.isEmpty)
+                        }
                     }
                 }
                 .padding(.leading, 15)
@@ -57,7 +79,7 @@ struct AudioItemView: View
             Button {
                 self.clicked(.Menu)
             } label: {
-                Image(menuIconRes)
+                Image("action_menu")
                     .renderingMode(.template)
                     .foregroundColor(Color("color_text"))
                     .padding(.horizontal, 15)

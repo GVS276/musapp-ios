@@ -32,7 +32,7 @@ struct AlbumView: View
                     .clipShape(RoundedRectangle(cornerRadius: 10))
                     .shadow(color: .gray, radius: 20, x: 0, y: 0)
             } else {
-                Image("music")
+                Image("album")
                     .resizable()
                     .renderingMode(.template)
                     .foregroundColor(Color("color_text"))
@@ -50,17 +50,11 @@ struct AlbumView: View
                 {
                     ForEach(self.model.list, id: \.id) { item in
                         let playedId = self.audioPlayer.playedModel?.model.audioId
-                        let isAddedAudio = self.audioPlayer.isAddedAudio(audioId: item.model.audioId)
-                        let menuIconRes = isAddedAudio ? "action_finish" : "action_add"
                         
-                        AudioAlbumItemView(item: item, playedId: playedId, menuIconRes: menuIconRes) { type in
+                        AudioItemView(item: item, source: .AudioFromAlbum, playedId: playedId) { type in
                             switch type {
                             case .Menu:
-                                if isAddedAudio {
-                                    self.audioPlayer.deleteAudioFromDB(audioId: item.model.audioId)
-                                } else {
-                                    self.audioPlayer.addAudioToDB(model: item)
-                                }
+                                MenuDialog.shared.showMenu(audio: item)
                             case .Item:
                                 self.playOrPause(item: item)
                             }

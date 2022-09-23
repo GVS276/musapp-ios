@@ -30,16 +30,12 @@ struct ArtistTracksView: View
                 LazyVStack(spacing: 0)
                 {
                     ForEach(self.model.list, id:\.id) { item in
-                        let isAddedAudio = self.audioPlayer.isAddedAudio(audioId: item.model.audioId)
-                        AudioItemView(item: item, playedId: self.audioPlayer.playedModel?.model.audioId,
-                                      menuIconRes: isAddedAudio ? "action_finish" : "action_add") { type in
+                        let playedId = self.audioPlayer.playedModel?.model.audioId
+                        
+                        AudioItemView(item: item, source: .OtherAudio, playedId: playedId) { type in
                             switch type {
                             case .Menu:
-                                if isAddedAudio {
-                                    self.audioPlayer.deleteAudioFromDB(audioId: item.model.audioId)
-                                } else {
-                                    self.audioPlayer.addAudioToDB(model: item)
-                                }
+                                MenuDialog.shared.showMenu(audio: item)
                             case .Item:
                                 self.playOrPause(item: item)
                             }

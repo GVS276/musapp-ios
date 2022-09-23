@@ -15,7 +15,7 @@ class AppDelegate: NSObject, UIApplicationDelegate
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool
     {
         UIApplication.shared.beginReceivingRemoteControlEvents()
-        self.refreshToken()
+        //self.refreshToken()
         return true
     }
     

@@ -36,20 +36,6 @@ struct ArtistView: View
                     .padding(30)
                     .removed(!self.model.isLoading)
                 
-                if !self.model.albumList.isEmpty
-                {
-                    Text("Recent release")
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .foregroundColor(Color("color_text"))
-                        .lineLimit(1)
-                        .multilineTextAlignment(.leading)
-                        .font(.system(size: 18))
-                        .padding(.vertical, 10)
-                        .padding(.horizontal, 15)
-                    
-                    self.albumItem(item: self.model.albumList[0])
-                }
-                
                 if !self.model.audioList.isEmpty
                 {
                     self.showItem(title: "Tracks") {
@@ -58,17 +44,11 @@ struct ArtistView: View
                     
                     ForEach(self.model.audioList, id: \.id) { item in
                         let playedId = self.audioPlayer.playedModel?.model.audioId
-                        let isAddedAudio = self.audioPlayer.isAddedAudio(audioId: item.model.audioId)
-                        let menuIconRes = isAddedAudio ? "action_finish" : "action_add"
                         
-                        AudioItemView(item: item, playedId: playedId, menuIconRes: menuIconRes) { type in
+                        AudioItemView(item: item, source: .OtherAudio, playedId: playedId) { type in
                             switch type {
                             case .Menu:
-                                if isAddedAudio {
-                                    self.audioPlayer.deleteAudioFromDB(audioId: item.model.audioId)
-                                } else {
-                                    self.audioPlayer.addAudioToDB(model: item)
-                                }
+                                MenuDialog.shared.showMenu(audio: item)
                             case .Item:
                                 self.playOrPause(item: item)
                             }
@@ -93,7 +73,16 @@ struct ArtistView: View
                     }
                     
                     ForEach(self.model.albumList, id: \.id) { item in
-                        self.albumItem(item: item).id(item.id)
+                        AlbumItemView(item: item) {
+                            RootStack.shared.pushToView(
+                                view: AlbumView(albumId: item.albumId,
+                                                albumName: item.title,
+                                                artistName: self.artistModel.name,
+                                                ownerId: item.ownerId,
+                                                accessKey: item.accessKey).environmentObject(self.audioPlayer)
+                            )
+                        }
+                        .id(item.id)
                     }
                 }
             }
@@ -131,44 +120,6 @@ struct ArtistView: View
                     .foregroundColor(Color("color_text"))
                 
                 Spacer()
-            }
-            .padding(.vertical, 10)
-            .padding(.horizontal, 15)
-        }
-    }
-    
-    private func albumItem(item: AlbumModel) -> some View
-    {
-        Button {
-            RootStack.shared.pushToView(view:AlbumView(albumId: item.albumId,
-                                                       albumName: item.title,
-                                                       artistName: self.artistModel.name,
-                                                       ownerId: item.ownerId,
-                                                       accessKey: item.accessKey).environmentObject(self.audioPlayer))
-        } label: {
-            HStack(spacing: 15)
-            {
-                ThumbView(url: item.thumb, albumId: item.albumId, big: false)
-                
-                VStack
-                {
-                    Text(item.title)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .foregroundColor(Color("color_text"))
-                        .font(.system(size: 16))
-                        .lineLimit(1)
-                        .multilineTextAlignment(.leading)
-                    
-                    let strYear = String(item.year)
-                    let strCount = item.count > 1 ? "\(String(item.count)) tracks" : "single"
-                    
-                    Text("\(strYear) • \(strCount)")
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .foregroundColor(Color("color_text"))
-                        .font(.system(size: 14))
-                        .lineLimit(1)
-                        .multilineTextAlignment(.leading)
-                }
             }
             .padding(.vertical, 10)
             .padding(.horizontal, 15)

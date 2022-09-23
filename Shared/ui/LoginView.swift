@@ -14,6 +14,8 @@ struct LoginView: View
     @State private var login = ""
     @State private var password = ""
     
+    private let request = VKViewModel.shared
+    
     var body: some View
     {
         VStack(spacing: 15)
@@ -75,8 +77,7 @@ struct LoginView: View
     
     private func startExport()
     {
-        let model = VKViewModel.shared
-        model.doAuth(login: self.login, password: self.password) { info, result in
+        request.doAuth(login: self.login, password: self.password) { info, result in
             DispatchQueue.main.async {
                 switch result {
                 case .ErrorInternet:
@@ -85,7 +86,26 @@ struct LoginView: View
                     Toast.shared.show(text: "Invalid password or login")
                 case .Success:
                     if let info = info {
-                        self.showMain(token: info.access_token, secret: info.secret, userId: info.user_id)
+                        self.refreshToken(token: info.access_token, secret: info.secret, userId: info.user_id)
+                    }
+                }
+            }
+        }
+    }
+    
+    private func refreshToken(token: String, secret: String, userId: Int64)
+    {
+        request.refreshToken(token: token, secret: secret) { refresh, result in
+            DispatchQueue.main.async {
+                switch result {
+                case .ErrorInternet:
+                    Toast.shared.show(text: "Problems with the Internet")
+                case .ErrorRequest:
+                    Toast.shared.show(text: "Invalid password or login")
+                case .Success:
+                    print("Info updated")
+                    if let refresh = refresh {
+                        self.showMain(token: refresh.response.token, secret: refresh.response.secret, userId: userId)
                     }
                 }
             }

@@ -48,7 +48,7 @@ struct MenuDialogView: View
                 .transition(.move(edge: .bottom).combined(with: .opacity))
                 .removed(!self.model.showed)
         }
-        .background(Color.black.opacity(0.3)
+        .background(Color.black.opacity(0.5)
                         .edgesIgnoringSafeArea(.all)
                         .removed(!self.model.showed))
         .simultaneousGesture(self.model.showed ? drag : nil)
@@ -94,7 +94,7 @@ struct MenuDialogView: View
             }
             .removed(!self.showArtists)
             
-            VStack
+            VStack(spacing: 2)
             {
                 Text("\(self.model.audio?.model.artist ?? "Artist")")
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -103,12 +103,22 @@ struct MenuDialogView: View
                     .lineLimit(1)
                     .multilineTextAlignment(.leading)
                 
-                Text("\(self.model.audio?.model.title ?? "Title") • \(self.model.audio?.model.duration.toTime() ?? "--")")
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .foregroundColor(Color("color_text"))
-                    .font(.system(size: 14))
-                    .lineLimit(1)
-                    .multilineTextAlignment(.leading)
+                HStack(spacing: 5)
+                {
+                    Image("action_explicit")
+                        .resizable()
+                        .renderingMode(.template)
+                        .foregroundColor(Color("color_text"))
+                        .frame(width: 14, height: 14)
+                        .removed(!(self.audioPlayer.playedModel?.model.isExplicit ?? false))
+                    
+                    Text("\(self.model.audio?.model.title ?? "Title") • \(self.model.audio?.model.duration.toTime() ?? "--")")
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .foregroundColor(Color("color_text"))
+                        .font(.system(size: 14))
+                        .lineLimit(1)
+                        .multilineTextAlignment(.leading)
+                }
             }
             
             Button {

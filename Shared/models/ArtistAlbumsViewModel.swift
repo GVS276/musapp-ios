@@ -24,7 +24,11 @@ class ArtistAlbumsViewModel: ObservableObject
         {
             self.token = info["token"] as! String
             self.secret = info["secret"] as! String
-            self.receiveAlbums(artistId: artistId, count: 50, offset: 0)
+            
+            // задержка на 200 мс
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                self.receiveAlbums(artistId: artistId, count: 50, offset: 0)
+            }
         }
     }
     

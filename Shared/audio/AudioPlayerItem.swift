@@ -11,7 +11,10 @@ import SwiftUI
 enum AudioPlayerItemStatus
 {
     case Started
-    case Stalled
+    case Playing
+    case Paused
+    case Buffering
+    case MinimizeStalls
     case Finished
     case Failed
 }
@@ -19,6 +22,7 @@ enum AudioPlayerItemStatus
 protocol AudioPlayerItemDelegate
 {
     func onStatus(status: AudioPlayerItemStatus)
+    func onCurrentPosition(seconds: Float)
 }
 
 class AudioPlayerItem: AVPlayerItem
@@ -56,17 +60,18 @@ class AudioPlayerItem: AVPlayerItem
     
     deinit
     {
-        self.clear()
+        self.release()
     }
     
-    func clear()
+    func release()
     {
-        self.loader.clear()
+        self.loader.release()
         
         removeObserver(self, forKeyPath: #keyPath(AVPlayerItem.status))
         NotificationCenter.default.removeObserver(self)
         
-        print("AudioPlayerItem: cleared")
+        self.delegate = nil
+        print("Audio: cleared")
     }
     
     override func observeValue(forKeyPath keyPath: String?,
@@ -86,9 +91,6 @@ class AudioPlayerItem: AVPlayerItem
     {
         addObserver(self, forKeyPath: #keyPath(AVPlayerItem.status), options: .new, context: nil)
         
-        NotificationCenter.default.addObserver(self, selector: #selector(playbackStalled),
-                                               name: .AVPlayerItemPlaybackStalled, object: self)
-        
         NotificationCenter.default.addObserver(self, selector: #selector(playbackFinished),
                                                name: .AVPlayerItemDidPlayToEndTime, object: nil)
     }
@@ -98,21 +100,16 @@ class AudioPlayerItem: AVPlayerItem
         self.delegate?.onStatus(status: .Finished)
     }
     
-    @objc
-    private func playbackStalled() {
-        self.delegate?.onStatus(status: .Stalled)
-    }
-    
     internal class AudioPlayerLoader: NSObject, AVAssetResourceLoaderDelegate
     {
         var audioData: Data? = nil
         
         deinit
         {
-            self.clear()
+            self.release()
         }
         
-        func clear()
+        func release()
         {
             self.audioData?.removeAll()
             self.audioData = nil

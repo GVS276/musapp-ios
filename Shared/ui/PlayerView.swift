@@ -23,12 +23,12 @@ struct PlayerView: View
             Image("subtract")
                 .renderingMode(.template)
                 .foregroundColor(Color("color_text"))
-                .padding(.top, 10)
+                .padding(.top, 20)
             
             ThumbView(url: self.audioPlayer.playedModel?.model.thumb ?? "",
                       albumId: self.audioPlayer.playedModel?.model.albumId ?? "",
                       big: true)
-                .padding(.top, 20)
+                .padding(.top, 10)
             
             Text(self.audioPlayer.playedModel?.model.artist ?? "Artist")
                 .foregroundColor(Color("color_text"))
@@ -37,11 +37,21 @@ struct PlayerView: View
                 .multilineTextAlignment(.center)
                 .padding(.top, 20)
             
-            Text(self.audioPlayer.playedModel?.model.title ?? "Title")
-                .foregroundColor(Color("color_text"))
-                .font(.system(size: 14))
-                .lineLimit(4)
-                .multilineTextAlignment(.center)
+            HStack(spacing: 5)
+            {
+                Image("action_explicit")
+                    .resizable()
+                    .renderingMode(.template)
+                    .foregroundColor(Color("color_text"))
+                    .frame(width: 14, height: 14)
+                    .removed(!(self.audioPlayer.playedModel?.model.isExplicit ?? false))
+                
+                Text(self.audioPlayer.playedModel?.model.title ?? "Title")
+                    .foregroundColor(Color("color_text"))
+                    .font(.system(size: 14))
+                    .lineLimit(4)
+                    .multilineTextAlignment(.center)
+            }
             
             Spacer()
             
@@ -105,7 +115,7 @@ struct PlayerView: View
                         .background(Color("color_text"))
                         .clipShape(Circle())
                 }
-                .padding(.horizontal, 30)
+                .padding(.horizontal, 20)
                 
                 Button {
                     self.audioPlayer.control(tag: .Next)

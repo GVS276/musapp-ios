@@ -19,7 +19,9 @@ struct MainView: View
                 LazyVStack(spacing: 0)
                 {
                     ForEach(self.audioPlayer.audioList, id: \.id) { item in
-                        AudioItemView(item: item, playedId: self.audioPlayer.playedModel?.model.audioId) { type in
+                        let playedId = self.audioPlayer.playedModel?.model.audioId
+                        
+                        AudioItemView(item: item, source: .OtherAudio, playedId: playedId) { type in
                             switch type {
                             case .Menu:
                                 MenuDialog.shared.showMenu(audio: item)
@@ -36,9 +38,11 @@ struct MainView: View
             Button {
                 RootStack.shared.pushToView(view: MyMusicView().environmentObject(self.audioPlayer))
             } label: {
-                Text("MY")
+                Image("action_my")
+                    .resizable()
+                    .renderingMode(.template)
                     .foregroundColor(Color("color_text"))
-                    .font(.system(size: 15, weight: .bold))
+                    .frame(width: 20, height: 20)
             }
             
             Button {
