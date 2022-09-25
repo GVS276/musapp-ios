@@ -19,7 +19,7 @@ struct MainView: View
                 LazyVStack(spacing: 0)
                 {
                     ForEach(self.audioPlayer.audioList, id: \.id) { item in
-                        let playedId = self.audioPlayer.playedModel?.model.audioId
+                        let playedId = self.audioPlayer.playedModel?.audioId
                         
                         AudioItemView(item: item, source: .OtherAudio, playedId: playedId) { type in
                             switch type {
@@ -63,9 +63,9 @@ struct MainView: View
         }
     }
     
-    private func playOrPause(item: AudioStruct)
+    private func playOrPause(item: AudioModel)
     {
-        if item.model.audioId == self.audioPlayer.playedModel?.model.audioId
+        if item.audioId == self.audioPlayer.playedModel?.audioId
         {
             self.audioPlayer.control(tag: .PlayOrPause)
         } else {

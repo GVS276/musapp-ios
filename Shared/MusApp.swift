@@ -60,7 +60,7 @@ struct MusApp: App
         {
             VStack(spacing: 2)
             {
-                Text(self.audioPlayer.playedModel?.model.artist ?? "Artist")
+                Text(self.audioPlayer.playedModel?.artist ?? "Artist")
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .foregroundColor(Color("color_text"))
                     .font(.system(size: 16, weight: .bold))
@@ -74,9 +74,9 @@ struct MusApp: App
                         .renderingMode(.template)
                         .foregroundColor(Color("color_text"))
                         .frame(width: 14, height: 14)
-                        .removed(!(self.audioPlayer.playedModel?.model.isExplicit ?? false))
+                        .removed(!(self.audioPlayer.playedModel?.isExplicit ?? false))
                     
-                    Text(self.audioPlayer.playedModel?.model.title ?? "Title")
+                    Text(self.audioPlayer.playedModel?.title ?? "Title")
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .foregroundColor(Color("color_text"))
                         .font(.system(size: 14))

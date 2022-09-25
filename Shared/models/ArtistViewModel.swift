@@ -9,7 +9,7 @@ import Foundation
 
 class ArtistViewModel: ObservableObject
 {
-    @Published var audioList = [AudioStruct]()
+    @Published var audioList = [AudioModel]()
     @Published var albumList = [AlbumModel]()
     @Published var isLoading = true
     

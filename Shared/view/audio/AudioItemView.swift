@@ -21,7 +21,7 @@ enum AudioItemSource
 
 struct AudioItemView: View
 {
-    let item: AudioStruct
+    let item: AudioModel
     let source: AudioItemSource
     let playedId: String?
     let clicked: (_ type: AudioItemClick) -> Void
@@ -37,13 +37,13 @@ struct AudioItemView: View
                 {
                     if (source != .AudioFromAlbum)
                     {
-                        ThumbView(url: item.model.thumb, albumId: item.model.albumId, big: false)
+                        ThumbView(url: item.thumb, albumId: item.albumId, big: false)
                     }
                     
                     VStack(spacing: 2)
                     {
-                        let title = source == .AudioFromAlbum ? item.model.title : item.model.artist
-                        let subTitle = source == .AudioFromAlbum ? item.model.duration.toTime() : item.model.title
+                        let title = source == .AudioFromAlbum ? item.title : item.artist
+                        let subTitle = source == .AudioFromAlbum ? item.duration.toTime() : item.title
                         
                         Text(title)
                             .frame(maxWidth: .infinity, alignment: .leading)
@@ -51,7 +51,7 @@ struct AudioItemView: View
                             .font(.system(size: 16))
                             .lineLimit(1)
                             .multilineTextAlignment(.leading)
-                            .removed(item.model.artist.isEmpty)
+                            .removed(item.artist.isEmpty)
                         
                         HStack(spacing: 5)
                         {
@@ -60,7 +60,7 @@ struct AudioItemView: View
                                 .renderingMode(.template)
                                 .foregroundColor(Color("color_text"))
                                 .frame(width: 14, height: 14)
-                                .removed(!item.model.isExplicit)
+                                .removed(!item.isExplicit)
                             
                             Text(subTitle)
                                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -68,7 +68,7 @@ struct AudioItemView: View
                                 .font(.system(size: 14))
                                 .lineLimit(1)
                                 .multilineTextAlignment(.leading)
-                                .removed(item.model.title.isEmpty)
+                                .removed(item.title.isEmpty)
                         }
                     }
                 }
@@ -87,6 +87,6 @@ struct AudioItemView: View
             }
         }
         .padding(.vertical, 10)
-        .background(item.model.audioId == self.playedId ? Color("color_playing") : Color.clear)
+        .background(item.audioId == self.playedId ? Color("color_playing") : Color.clear)
     }
 }

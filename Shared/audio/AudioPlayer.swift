@@ -10,7 +10,6 @@ import AVFoundation
 class AudioPlayer: AVPlayer
 {
     private var playerItem: AudioPlayerItem? = nil
-    private var delegate: AudioPlayerItemDelegate? = nil
     private var periodicTime: Any? = nil
     
     override init() {
@@ -48,7 +47,6 @@ class AudioPlayer: AVPlayer
         super.init(playerItem: playerItem)
         
         self.playerItem = playerItem
-        self.delegate = delegate
         
         self.addObservers()
     }
@@ -66,29 +64,31 @@ class AudioPlayer: AVPlayer
         
         switch timeControlStatus {
         case .paused:
-            self.delegate?.onStatus(status: .Paused)
+            self.playerItem?.setItemStatus(itemStatus: .Paused)
             
         case .playing:
-            self.delegate?.onStatus(status: .Playing)
+            self.playerItem?.setItemStatus(itemStatus: .Playing)
             
         case .waitingToPlayAtSpecifiedRate:
             if let reason = reasonForWaitingToPlay {
                 switch reason {
                 case .evaluatingBufferingRate:
-                    self.delegate?.onStatus(status: .Buffering)
+                    self.playerItem?.setItemStatus(itemStatus: .Buffering)
 
                 case .toMinimizeStalls:
-                    self.delegate?.onStatus(status: .MinimizeStalls)
+                    self.playerItem?.setItemStatus(itemStatus: .MinimizeStalls)
 
                 case .noItemToPlay:
-                    self.delegate?.onStatus(status: .Failed)
+                    self.playerItem?.setItemStatus(itemStatus: .Failed)
 
                 default:
                     print("AudioPlayer: Unknown \(reason)")
+                    self.playerItem?.setItemStatus(itemStatus: .None)
                 }
             }
         default:
             print("AudioPlayer: Unknown control status")
+            self.playerItem?.setItemStatus(itemStatus: .None)
         }
     }
     
@@ -111,16 +111,13 @@ class AudioPlayer: AVPlayer
         
         self.playerItem?.release()
         self.playerItem = nil
-        
-        self.delegate?.onCurrentPosition(seconds: .zero)
-        self.delegate = nil
     }
     
     private func addObservers()
     {
         addObserver(self, forKeyPath: #keyPath(AVPlayer.timeControlStatus), options: .new, context: nil)
         self.periodicTime = addPeriodicTimeObserver(forInterval: CMTime(value: 1, timescale: 1), queue: .main) { time in
-            self.delegate?.onCurrentPosition(seconds: Float(CMTimeGetSeconds(time)))
+            self.playerItem?.setCurrentPosition(seconds: Float(CMTimeGetSeconds(time)))
         }
     }
 }

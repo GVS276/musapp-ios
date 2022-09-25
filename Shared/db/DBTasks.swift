@@ -32,7 +32,7 @@ class AddAudioTask: BaseTask
     }
     
     override func run() {
-        self.model.timestamp = DBUtils.getTimestamp()
+        self.model.timestamp = Int64(Date().timeIntervalSince1970 * 1000)
         if SQLDataBase.shared.getAudioDao().insertAudio(audio: self.model) {
             self.delegate?.onAudioAdded(requestIdentifier: self.requestIdentifier, model: self.model)
         } else {

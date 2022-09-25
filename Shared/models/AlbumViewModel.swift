@@ -9,7 +9,7 @@ import Foundation
 
 class AlbumViewModel: ObservableObject
 {
-    @Published var list = [AudioStruct]()
+    @Published var list = [AudioModel]()
     @Published var isLoading = true
     
     private let model = VKViewModel.shared

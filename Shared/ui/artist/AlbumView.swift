@@ -49,7 +49,7 @@ struct AlbumView: View
                 if !self.model.list.isEmpty
                 {
                     ForEach(self.model.list, id: \.id) { item in
-                        let playedId = self.audioPlayer.playedModel?.model.audioId
+                        let playedId = self.audioPlayer.playedModel?.audioId
                         
                         AudioItemView(item: item, source: .AudioFromAlbum, playedId: playedId) { type in
                             switch type {
@@ -77,9 +77,9 @@ struct AlbumView: View
         }
     }
     
-    private func playOrPause(item: AudioStruct)
+    private func playOrPause(item: AudioModel)
     {
-        if item.model.audioId == self.audioPlayer.playedModel?.model.audioId
+        if item.audioId == self.audioPlayer.playedModel?.audioId
         {
             self.audioPlayer.control(tag: .PlayOrPause)
         } else {

@@ -25,12 +25,12 @@ struct PlayerView: View
                 .foregroundColor(Color("color_text"))
                 .padding(.top, 20)
             
-            ThumbView(url: self.audioPlayer.playedModel?.model.thumb ?? "",
-                      albumId: self.audioPlayer.playedModel?.model.albumId ?? "",
+            ThumbView(url: self.audioPlayer.playedModel?.thumb ?? "",
+                      albumId: self.audioPlayer.playedModel?.albumId ?? "",
                       big: true)
                 .padding(.top, 10)
             
-            Text(self.audioPlayer.playedModel?.model.artist ?? "Artist")
+            Text(self.audioPlayer.playedModel?.artist ?? "Artist")
                 .foregroundColor(Color("color_text"))
                 .font(.system(size: 16, weight: .bold))
                 .lineLimit(1)
@@ -44,9 +44,9 @@ struct PlayerView: View
                     .renderingMode(.template)
                     .foregroundColor(Color("color_text"))
                     .frame(width: 14, height: 14)
-                    .removed(!(self.audioPlayer.playedModel?.model.isExplicit ?? false))
+                    .removed(!(self.audioPlayer.playedModel?.isExplicit ?? false))
                 
-                Text(self.audioPlayer.playedModel?.model.title ?? "Title")
+                Text(self.audioPlayer.playedModel?.title ?? "Title")
                     .foregroundColor(Color("color_text"))
                     .font(.system(size: 14))
                     .lineLimit(4)
@@ -56,7 +56,7 @@ struct PlayerView: View
             Spacer()
             
             AudioSliderView(value: self.currentTime,
-                            maxValue: Float(self.audioPlayer.playedModel?.model.duration ?? 0),
+                            maxValue: Float(self.audioPlayer.playedModel?.duration ?? 0),
                             touchedHandler: { touched, currentValue in
                 if !touched {
                     self.audioPlayer.seek(value: currentValue)
@@ -78,7 +78,7 @@ struct PlayerView: View
                 
                 Spacer()
                 
-                Text(self.audioPlayer.playedModel?.model.duration.toTime() ?? "--")
+                Text(self.audioPlayer.playedModel?.duration.toTime() ?? "--")
                     .foregroundColor(Color("color_text"))
                     .font(.system(size: 14))
             }

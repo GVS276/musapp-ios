@@ -84,14 +84,14 @@ class VKViewModel
         }
     }
     
-    private func createAudioList(data: Data) -> [AudioStruct]?
+    private func createAudioList(data: Data) -> [AudioModel]?
     {
         guard let json = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] else
         {
             return nil
         }
         
-        var list: [AudioStruct] = []
+        var list: [AudioModel] = []
         
         if let param = json["response"] as? [String: Any], let items = param["items"] as? NSArray
         {
@@ -166,7 +166,7 @@ class VKViewModel
                         }
                         
                         model.artists = artists
-                        list.append(AudioStruct(model: model))
+                        list.append(model)
                     }
                 }
             }
@@ -232,7 +232,7 @@ class VKViewModel
                       userId: Int64,
                       count: Int = 25,
                       offset: Int = 0,
-                      completionHandler: @escaping ((_ list: [AudioStruct]?, _ result: RequestResult) -> Void))
+                      completionHandler: @escaping ((_ list: [AudioModel]?, _ result: RequestResult) -> Void))
     {
         let method = "/method/audio.get?access_token=\(token)&owner_id=\(userId)&count=\(count)&offset=\(offset)&v=5.95&https=1&need_blocks=0&lang=ru&device_id=\(self.getDeviceId())"
         
@@ -258,7 +258,7 @@ class VKViewModel
                      q: String,
                      count: Int = 25,
                      offset: Int = 0,
-                     completionHandler: @escaping ((_ list: [AudioStruct]?, _ result: RequestResult) -> Void))
+                     completionHandler: @escaping ((_ list: [AudioModel]?, _ result: RequestResult) -> Void))
     {
         if let encoded = q.encoded
         {
@@ -289,7 +289,7 @@ class VKViewModel
                             artistId: String,
                             count: Int = 5,
                             offset: Int = 0,
-                            completionHandler: @escaping ((_ list: [AudioStruct]?, _ result: RequestResult) -> Void))
+                            completionHandler: @escaping ((_ list: [AudioModel]?, _ result: RequestResult) -> Void))
     {
         let method = "/method/audio.getAudiosByArtist?access_token=\(token)&artist_id=\(artistId)&count=\(count)&offset=\(offset)&v=5.95&https=1&need_blocks=0&lang=ru&device_id=\(self.getDeviceId())"
         
@@ -386,7 +386,7 @@ class VKViewModel
                            ownerId: Int,
                            accessKey: String,
                            albumId: String,
-                           completionHandler: @escaping ((_ list: [AudioStruct]?, _ result: RequestResult) -> Void))
+                           completionHandler: @escaping ((_ list: [AudioModel]?, _ result: RequestResult) -> Void))
     {
         let method = "/method/audio.get?access_token=\(token)&owner_id=\(ownerId)&album_id=\(albumId)&access_key=\(accessKey)&v=5.95&https=1&need_blocks=0&lang=ru&device_id=\(self.getDeviceId())"
         

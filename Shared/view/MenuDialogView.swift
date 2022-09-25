@@ -96,7 +96,7 @@ struct MenuDialogView: View
             
             VStack(spacing: 2)
             {
-                Text("\(self.model.audio?.model.artist ?? "Artist")")
+                Text("\(self.model.audio?.artist ?? "Artist")")
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .foregroundColor(Color("color_text"))
                     .font(.system(size: 16, weight: .bold))
@@ -110,9 +110,9 @@ struct MenuDialogView: View
                         .renderingMode(.template)
                         .foregroundColor(Color("color_text"))
                         .frame(width: 14, height: 14)
-                        .removed(!(self.audioPlayer.playedModel?.model.isExplicit ?? false))
+                        .removed(!(self.audioPlayer.playedModel?.isExplicit ?? false))
                     
-                    Text("\(self.model.audio?.model.title ?? "Title") • \(self.model.audio?.model.duration.toTime() ?? "--")")
+                    Text("\(self.model.audio?.title ?? "Title") • \(self.model.audio?.duration.toTime() ?? "--")")
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .foregroundColor(Color("color_text"))
                         .font(.system(size: 14))
@@ -139,7 +139,7 @@ struct MenuDialogView: View
     {
         VStack(spacing: 10)
         {
-            let isAddedAudio = self.audioPlayer.isAddedAudio(audioId: self.model.audio?.model.audioId ?? "")
+            let isAddedAudio = self.audioPlayer.isAddedAudio(audioId: self.model.audio?.audioId ?? "")
             self.item(iconSet: isAddedAudio ? "action_delete" : "action_add",
                       title: isAddedAudio ? "Delete from library" : "Add to library")
             {
@@ -147,8 +147,8 @@ struct MenuDialogView: View
                     return
                 }
                 
-                if self.audioPlayer.isAddedAudio(audioId: audio.model.audioId) {
-                    self.audioPlayer.deleteAudioFromDB(audioId: audio.model.audioId)
+                if self.audioPlayer.isAddedAudio(audioId: audio.audioId) {
+                    self.audioPlayer.deleteAudioFromDB(audioId: audio.audioId)
                 } else {
                     self.audioPlayer.addAudioToDB(model: audio)
                 }
@@ -161,18 +161,18 @@ struct MenuDialogView: View
                     return
                 }
                 
-                if audio.model.artists.count > 1
+                if audio.artists.count > 1
                 {
                     withAnimation(.easeInOut(duration: 0.2)) {
                         self.showArtists = true
                     }
                 } else {
-                    let item = audio.model.artists[0]
+                    let item = audio.artists[0]
                     RootStack.shared.pushToView(view: ArtistView(artistModel: item).environmentObject(self.audioPlayer))
                     close()
                 }
             }
-            .removed(self.model.audio?.model.artists.isEmpty ?? true)
+            .removed(self.model.audio?.artists.isEmpty ?? true)
             
             self.item(iconSet: "action_album", title: "Go to album") {
                 guard let audio = self.model.audio else {
@@ -180,15 +180,15 @@ struct MenuDialogView: View
                 }
                 
                 RootStack.shared.pushToView(view: AlbumView(
-                    albumId: audio.model.albumId,
-                    albumName: audio.model.albumTitle,
-                    artistName: audio.model.artist,
-                    ownerId: Int(audio.model.albumOwnerId) ?? 0,
-                    accessKey: audio.model.albumAccessKey).environmentObject(self.audioPlayer))
+                    albumId: audio.albumId,
+                    albumName: audio.albumTitle,
+                    artistName: audio.artist,
+                    ownerId: Int(audio.albumOwnerId) ?? 0,
+                    accessKey: audio.albumAccessKey).environmentObject(self.audioPlayer))
                 
                 close()
             }
-            .removed(self.model.audio?.model.albumId.isEmpty ?? true)
+            .removed(self.model.audio?.albumId.isEmpty ?? true)
         }
         .padding(.vertical, 10)
         .padding(.horizontal, 15)
@@ -199,7 +199,7 @@ struct MenuDialogView: View
     {
         VStack(spacing: 10)
         {
-           if let artists = self.model.audio?.model.artists
+           if let artists = self.model.audio?.artists
             {
                 ForEach(artists, id: \.id) { item in
                     self.item(iconSet: "action_next", title: item.name) {
@@ -255,14 +255,14 @@ class MenuDialog: ObservableObject
 {
     static let shared = MenuDialog()
     @Published var showed = false
-    @Published var audio: AudioStruct? = nil
+    @Published var audio: AudioModel? = nil
     
     func clear()
     {
         self.audio = nil
     }
     
-    func showMenu(audio: AudioStruct)
+    func showMenu(audio: AudioModel)
     {
         self.audio = audio
         withAnimation(.easeInOut(duration: 0.2)) {

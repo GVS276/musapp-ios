@@ -19,16 +19,19 @@ enum PlayerControl: Int
 class AudioPlayerModelView: ObservableObject
 {
     @Published var playerSheet: Bool = false
-    @Published var playedModel: AudioStruct? = nil
+    @Published var playedModel: AudioModel? = nil
     
     @Published var audioPlaying = false
     @Published var audioPlayerReady = false
     
-    @Published var audioList: [AudioStruct] = []
+    @Published var audioList: [AudioModel] = []
+    
+    private let mediaCenter = MPNowPlayingInfoCenter.default()
+    private var mediaFinished = false
     
     private var player: AudioPlayer? = nil
     private var playerCurrentTime: ((_ current: Float) -> Void)? = nil
-    private var playerList: [AudioStruct] = []
+    private var playerList: [AudioModel] = []
     
     private let DB = DBController.shared
     private var requestReceiveId: Int64? = nil
@@ -45,7 +48,7 @@ class AudioPlayerModelView: ObservableObject
         self.destroy()
     }
     
-    func setPlayerList(list: [AudioStruct])
+    func setPlayerList(list: [AudioModel])
     {
         if !self.playerList.elementsEqual(list) {
             self.playerList.removeAll()
@@ -53,7 +56,7 @@ class AudioPlayerModelView: ObservableObject
         }
     }
     
-    func startStream(model: AudioStruct)
+    func startStream(model: AudioModel)
     {
         // destroy player
         if self.player != nil
@@ -69,10 +72,10 @@ class AudioPlayerModelView: ObservableObject
             
             // player init
             self.playedModel = model
-            self.player = AudioPlayer(model: model.model, delegate: self)
+            self.player = AudioPlayer(model: model, delegate: self)
             
             // info (about track)
-            self.nowPlayingInfo(current: 0)
+            self.initPlayingCenter()
             
             self.ready(value: true)
         } catch {
@@ -83,7 +86,7 @@ class AudioPlayerModelView: ObservableObject
     private func setAudioPlaying(value: Bool)
     {
         self.audioPlaying = value
-        self.playedModel?.isPlaying = value
+        self.updatePlayingCenterTime(time: self.currentTime())
     }
     
     private func ready(value: Bool)
@@ -95,27 +98,27 @@ class AudioPlayerModelView: ObservableObject
     {
         self.audioPlaying = false
         
+        self.playerCurrentTime?(0)
         self.player?.release()
         self.player = nil
 
-        self.playedModel?.isPlaying = self.audioPlaying
         self.playedModel = nil
     }
     
     private func setStatusDownload(audioId: String, value: Bool)
     {
-        if let index = self.audioList.firstIndex(where: {$0.model.audioId == audioId})
+        if let index = self.audioList.firstIndex(where: {$0.audioId == audioId})
         {
-            self.audioList[index].model.isDownloaded = value
+            self.audioList[index].isDownloaded = value
         }
         
-        if let index = self.playerList.firstIndex(where: {$0.model.audioId == audioId})
+        if let index = self.playerList.firstIndex(where: {$0.audioId == audioId})
         {
-            self.playerList[index].model.isDownloaded = value
+            self.playerList[index].isDownloaded = value
         }
         
-        if self.playedModel?.model.audioId == audioId {
-            self.playedModel?.model.isDownloaded = value
+        if self.playedModel?.audioId == audioId {
+            self.playedModel?.isDownloaded = value
         }
     }
     
@@ -171,7 +174,6 @@ class AudioPlayerModelView: ObservableObject
     {
         let time = CMTimeMakeWithSeconds(Float64(value), preferredTimescale: 60000)
         self.player?.seek(to: time, toleranceBefore: .zero, toleranceAfter: .zero)
-        self.nowPlayingInfo(current: value)
     }
     
     func seek(time: TimeInterval)
@@ -249,22 +251,43 @@ class AudioPlayerModelView: ObservableObject
         }
     }
     
-    private func nowPlayingInfo(current: Float)
+    private func initPlayingCenter()
     {
         var info = [String : Any]()
-        if let img = ThumbCacheObj.cache[self.playedModel?.model.albumId ?? ""]
+        
+        if let img = ThumbCacheObj.cache[self.playedModel?.albumId ?? ""]
         {
             info[MPMediaItemPropertyArtwork] = MPMediaItemArtwork(boundsSize: img.size) { size in
                 return img.imageWith(newSize: size)
             }
         }
+        
         info[MPMediaItemPropertyMediaType] = MPMediaType.anyAudio.rawValue
-        info[MPMediaItemPropertyPlaybackDuration] = Double(self.playedModel?.model.duration ?? 0)
-        info[MPNowPlayingInfoPropertyElapsedPlaybackTime] = Double(current)
-        info[MPMediaItemPropertyTitle] = self.playedModel?.model.title ?? ""
-        info[MPMediaItemPropertyArtist] = self.playedModel?.model.artist ?? ""
-        info[MPMediaItemPropertyIsExplicit] = self.playedModel?.model.isExplicit ?? false
-        MPNowPlayingInfoCenter.default().nowPlayingInfo = info
+        
+        info[MPMediaItemPropertyTitle] = self.playedModel?.title ?? ""
+        info[MPMediaItemPropertyArtist] = self.playedModel?.artist ?? ""
+        info[MPMediaItemPropertyIsExplicit] = self.playedModel?.isExplicit ?? false
+        
+        info[MPMediaItemPropertyPlaybackDuration] = Double(self.playedModel?.duration ?? 0)
+        info[MPNowPlayingInfoPropertyElapsedPlaybackTime] = Double(0)
+        info[MPNowPlayingInfoPropertyPlaybackRate] = Double(0)
+        
+        mediaCenter.nowPlayingInfo = info
+    }
+    
+    private func updatePlayingCenterTime(time: Float)
+    {
+        mediaCenter.nowPlayingInfo?.updateValue(Double(time),
+                                                forKey: MPNowPlayingInfoPropertyElapsedPlaybackTime)
+        
+        mediaCenter.nowPlayingInfo?.updateValue(Double(self.audioPlaying ? 1.0 : 0.0),
+                                                forKey: MPNowPlayingInfoPropertyPlaybackRate)
+    }
+    
+    private func clearPlayingCenterProgress()
+    {
+        mediaCenter.nowPlayingInfo?[MPNowPlayingInfoPropertyElapsedPlaybackTime] = nil
+        mediaCenter.nowPlayingInfo?[MPNowPlayingInfoPropertyPlaybackRate] = nil
     }
     
     /*
@@ -282,10 +305,13 @@ class AudioPlayerModelView: ObservableObject
     
     private func audioTrackFinished()
     {
+        self.mediaFinished = false
+        
         if self.isRepeatAudio()
         {
+            self.clearPlayingCenterProgress()
             self.seek(value: .zero)
-            self.player?.play()
+            self.play()
             return
         }
         
@@ -313,6 +339,7 @@ class AudioPlayerModelView: ObservableObject
         if self.currentTime() >= 5
         {
             self.seek(value: .zero)
+            self.updatePlayingCenterTime(time: 0)
             return
         }
         
@@ -336,7 +363,7 @@ class AudioPlayerModelView: ObservableObject
     
     func isAddedAudio(audioId: String) -> Bool
     {
-        return self.audioList.firstIndex(where: { $0.model.audioId == audioId }) != nil
+        return self.audioList.firstIndex(where: { $0.audioId == audioId }) != nil
     }
     
     func receiveAudioList()
@@ -344,9 +371,9 @@ class AudioPlayerModelView: ObservableObject
         self.requestReceiveId = self.DB.receiveAudioList(delegate: self)
     }
     
-    func addAudioToDB(model: AudioStruct)
+    func addAudioToDB(model: AudioModel)
     {
-        self.requestAddId = self.DB.addAudio(model: model.model, delegate: self)
+        self.requestAddId = self.DB.addAudio(model: model, delegate: self)
     }
     
     func deleteAudioFromDB(audioId: String)
@@ -366,16 +393,11 @@ extension AudioPlayerModelView: IDBDelegate
     {
         if self.requestReceiveId == requestIdentifier
         {
-            var result = [AudioStruct]()
-            if let list = list
-            {
-                list.forEach { model in
-                    result.append(AudioStruct(model: model))
-                }
-            }
-            
             DispatchQueue.main.async {
-                self.audioList = result
+                if let list = list
+                {
+                    self.audioList = list
+                }
             }
         }
     }
@@ -387,7 +409,7 @@ extension AudioPlayerModelView: IDBDelegate
             DispatchQueue.main.async {
                 if let model = model
                 {
-                    self.audioList.insert(AudioStruct(model: model), at: 0)
+                    self.audioList.insert(model, at: 0)
                     Toast.shared.show(text: "Added to your data base")
                 } else {
                     Toast.shared.show(text: "Not added to your data base")
@@ -400,7 +422,7 @@ extension AudioPlayerModelView: IDBDelegate
         if self.requestDeleteId == requestIdentifier
         {
             DispatchQueue.main.async {
-                if let index = self.audioList.firstIndex(where: {$0.model.audioId == audioId}) {
+                if let index = self.audioList.firstIndex(where: {$0.audioId == audioId}) {
                     self.audioList.remove(at: index)
                 }
             }
@@ -421,11 +443,17 @@ extension AudioPlayerModelView: AudioPlayerItemDelegate
 {
     func onStatus(status: AudioPlayerItemStatus) {
         switch status {
-        case .Started:
-            print("Audio: Started")
+        case .None:
+            print("Audio: None")
+        case .Ready:
             self.play()
         case .Paused:
-            self.setAudioPlaying(value: false)
+            if self.mediaFinished
+            {
+                self.audioTrackFinished()
+            } else {
+                self.setAudioPlaying(value: false)
+            }
         case .Playing:
             self.setAudioPlaying(value: true)
         case .Buffering:
@@ -433,9 +461,9 @@ extension AudioPlayerModelView: AudioPlayerItemDelegate
         case .MinimizeStalls:
             print("Audio: MinimizeStalls")
         case .Finished:
-            self.audioTrackFinished()
+            self.mediaFinished = true
         case .Failed:
-            print("Audio: player failed")
+            print("Audio: Failed")
         }
     }
     

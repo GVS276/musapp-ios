@@ -10,7 +10,8 @@ import SwiftUI
 
 enum AudioPlayerItemStatus
 {
-    case Started
+    case None
+    case Ready
     case Playing
     case Paused
     case Buffering
@@ -74,17 +75,28 @@ class AudioPlayerItem: AVPlayerItem
         print("Audio: cleared")
     }
     
+    func setItemStatus(itemStatus: AudioPlayerItemStatus)
+    {
+        self.delegate?.onStatus(status: itemStatus)
+    }
+    
+    func setCurrentPosition(seconds: Float)
+    {
+        self.delegate?.onCurrentPosition(seconds: seconds)
+    }
+    
     override func observeValue(forKeyPath keyPath: String?,
                                of object: Any?,
                                change: [NSKeyValueChangeKey : Any]?,
                                context: UnsafeMutableRawPointer?)
     {
-        if keyPath == #keyPath(AVPlayerItem.status) {
-            self.delegate?.onStatus(status: status == .readyToPlay ? .Started : .Failed)
-        }
-        else {
+        if keyPath != #keyPath(AVPlayerItem.status) {
             super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
+            return
         }
+        
+        let itemStatus: AudioPlayerItemStatus = status == .readyToPlay ? .Ready : .Failed
+        self.setItemStatus(itemStatus: itemStatus)
     }
     
     private func addObservers()
@@ -97,7 +109,7 @@ class AudioPlayerItem: AVPlayerItem
     
     @objc
     private func playbackFinished() {
-        self.delegate?.onStatus(status: .Finished)
+        self.setItemStatus(itemStatus: .Finished)
     }
     
     internal class AudioPlayerLoader: NSObject, AVAssetResourceLoaderDelegate
