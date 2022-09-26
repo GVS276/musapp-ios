@@ -10,25 +10,31 @@ import Foundation
 class ArtistTracksViewModel: ObservableObject
 {
     @Published var list = [AudioModel]()
-    @Published var isLoading = true
+    @Published var isAllowLoading = true
+    @Published var isRequestStatus: RequestLoadingStatus = .Receiving
     
     private let model = VKViewModel.shared
+    private var artistId = ""
     private var token = ""
     private var secret = ""
     
-    private var isRequest = true
+    private let maxCount = 50
     
     init(artistId: String)
     {
         if let info = UIUtils.getInfo()
         {
+            self.artistId = artistId
             self.token = info["token"] as! String
             self.secret = info["secret"] as! String
             
             // задержка на 200 мс
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                self.receiveAudio(artistId: artistId, count: 50, offset: 0)
+                self.receiveAudio(offset: 0)
             }
+        } else {
+            self.isAllowLoading = false
+            self.isRequestStatus = .Error
         }
     }
     
@@ -37,18 +43,16 @@ class ArtistTracksViewModel: ObservableObject
         self.list.removeAll()
     }
     
-    func receiveAudio(artistId: String, count: Int, offset: Int)
+    func receiveAudio(offset: Int)
     {
-        if !self.isRequest {
+        if !self.isAllowLoading {
             return
         }
         
-        self.isRequest = false
-        
         self.model.receiveAudioArtist(token: self.token,
                                       secret: self.secret,
-                                      artistId: artistId,
-                                      count: count,
+                                      artistId: self.artistId,
+                                      count: self.maxCount,
                                       offset: offset) { list, result in
             DispatchQueue.main.async {
                 switch result {
@@ -58,16 +62,19 @@ class ArtistTracksViewModel: ObservableObject
                     Toast.shared.show(text: "An error occurred while accessing the list")
                 case .Success:
                     if let list = list {
-                        guard !list.isEmpty else {
-                            self.isLoading = false
-                            return
+                        
+                        if list.isEmpty
+                        {
+                            self.isAllowLoading = false
+                            self.isRequestStatus = self.list.isEmpty ? .Empty : .ReceivedLast
+                        } else {
+                            self.list.append(contentsOf: list)
+                            self.isAllowLoading = list.count == self.maxCount
+                            self.isRequestStatus = .Received
                         }
                         
-                        self.isLoading = true
-                        self.list.append(contentsOf: list)
                     }
                 }
-                self.isRequest = true
             }
         }
     }

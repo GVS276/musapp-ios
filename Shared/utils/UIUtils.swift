@@ -7,6 +7,15 @@
 
 import Foundation
 
+enum RequestLoadingStatus {
+    case None
+    case Error
+    case Empty
+    case Receiving
+    case Received
+    case ReceivedLast
+}
+
 class UIUtils
 {
     static func updateInfo(token: String, secret: String, userId: Int64 = -1)

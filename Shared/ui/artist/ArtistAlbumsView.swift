@@ -12,22 +12,33 @@ struct ArtistAlbumsView: View
     @EnvironmentObject private var audioPlayer: AudioPlayerModelView
     @StateObject private var model: ArtistAlbumsViewModel
     
-    private var artistId: String
     private var artistName: String
     
     init(artistId: String, artistName: String) {
-        self.artistId = artistId
         self.artistName = artistName
         self._model = StateObject(wrappedValue: ArtistAlbumsViewModel(artistId: artistId))
     }
     
     var body: some View
     {
-        StackView(title: "All albums", back: true) {
-            ProgressView()
-                .progressViewStyle(CircularProgressViewStyle())
-                .padding(30)
-                .removed(!self.model.list.isEmpty)
+        StackView(title: "All albums", back: true)
+        {
+            if self.model.isRequestStatus == .Receiving
+            {
+                ProgressView()
+                    .progressViewStyle(CircularProgressViewStyle())
+                    .padding(.vertical, 20)
+            }
+            
+            if self.model.isRequestStatus == .Empty
+            {
+                Text("No albums")
+                    .foregroundColor(Color("color_text"))
+                    .font(.system(size: 16))
+                    .lineLimit(1)
+                    .multilineTextAlignment(.center)
+                    .padding(.vertical, 20)
+            }
             
             ScrollView(.vertical, showsIndicators: false) {
                 LazyVStack(spacing: 0)
@@ -44,10 +55,10 @@ struct ArtistAlbumsView: View
                         }
                         .id(item.id)
                         .onAppear {
-                            if item.id == self.model.list.last?.id && self.model.list.count >= 50 && self.model.isLoading
+                            if item.id == self.model.list.last?.id && self.model.isAllowLoading
                             {
                                 let end = self.model.list.endIndex
-                                self.model.receiveAlbums(artistId: self.artistId, count: 50, offset: end)
+                                self.model.receiveAlbums(offset: end)
                             }
                         }
                     }

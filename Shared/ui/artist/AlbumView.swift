@@ -41,12 +41,24 @@ struct AlbumView: View
         } content: {
             VStack(spacing: 0)
             {
-                ProgressView()
-                    .progressViewStyle(CircularProgressViewStyle())
-                    .padding(30)
-                    .removed(!self.model.isLoading)
+                if self.model.isRequestStatus == .Receiving
+                {
+                    ProgressView()
+                        .progressViewStyle(CircularProgressViewStyle())
+                        .padding(.vertical, 20)
+                }
                 
-                if !self.model.list.isEmpty
+                if self.model.isRequestStatus == .Empty
+                {
+                    Text("No tracks")
+                        .foregroundColor(Color("color_text"))
+                        .font(.system(size: 16))
+                        .lineLimit(1)
+                        .multilineTextAlignment(.center)
+                        .padding(.vertical, 20)
+                }
+                
+                if self.model.isRequestStatus == .Received
                 {
                     ForEach(self.model.list, id: \.id) { item in
                         let playedId = self.audioPlayer.playedModel?.audioId
@@ -61,15 +73,6 @@ struct AlbumView: View
                         }
                         .id(item.id)
                     }
-                } else {
-                    Text("No tracks")
-                        .foregroundColor(Color("color_text"))
-                        .font(.system(size: 14))
-                        .lineLimit(1)
-                        .multilineTextAlignment(.center)
-                        .padding(.horizontal, 15)
-                        .padding(.vertical, 10)
-                        .removed(self.model.isLoading)
                 }
             }
             .padding(.vertical, 10)

@@ -11,7 +11,9 @@ class ArtistViewModel: ObservableObject
 {
     @Published var audioList = [AudioModel]()
     @Published var albumList = [AlbumModel]()
-    @Published var isLoading = true
+    
+    @Published var isAllowLoading = true
+    @Published var isRequestStatus: RequestLoadingStatus = .Receiving
     
     private let model = VKViewModel.shared
     
@@ -27,7 +29,8 @@ class ArtistViewModel: ObservableObject
                 self.receiveTracks(token: token, secret: secret, artistId: artistId)
             }
         } else {
-            self.isLoading = false
+            self.isAllowLoading = false
+            self.isRequestStatus = .Error
         }
     }
     
@@ -39,10 +42,12 @@ class ArtistViewModel: ObservableObject
     
     private func receiveTracks(token: String, secret: String, artistId: String)
     {
+        if !self.isAllowLoading {
+            return
+        }
+        
         self.model.receiveAudioArtist(token: token, secret: secret, artistId: artistId) { list, result in
             DispatchQueue.main.async {
-                self.isLoading = false
-                
                 switch result {
                 case .ErrorInternet:
                     Toast.shared.show(text: "Problems with the Internet")
@@ -50,11 +55,21 @@ class ArtistViewModel: ObservableObject
                     Toast.shared.show(text: "An error occurred while accessing the list")
                 case .Success:
                     if let list = list {
-                        self.audioList.removeAll()
-                        self.audioList.append(contentsOf: list)
+                        
+                        if list.isEmpty
+                        {
+                            self.isAllowLoading = false
+                            self.isRequestStatus = self.audioList.isEmpty ? .Empty : .ReceivedLast
+                        } else {
+                            self.audioList.removeAll()
+                            self.audioList.append(contentsOf: list)
+                            self.receiveAlbums(token: token, secret: secret, artistId: artistId)
+                            
+                            self.isAllowLoading = false
+                            self.isRequestStatus = .Received
+                        }
+                        
                     }
-                    
-                    self.receiveAlbums(token: token, secret: secret, artistId: artistId)
                 }
             }
         }

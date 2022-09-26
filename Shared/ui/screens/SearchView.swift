@@ -17,6 +17,23 @@ struct SearchView: View
     {
         StackView(title: "", back: true)
         {
+            if self.model.isRequestStatus == .Receiving
+            {
+                ProgressView()
+                    .progressViewStyle(CircularProgressViewStyle())
+                    .padding(.vertical, 20)
+            }
+            
+            if self.model.isRequestStatus == .Empty
+            {
+                Text("No tracks")
+                    .foregroundColor(Color("color_text"))
+                    .font(.system(size: 16))
+                    .lineLimit(1)
+                    .multilineTextAlignment(.center)
+                    .padding(.vertical, 20)
+            }
+            
             ScrollView(.vertical, showsIndicators: false) {
                 LazyVStack(spacing: 0)
                 {
@@ -33,10 +50,10 @@ struct SearchView: View
                         }
                         .id(item.id)
                         .onAppear {
-                            if item.id == self.model.list.last?.id && self.model.list.count >= 50 && self.model.isLoading
+                            if item.id == self.model.list.last?.id && self.model.isAllowLoading
                             {
                                 let end = self.model.list.endIndex
-                                self.model.receiveAudio(count: 50, offset: end)
+                                self.model.receiveAudio(offset: end)
                             }
                         }
                     }

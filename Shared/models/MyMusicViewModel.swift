@@ -10,14 +10,15 @@ import Foundation
 class MyMusicViewModel: ObservableObject
 {
     @Published var list = [AudioModel]()
-    @Published var isLoading = true
+    @Published var isAllowLoading = true
+    @Published var isRequestStatus: RequestLoadingStatus = .Receiving
     
     private let model = VKViewModel.shared
     private var token = ""
     private var secret = ""
     private var userId: Int64 = -1
     
-    private var isRequest = true
+    private let maxCount = 50
     
     init()
     {
@@ -29,8 +30,11 @@ class MyMusicViewModel: ObservableObject
             
             // задержка на 200 мс
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                self.receiveAudio(count: 50, offset: 0)
+                self.receiveAudio(offset: 0)
             }
+        } else {
+            self.isAllowLoading = false
+            self.isRequestStatus = .Error
         }
     }
     
@@ -39,18 +43,16 @@ class MyMusicViewModel: ObservableObject
         self.list.removeAll()
     }
     
-    func receiveAudio(count: Int, offset: Int)
+    func receiveAudio(offset: Int)
     {
-        if !self.isRequest {
+        if !self.isAllowLoading {
             return
         }
-        
-        self.isRequest = false
         
         self.model.getAudioList(token: self.token,
                                 secret: self.secret,
                                 userId: self.userId,
-                                count: count,
+                                count: self.maxCount,
                                 offset: offset) { list, result in
             DispatchQueue.main.async {
                 switch result {
@@ -60,16 +62,19 @@ class MyMusicViewModel: ObservableObject
                     Toast.shared.show(text: "An error occurred while accessing the list")
                 case .Success:
                     if let list = list {
-                        guard !list.isEmpty else {
-                            self.isLoading = false
-                            return
+                        
+                        if list.isEmpty
+                        {
+                            self.isAllowLoading = false
+                            self.isRequestStatus = self.list.isEmpty ? .Empty : .ReceivedLast
+                        } else {
+                            self.list.append(contentsOf: list)
+                            self.isAllowLoading = list.count == self.maxCount
+                            self.isRequestStatus = .Received
                         }
                         
-                        self.isLoading = true
-                        self.list.append(contentsOf: list)
                     }
                 }
-                self.isRequest = true
             }
         }
     }

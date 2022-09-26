@@ -31,12 +31,24 @@ struct ArtistView: View
         } content: {
             VStack(spacing: 0)
             {
-                ProgressView()
-                    .progressViewStyle(CircularProgressViewStyle())
-                    .padding(30)
-                    .removed(!self.model.isLoading)
+                if self.model.isRequestStatus == .Receiving
+                {
+                    ProgressView()
+                        .progressViewStyle(CircularProgressViewStyle())
+                        .padding(.vertical, 20)
+                }
                 
-                if !self.model.audioList.isEmpty
+                if self.model.isRequestStatus == .Empty
+                {
+                    Text("No tracks")
+                        .foregroundColor(Color("color_text"))
+                        .font(.system(size: 16))
+                        .lineLimit(1)
+                        .multilineTextAlignment(.center)
+                        .padding(.vertical, 20)
+                }
+                
+                if self.model.isRequestStatus == .Received
                 {
                     self.showItem(title: "Tracks") {
                         RootStack.shared.pushToView(view: ArtistTracksView(artistId: self.artistModel.id).environmentObject(self.audioPlayer))
@@ -55,15 +67,6 @@ struct ArtistView: View
                         }
                         .id(item.id)
                     }
-                } else {
-                    Text("No tracks")
-                        .foregroundColor(Color("color_text"))
-                        .font(.system(size: 14))
-                        .lineLimit(1)
-                        .multilineTextAlignment(.center)
-                        .padding(.horizontal, 15)
-                        .padding(.vertical, 10)
-                        .removed(self.model.isLoading)
                 }
                 
                 if !self.model.albumList.isEmpty
@@ -118,8 +121,6 @@ struct ArtistView: View
                 Image("action_next")
                     .renderingMode(.template)
                     .foregroundColor(Color("color_text"))
-                
-                Spacer()
             }
             .padding(.vertical, 10)
             .padding(.horizontal, 15)

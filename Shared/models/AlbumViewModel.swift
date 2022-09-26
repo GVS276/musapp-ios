@@ -10,7 +10,8 @@ import Foundation
 class AlbumViewModel: ObservableObject
 {
     @Published var list = [AudioModel]()
-    @Published var isLoading = true
+    @Published var isAllowLoading = true
+    @Published var isRequestStatus: RequestLoadingStatus = .Receiving
     
     private let model = VKViewModel.shared
     
@@ -27,7 +28,8 @@ class AlbumViewModel: ObservableObject
                                   albumId: albumId, ownerId: ownerId, accessKey: accessKey)
             }
         } else {
-            self.isLoading = false
+            self.isAllowLoading = false
+            self.isRequestStatus = .Error
         }
     }
     
@@ -38,14 +40,16 @@ class AlbumViewModel: ObservableObject
     
     private func receiveAudio(token: String, secret: String, albumId: String, ownerId: Int, accessKey: String)
     {
+        if !self.isAllowLoading {
+            return
+        }
+        
         self.model.getAudioFromAlbum(token: token,
                                      secret: secret,
                                      ownerId: ownerId,
                                      accessKey: accessKey,
                                      albumId: albumId) { list, result in
             DispatchQueue.main.async {
-                self.isLoading = false
-                
                 switch result {
                 case .ErrorInternet:
                     Toast.shared.show(text: "Problems with the Internet")
@@ -53,8 +57,18 @@ class AlbumViewModel: ObservableObject
                     Toast.shared.show(text: "An error occurred while accessing the list")
                 case .Success:
                     if let list = list {
-                        self.list.removeAll()
-                        self.list.append(contentsOf: list)
+                        
+                        if list.isEmpty
+                        {
+                            self.isAllowLoading = false
+                            self.isRequestStatus = self.list.isEmpty ? .Empty : .ReceivedLast
+                        } else {
+                            self.list.removeAll()
+                            self.list.append(contentsOf: list)
+                            
+                            self.isAllowLoading = false
+                            self.isRequestStatus = .Received
+                        }
                     }
                 }
             }
