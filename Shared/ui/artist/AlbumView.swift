@@ -30,7 +30,6 @@ struct AlbumView: View
             if let image = ThumbCacheObj.cache[self.albumId] {
                 Image(uiImage: image.imageWith(newSize: CGSize(width: 150, height: 150)))
                     .clipShape(RoundedRectangle(cornerRadius: 10))
-                    .shadow(color: .gray, radius: 20, x: 0, y: 0)
             } else {
                 Image("album")
                     .resizable()
@@ -76,7 +75,6 @@ struct AlbumView: View
                 }
             }
             .padding(.vertical, 10)
-            .background(Color("color_background"))
         }
     }
     

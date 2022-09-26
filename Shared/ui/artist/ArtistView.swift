@@ -90,7 +90,6 @@ struct ArtistView: View
                 }
             }
             .padding(.vertical, 10)
-            .background(Color("color_background"))
         }
     }
     
@@ -110,20 +109,14 @@ struct ArtistView: View
         Button {
             clicked()
         } label: {
-            HStack(spacing: 10)
-            {
-                Text(title)
-                    .foregroundColor(Color("color_text"))
-                    .font(.system(size: 18))
-                    .lineLimit(1)
-                    .multilineTextAlignment(.leading)
-                    
-                Image("action_next")
-                    .renderingMode(.template)
-                    .foregroundColor(Color("color_text"))
-            }
-            .padding(.vertical, 10)
-            .padding(.horizontal, 15)
+            Text(title)
+                .foregroundColor(Color("color_text"))
+                .font(.system(size: 18))
+                .underline()
+                .lineLimit(1)
+                .multilineTextAlignment(.leading)
+                .padding(.vertical, 10)
+                .padding(.horizontal, 15)
         }
     }
 }

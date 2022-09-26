@@ -9,7 +9,6 @@ import SwiftUI
 
 struct ProfileHeaderView<Header: View, Content: View>: View
 {
-    @Environment(\.presentationMode) private var presentationMode
     @State private var opacity: CGFloat = .zero
     
     private let headerHeight: CGFloat = 350
@@ -23,81 +22,106 @@ struct ProfileHeaderView<Header: View, Content: View>: View
     
     var body: some View
     {
-        ZStack(alignment: .top)
-        {
-            ScrollView(.vertical, showsIndicators: false)
+        GeometryReader { proxy in // проверим размеры родительского вию
+            
+            ZStack(alignment: .top) // родитель
             {
+                ScrollView(.vertical, showsIndicators: false) // общий скроллинг
+                {
+                    VStack(spacing: 0) // вертикальный контейнер
+                    {
+                        // геометральный хидер чтобы отслеживать позицию в скроллинге
+                        // результат будет правильный и фиксированный хидер (вью)
+                        headerBody
+                        
+                        // контент виде списка
+                        content
+                            .frame(minHeight: proxy.size.height - toolbarHeight, alignment: .top)
+                            .background(Color("color_background"))
+                    }
+                }
+                .ignoresSafeArea(edges: .top)
+                
+                // тулбар будет выше всех
+                toolbarBody
+            }
+            .background(Color("color_background").ignoresSafeArea(edges: .all))
+            
+        }
+    }
+    
+    private var toolbarBody: some View
+    {
+        HStack(spacing: 15)
+        {
+            Button {
+                RootStack.shared.popToView()
+            } label: {
+                Image("action_back")
+                    .renderingMode(.template)
+                    .foregroundColor(Color("color_text"))
+            }
+            
+            Text(title)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .foregroundColor(Color("color_text"))
+                .font(.system(size: 16, weight: .bold))
+                .lineLimit(1)
+                .multilineTextAlignment(.leading)
+                .opacity(opacity)
+        }
+        .frame(height: self.toolbarHeight)
+        .padding(.horizontal, 15)
+        .background(Color("color_toolbar").ignoresSafeArea(edges: .top))
+    }
+    
+    private var headerBody: some View
+    {
+        GeometryReader { geometry -> AnyView in
+            
+            // вычислим начало тулбара
+            let end: CGFloat = self.headerHeight - (self.toolbarHeight * 2)
+            
+            // минимальный Y позиция в скроллинге
+            let minY =  geometry.frame(in: .global).minY
+            
+            // будем растягивать хидер
+            let stretch = minY > 0 ? self.headerHeight + abs(minY / 9) : self.headerHeight
+            
+            // прозрачность для тулбара (да, вывод будет в main поток,
+            // т.к. все вычисление проходят не в главном потоке)
+            DispatchQueue.main.async {
+                self.opacity = min(1, abs(abs(min(0, minY)) / end))
+            }
+            
+            // построим наш хидер (вью) и выведем
+            return AnyView(
                 VStack(spacing: 0)
                 {
-                    GeometryReader { geometry -> AnyView in
-                        let end: CGFloat = self.headerHeight - (self.toolbarHeight * 2)
-                        let minY =  geometry.frame(in: .global).minY
-                        let stretch = minY > 0 ? self.headerHeight + abs(minY / 9) : self.headerHeight
-                        
-                        DispatchQueue.main.async {
-                            self.opacity = min(1, abs(abs(min(0, minY)) / end))
-                        }
-                        
-                        return AnyView(
-                            ZStack(alignment: .bottom)
-                            {
-                                ZStack
-                                {
-                                    header
-                                }
-                                .frame(width: geometry.size.width, height: stretch)
-                                
-                                VStack
-                                {
-                                    Text(self.title)
-                                        .foregroundColor(Color("color_text"))
-                                        .font(.system(size: 18))
-                                        .lineLimit(1)
-                                    
-                                    Text(self.subTitle)
-                                        .foregroundColor(Color("color_text"))
-                                        .font(.system(size: 12))
-                                        .lineLimit(1)
-                                        .removed(self.subTitle.isEmpty)
-                                }
-                                .padding(.vertical, 30)
-                                .padding(.horizontal, 15)
-                            }
-                            .frame(height: stretch)
-                            .background(Color("color_toolbar"))
-                            .offset(y: -minY)
-                            .opacity(1.0 - self.opacity)
-                        )
-                    }
-                    .frame(height: self.headerHeight)
-                    
-                    content
-                }
-            }
-            .ignoresSafeArea(edges: .top)
-            
-            HStack(spacing: 15)
-            {
-                Button {
-                    self.presentationMode.wrappedValue.dismiss()
-                } label: {
-                    Image("action_back")
-                        .renderingMode(.template)
+                    header
+                        .padding(.top, self.toolbarHeight)
+                        .padding(.bottom, 15)
+                        .opacity(1.0 - self.opacity)
+
+                    Text(self.title)
                         .foregroundColor(Color("color_text"))
+                        .font(.system(size: 18))
+                        .padding(.bottom, 5)
+                        .lineLimit(1)
+                        .padding(.horizontal, 15)
+                    
+                    Text(self.subTitle)
+                        .foregroundColor(Color("color_text"))
+                        .font(.system(size: 12))
+                        .lineLimit(1)
+                        .padding(.horizontal, 15)
+                        .removed(self.subTitle.isEmpty)
                 }
-                
-                Text(title)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .foregroundColor(Color("color_text"))
-                    .font(.system(size: 16, weight: .bold))
-                    .lineLimit(1)
-                    .multilineTextAlignment(.leading)
-                    .opacity(self.opacity)
-            }
-            .frame(height: self.toolbarHeight)
-            .padding(.horizontal, 15)
-            .background(Color("color_toolbar").ignoresSafeArea(edges: .top).opacity(self.opacity))
+                .frame(width: geometry.size.width, height: stretch, alignment: .center)
+                .background(Color("color_toolbar"))
+                .offset(y: -minY)
+            )
         }
-        .background(Color("color_background").ignoresSafeArea(edges: .all))
+        .frame(height: self.headerHeight)
     }
 }
