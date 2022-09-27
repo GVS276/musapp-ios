@@ -189,6 +189,19 @@ struct MenuDialogView: View
                 close()
             }
             .removed(self.model.audio?.albumId.isEmpty ?? true)
+            
+            self.item(iconSet: "action_data", title: "Track Recommendations") {
+                guard let audio = self.model.audio else {
+                    return
+                }
+                
+                RootStack.shared.pushToView(view: RecommendationsView(
+                    audioId: audio.audioId,
+                    audioOwnerId: audio.audioOwnerId).environmentObject(self.audioPlayer))
+                
+                close()
+            }
+            .removed(self.model.audio?.albumId.isEmpty ?? true)
         }
         .padding(.vertical, 10)
         .padding(.horizontal, 15)

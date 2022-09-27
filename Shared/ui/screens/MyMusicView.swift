@@ -16,7 +16,7 @@ struct MyMusicView: View
     {
         StackView(title: "My music", back: true)
         {
-            if self.model.isRequestStatus == .Receiving
+            if self.model.isRequestStatus == .Receiving && self.model.list.isEmpty
             {
                 ProgressView()
                     .progressViewStyle(CircularProgressViewStyle())

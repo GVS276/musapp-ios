@@ -11,7 +11,7 @@ class ArtistTracksViewModel: ObservableObject
 {
     @Published var list = [AudioModel]()
     @Published var isAllowLoading = true
-    @Published var isRequestStatus: RequestLoadingStatus = .Receiving
+    @Published var isRequestStatus: RequestLoadingStatus = .None
     
     private let model = VKViewModel.shared
     private var artistId = ""
@@ -49,6 +49,12 @@ class ArtistTracksViewModel: ObservableObject
             return
         }
         
+        if self.isRequestStatus == .Receiving {
+            return
+        } else {
+            self.isRequestStatus = .Receiving
+        }
+        
         self.model.receiveAudioArtist(token: self.token,
                                       secret: self.secret,
                                       artistId: self.artistId,
@@ -57,8 +63,14 @@ class ArtistTracksViewModel: ObservableObject
             DispatchQueue.main.async {
                 switch result {
                 case .ErrorInternet:
+                    self.isAllowLoading = false
+                    self.isRequestStatus = .Error
+                    
                     Toast.shared.show(text: "Problems with the Internet")
                 case .ErrorRequest:
+                    self.isAllowLoading = false
+                    self.isRequestStatus = .Error
+                    
                     Toast.shared.show(text: "An error occurred while accessing the list")
                 case .Success:
                     if let list = list {

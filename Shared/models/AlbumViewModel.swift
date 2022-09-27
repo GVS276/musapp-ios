@@ -11,7 +11,7 @@ class AlbumViewModel: ObservableObject
 {
     @Published var list = [AudioModel]()
     @Published var isAllowLoading = true
-    @Published var isRequestStatus: RequestLoadingStatus = .Receiving
+    @Published var isRequestStatus: RequestLoadingStatus = .None
     
     private let model = VKViewModel.shared
     
@@ -44,6 +44,12 @@ class AlbumViewModel: ObservableObject
             return
         }
         
+        if self.isRequestStatus == .Receiving {
+            return
+        } else {
+            self.isRequestStatus = .Receiving
+        }
+        
         self.model.getAudioFromAlbum(token: token,
                                      secret: secret,
                                      ownerId: ownerId,
@@ -52,8 +58,14 @@ class AlbumViewModel: ObservableObject
             DispatchQueue.main.async {
                 switch result {
                 case .ErrorInternet:
+                    self.isAllowLoading = false
+                    self.isRequestStatus = .Error
+                    
                     Toast.shared.show(text: "Problems with the Internet")
                 case .ErrorRequest:
+                    self.isAllowLoading = false
+                    self.isRequestStatus = .Error
+                    
                     Toast.shared.show(text: "An error occurred while accessing the list")
                 case .Success:
                     if let list = list {
@@ -61,7 +73,7 @@ class AlbumViewModel: ObservableObject
                         if list.isEmpty
                         {
                             self.isAllowLoading = false
-                            self.isRequestStatus = self.list.isEmpty ? .Empty : .ReceivedLast
+                            self.isRequestStatus = .Empty
                         } else {
                             self.list.removeAll()
                             self.list.append(contentsOf: list)

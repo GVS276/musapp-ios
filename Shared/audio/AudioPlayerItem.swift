@@ -24,6 +24,7 @@ protocol AudioPlayerItemDelegate
 {
     func onStatus(status: AudioPlayerItemStatus)
     func onCurrentPosition(seconds: Float)
+    func onAudioUnavailable()
 }
 
 class AudioPlayerItem: AVPlayerItem

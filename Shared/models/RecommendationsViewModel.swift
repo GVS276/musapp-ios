@@ -1,32 +1,39 @@
 //
-//  ArtistViewModel.swift
+//  RecommendationsViewModel.swift
 //  musapp (iOS)
 //
-//  Created by Виктор Губин on 07.09.2022.
+//  Created by Виктор Губин on 27.09.2022.
 //
 
 import Foundation
 
-class ArtistViewModel: ObservableObject
+class RecommendationsViewModel: ObservableObject
 {
-    @Published var audioList = [AudioModel]()
-    @Published var albumList = [AlbumModel]()
-    
+    @Published var list = [AudioModel]()
     @Published var isAllowLoading = true
     @Published var isRequestStatus: RequestLoadingStatus = .None
     
     private let model = VKViewModel.shared
     
-    init(artistId: String)
+    private var audioId = ""
+    private var audioOwnerId = ""
+    
+    private var token = ""
+    private var secret = ""
+    
+    init(audioId: String, audioOwnerId: String)
     {
         if let info = UIUtils.getInfo()
         {
-            let token = info["token"] as! String
-            let secret = info["secret"] as! String
+            self.audioId = audioId
+            self.audioOwnerId = audioOwnerId
+            
+            self.token = info["token"] as! String
+            self.secret = info["secret"] as! String
             
             // задержка на 200 мс
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                self.receiveTracks(token: token, secret: secret, artistId: artistId)
+                self.receiveAudio()
             }
         } else {
             self.isAllowLoading = false
@@ -36,11 +43,10 @@ class ArtistViewModel: ObservableObject
     
     deinit
     {
-        self.audioList.removeAll()
-        self.albumList.removeAll()
+        self.list.removeAll()
     }
     
-    private func receiveTracks(token: String, secret: String, artistId: String)
+    private func receiveAudio()
     {
         if !self.isAllowLoading {
             return
@@ -52,7 +58,10 @@ class ArtistViewModel: ObservableObject
             self.isRequestStatus = .Receiving
         }
         
-        self.model.receiveAudioArtist(token: token, secret: secret, artistId: artistId) { list, result in
+        self.model.getRecommendationsAudio(token: self.token,
+                                           secret: self.secret,
+                                           audioId: self.audioId,
+                                           audioOwnerId: self.audioOwnerId) { list, result in
             DispatchQueue.main.async {
                 switch result {
                 case .ErrorInternet:
@@ -71,31 +80,15 @@ class ArtistViewModel: ObservableObject
                         if list.isEmpty
                         {
                             self.isAllowLoading = false
-                            self.isRequestStatus = self.audioList.isEmpty ? .Empty : .ReceivedLast
+                            self.isRequestStatus = .Empty
                         } else {
-                            self.audioList.removeAll()
-                            self.audioList.append(contentsOf: list)
-                            self.receiveAlbums(token: token, secret: secret, artistId: artistId)
+                            self.list.removeAll()
+                            self.list.append(contentsOf: list)
                             
                             self.isAllowLoading = false
                             self.isRequestStatus = .Received
                         }
                         
-                    }
-                }
-            }
-        }
-    }
-    
-    private func receiveAlbums(token: String, secret: String, artistId: String)
-    {
-        self.model.receiveAlbumArtist(token: token, secret: secret, artistId: artistId) { list, result in
-            DispatchQueue.main.async {
-                if result == .Success
-                {
-                    if let list = list {
-                        self.albumList.removeAll()
-                        self.albumList.append(contentsOf: list)
                     }
                 }
             }

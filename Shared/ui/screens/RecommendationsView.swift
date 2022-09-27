@@ -1,24 +1,46 @@
 //
-//  MainView.swift
+//  RecommendationsView.swift
 //  musapp (iOS)
 //
-//  Created by Виктор Губин on 06.08.2022.
+//  Created by Виктор Губин on 27.09.2022.
 //
 
 import SwiftUI
 
-struct MainView: View
+struct RecommendationsView: View
 {
     @EnvironmentObject private var audioPlayer: AudioPlayerModelView
+    @StateObject private var model: RecommendationsViewModel
+    
+    init(audioId: String, audioOwnerId: String) {
+        self._model = StateObject(wrappedValue: RecommendationsViewModel(audioId: audioId, audioOwnerId: audioOwnerId))
+    }
     
     var body: some View
     {
-        StackView(title: "Library", back: false)
+        StackView(title: "Recommendations", back: true)
         {
+            if self.model.isRequestStatus == .Receiving
+            {
+                ProgressView()
+                    .progressViewStyle(CircularProgressViewStyle())
+                    .padding(.vertical, 20)
+            }
+            
+            if self.model.isRequestStatus == .Empty
+            {
+                Text("No tracks")
+                    .foregroundColor(Color("color_text"))
+                    .font(.system(size: 16))
+                    .lineLimit(1)
+                    .multilineTextAlignment(.center)
+                    .padding(.vertical, 20)
+            }
+            
             ScrollView(.vertical, showsIndicators: false) {
                 LazyVStack(spacing: 0)
                 {
-                    ForEach(self.audioPlayer.audioList, id: \.id) { item in
+                    ForEach(self.model.list, id:\.id) { item in
                         let playedId = self.audioPlayer.playedModel?.audioId
                         
                         AudioItemView(item: item, source: .OtherAudio, playedId: playedId) { type in
@@ -35,29 +57,7 @@ struct MainView: View
                 .padding(.vertical, 10)
             }
         } menu: {
-            Button {
-                RootStack.shared.pushToView(view: MyMusicView().environmentObject(self.audioPlayer))
-            } label: {
-                Image("action_my")
-                    .renderingMode(.template)
-                    .foregroundColor(Color("color_text"))
-            }
-            
-            Button {
-                RootStack.shared.pushToView(view: SearchView().environmentObject(self.audioPlayer))
-            } label: {
-                Image("action_search")
-                    .renderingMode(.template)
-                    .foregroundColor(Color("color_text"))
-            }
-            
-            Button {
-                RootStack.shared.pushToView(view: AboutView())
-            } label: {
-                Image("action_settings")
-                    .renderingMode(.template)
-                    .foregroundColor(Color("color_text"))
-            }
+            EmptyView()
         }
     }
     
@@ -68,7 +68,7 @@ struct MainView: View
             self.audioPlayer.control(tag: .PlayOrPause)
         } else {
             self.audioPlayer.startStream(model: item)
-            self.audioPlayer.setPlayerList(list: self.audioPlayer.audioList)
+            self.audioPlayer.setPlayerList(list: self.model.list)
         }
     }
 }

@@ -40,10 +40,10 @@ class SearchViewModel: ObservableObject
     func startReceiveAudio(q: String)
     {
         self.query = q
+        
         self.list.removeAll()
         
         self.isAllowLoading = true
-        self.isRequestStatus = .Receiving
         
         self.receiveAudio(offset: 0)
     }
@@ -54,15 +54,27 @@ class SearchViewModel: ObservableObject
             return
         }
         
+        if self.isRequestStatus == .Receiving {
+            return
+        } else {
+            self.isRequestStatus = .Receiving
+        }
+        
         self.model.searchAudio(token: self.token,
                                secret: self.secret,
                                q: self.query, count: self.maxCount, offset: offset) { list, result in
             DispatchQueue.main.async {
                 switch result {
                 case .ErrorInternet:
-                    print("Problems with the Internet")
+                    self.isAllowLoading = false
+                    self.isRequestStatus = .Error
+                    
+                    Toast.shared.show(text: "Problems with the Internet")
                 case .ErrorRequest:
-                    print("An error occurred while accessing the list")
+                    self.isAllowLoading = false
+                    self.isRequestStatus = .Error
+                    
+                    Toast.shared.show(text: "An error occurred while accessing the list")
                 case .Success:
                     if let list = list {
                         
@@ -71,7 +83,7 @@ class SearchViewModel: ObservableObject
                             self.isAllowLoading = false
                             self.isRequestStatus = self.list.isEmpty ? .Empty : .ReceivedLast
                         } else {
-                            self.list.append(contentsOf: list)
+                            self.uniquedList(list: list)
                             self.isAllowLoading = list.count == self.maxCount
                             self.isRequestStatus = .Received
                         }
@@ -80,5 +92,31 @@ class SearchViewModel: ObservableObject
                 }
             }
         }
+    }
+    
+    func uniquedList(list: [AudioModel])
+    {
+        // если главный список пуст то добавим в него новые данные
+        if self.list.isEmpty
+        {
+            self.list.append(contentsOf: list)
+            return
+        }
+        
+        // временный список
+        var temp = [AudioModel]()
+        
+        // проверяем данные на повтороение в главном списке
+        list.forEach { model in
+            if !self.list.contains(where: {$0.audioId == model.audioId}) {
+                temp.append(model)
+            }
+        }
+        
+        // заносим новый данные в главный список
+        self.list.append(contentsOf: temp)
+        
+        // очищаем временный список
+        temp.removeAll()
     }
 }

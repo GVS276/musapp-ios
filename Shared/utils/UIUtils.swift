@@ -8,11 +8,17 @@
 import Foundation
 
 enum RequestLoadingStatus {
+    // ничего
     case None
+    // ошибка выполнения запроса
     case Error
+    // полученный запрос с пустыми данными
     case Empty
+    // получение данных
     case Receiving
+    // получены данные (но можно получить еще)
     case Received
+    // получены последние данные (повторять не требуется)
     case ReceivedLast
 }
 

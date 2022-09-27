@@ -103,7 +103,8 @@ class VKViewModel
                        let artist = item["artist"] as? String,
                        let title = item["title"] as? String,
                        let streamUrl = item["url"] as? String,
-                       let duration = item["duration"] as? Int
+                       let duration = item["duration"] as? Int,
+                       let isExplicit = item["is_explicit"] as? Bool
                     {
                         var model = AudioModel()
                         model.audioId = String(audioId)
@@ -112,11 +113,7 @@ class VKViewModel
                         model.title = title
                         model.streamUrl = streamUrl
                         model.duration = Int32(duration)
-                        
-                        if let is_explicit = item["is_explicit"] as? Bool
-                        {
-                            model.isExplicit = is_explicit
-                        }
+                        model.isExplicit = isExplicit
                         
                         if let album = item["album"] as? [String: Any],
                            let albumId = album["id"] as? Int64,
@@ -407,32 +404,30 @@ class VKViewModel
         }
     }
     
-    /*private func verifyUrl(urlString: String) -> Bool {
-        if let url = URL(string: urlString) {
-            return UIApplication.shared.canOpenURL(url)
-        }
-        return false
-    }
-    
-    func getAudioUrl(token: String,
-                     secret: String,
-                     audios: String,
-                     completionHandler: @escaping ((_ urlString: String?, _ result: RequestResult) -> Void))
+    func getRecommendationsAudio(token: String,
+                                 secret: String,
+                                 audioId: String,
+                                 audioOwnerId: String,
+                                 completionHandler: @escaping ((_ list: [AudioModel]?, _ result: RequestResult) -> Void))
     {
-        if let encoded = audios.encoded
-        {
-            let method = "/method/audio.getById?access_token=\(token)&audios=\(encoded)&v=5.95&https=1&need_blocks=0&lang=ru&device_id=\(self.getDeviceId())"
+        let targetAudio = "\(audioOwnerId)_\(audioId)"
+
+        let method = "/method/audio.getRecommendations?access_token=\(token)&target_audio=\(targetAudio)&count=100&v=5.95&https=1&need_blocks=0&lang=ru&device_id=\(self.getDeviceId())"
+        
+        let hash = "\(method)\(secret)".md5
+        
+        self.requestSession(urlString: "https://api.vk.com\(method)&sig=\(hash)", parameters: nil) { data in
+            guard let data = data else {
+                completionHandler(nil, .ErrorInternet)
+                return
+            }
             
-            let methodForHash = "/method/audio.getById?access_token=\(token)&audios=\(audios)&v=5.95&https=1&need_blocks=0&lang=ru&device_id=\(self.getDeviceId())"
-            
-            let hash = "\(methodForHash)\(secret)".md5
-            
-            self.requestSession(urlString: "https://api.vk.com\(method)&sig=\(hash)", parameters: nil) { data in
-                guard let data = data else {
-                    completionHandler(nil, .ErrorInternet)
-                    return
-                }
+            if let list = self.createAudioList(data: data)
+            {
+                completionHandler(list, .Success)
+            } else {
+                completionHandler(nil, .ErrorRequest)
             }
         }
-    }*/
+    }
 }

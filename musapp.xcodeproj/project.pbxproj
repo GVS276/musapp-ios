@@ -10,6 +10,8 @@
 		1A09A36328A2FF51009760A6 /* AudioSliderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A09A36228A2FF51009760A6 /* AudioSliderView.swift */; };
 		1A1A378E28C1057000677EBB /* RootStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A1A378D28C1057000677EBB /* RootStack.swift */; };
 		1A1FBD3428DB7B1900CDA475 /* AlbumItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A1FBD3328DB7B1900CDA475 /* AlbumItemView.swift */; };
+		1A282C7B28E32268005F0B5A /* RecommendationsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A282C7A28E32268005F0B5A /* RecommendationsView.swift */; };
+		1A282C7D28E32432005F0B5A /* RecommendationsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A282C7C28E32432005F0B5A /* RecommendationsViewModel.swift */; };
 		1A30A72428C7F04700A91B4A /* MenuDialogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A30A72328C7F04700A91B4A /* MenuDialogView.swift */; };
 		1A31BA2D28DDF29100BF040A /* AudioPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A31BA2C28DDF29100BF040A /* AudioPlayer.swift */; };
 		1A3A198528B0490F00B961D7 /* AudioItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A3A198428B0490F00B961D7 /* AudioItemView.swift */; };
@@ -126,6 +128,8 @@
 		1A09A36228A2FF51009760A6 /* AudioSliderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioSliderView.swift; sourceTree = "<group>"; };
 		1A1A378D28C1057000677EBB /* RootStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootStack.swift; sourceTree = "<group>"; };
 		1A1FBD3328DB7B1900CDA475 /* AlbumItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumItemView.swift; sourceTree = "<group>"; };
+		1A282C7A28E32268005F0B5A /* RecommendationsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecommendationsView.swift; sourceTree = "<group>"; };
+		1A282C7C28E32432005F0B5A /* RecommendationsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecommendationsViewModel.swift; sourceTree = "<group>"; };
 		1A30A72328C7F04700A91B4A /* MenuDialogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuDialogView.swift; sourceTree = "<group>"; };
 		1A31BA2C28DDF29100BF040A /* AudioPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioPlayer.swift; sourceTree = "<group>"; };
 		1A3A198428B0490F00B961D7 /* AudioItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioItemView.swift; sourceTree = "<group>"; };
@@ -374,6 +378,7 @@
 			children = (
 				1AE0830C28A18B2F00ED456B /* SearchView.swift */,
 				1A5BE0BE28AF7A3800CC54F2 /* MyMusicView.swift */,
+				1A282C7A28E32268005F0B5A /* RecommendationsView.swift */,
 				1A7F960D28AE7E3B000171F5 /* AboutView.swift */,
 			);
 			path = screens;
@@ -482,6 +487,7 @@
 				1A7F39A828C9E67E00B1A0E1 /* AlbumViewModel.swift */,
 				1AD4EB0A28C90F93000BCB24 /* SearchViewModel.swift */,
 				1AD4EB0828C90F6B000BCB24 /* MyMusicViewModel.swift */,
+				1A282C7C28E32432005F0B5A /* RecommendationsViewModel.swift */,
 				1A1A378D28C1057000677EBB /* RootStack.swift */,
 			);
 			path = models;
@@ -765,6 +771,7 @@
 				1AB4B06428B3C76B003E3007 /* BaseTask.swift in Sources */,
 				1AD4EB1928C93030000BCB24 /* ArtistAlbumsViewModel.swift in Sources */,
 				1AD3E955289E6872007745E9 /* MainView.swift in Sources */,
+				1A282C7D28E32432005F0B5A /* RecommendationsViewModel.swift in Sources */,
 				1A818E4F28B12079002A862D /* ThumbModel.swift in Sources */,
 				1A3B40D528B4E95700A73B0A /* AlbumView.swift in Sources */,
 				1AE0830D28A18B2F00ED456B /* SearchView.swift in Sources */,
@@ -784,6 +791,7 @@
 				1ADB3F5028A11D6800D44C59 /* VKViewModel.swift in Sources */,
 				1AC9B82228B39C3600037733 /* UIFileUtils.swift in Sources */,
 				1AD4EB1728C92CEF000BCB24 /* ArtistAlbumsView.swift in Sources */,
+				1A282C7B28E32268005F0B5A /* RecommendationsView.swift in Sources */,
 				1A3F910528B7BB500063D205 /* ProfileHeaderView.swift in Sources */,
 				1A3C2B8628B242C90079C407 /* ThumbView.swift in Sources */,
 				1AD4EB1028C90FF3000BCB24 /* RootNavigationView.swift in Sources */,

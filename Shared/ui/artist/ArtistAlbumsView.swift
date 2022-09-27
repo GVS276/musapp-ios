@@ -23,7 +23,7 @@ struct ArtistAlbumsView: View
     {
         StackView(title: "All albums", back: true)
         {
-            if self.model.isRequestStatus == .Receiving
+            if self.model.isRequestStatus == .Receiving && self.model.list.isEmpty
             {
                 ProgressView()
                     .progressViewStyle(CircularProgressViewStyle())

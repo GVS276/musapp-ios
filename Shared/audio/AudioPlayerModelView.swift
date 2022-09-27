@@ -473,6 +473,11 @@ extension AudioPlayerModelView: AudioPlayerItemDelegate
             handler(seconds)
         }
     }
+    
+    func onAudioUnavailable() {
+        print("Audio: unavailable")
+        Toast.shared.show(text: "Track is unavailable or has been blocked")
+    }
 }
 
 extension AudioPlayerModelView: DownloadDelegate

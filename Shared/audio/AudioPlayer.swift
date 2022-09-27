@@ -22,6 +22,7 @@ class AudioPlayer: AVPlayer
         
         guard let audioUrl = UIFileUtils.getAnyFileUri(path: AUDIO_PATH, fileName: "\(model.audioId).mp3") else {
             super.init(playerItem: nil)
+            delegate?.onAudioUnavailable()
             return
         }
         
@@ -29,6 +30,7 @@ class AudioPlayer: AVPlayer
         {
             guard let data = try? Data(contentsOf: audioUrl) else {
                 super.init(playerItem: nil)
+                delegate?.onAudioUnavailable()
                 return
             }
             
@@ -37,6 +39,7 @@ class AudioPlayer: AVPlayer
         } else {
             guard let url = URL.init(string: model.streamUrl) else {
                 super.init(playerItem: nil)
+                delegate?.onAudioUnavailable()
                 return
             }
             
@@ -99,6 +102,11 @@ class AudioPlayer: AVPlayer
     
     func release()
     {
+        if self.playerItem == nil
+        {
+            return
+        }
+        
         removeObserver(self, forKeyPath: #keyPath(AVPlayer.timeControlStatus))
         
         if let observer = self.periodicTime
