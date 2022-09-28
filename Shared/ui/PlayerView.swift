@@ -18,6 +18,9 @@ struct PlayerView: View
     
     var body: some View
     {
+        let isUnavailable = self.audioPlayer.playedModel?.streamUrl.isEmpty ?? true
+        let color = isUnavailable ? Color.secondary : Color("color_text")
+        
         VStack(spacing: 10)
         {
             Image("subtract")
@@ -31,7 +34,7 @@ struct PlayerView: View
                 .padding(.top, 10)
             
             Text(self.audioPlayer.playedModel?.artist ?? "Artist")
-                .foregroundColor(Color("color_text"))
+                .foregroundColor(color)
                 .font(.system(size: 16, weight: .bold))
                 .lineLimit(1)
                 .multilineTextAlignment(.center)
@@ -42,12 +45,12 @@ struct PlayerView: View
                 Image("action_explicit")
                     .resizable()
                     .renderingMode(.template)
-                    .foregroundColor(Color("color_text"))
+                    .foregroundColor(color)
                     .frame(width: 14, height: 14)
                     .removed(!(self.audioPlayer.playedModel?.isExplicit ?? false))
                 
                 Text(self.audioPlayer.playedModel?.title ?? "Title")
-                    .foregroundColor(Color("color_text"))
+                    .foregroundColor(color)
                     .font(.system(size: 14))
                     .lineLimit(4)
                     .multilineTextAlignment(.center)

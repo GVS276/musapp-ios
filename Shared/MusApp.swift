@@ -21,26 +21,15 @@ struct MusApp: App
     
     var body: some Scene {
         WindowGroup {
-            VStack(spacing: 0)
+            ZStack(alignment: .bottom)
             {
-                switch self.rootStack.root
-                {
-                case .Main:
-                    RootNavigationView(
-                        root: MainView().environmentObject(self.audioPlayer),
-                        model: self.rootStack
-                    ).ignoresSafeArea()
-                case .Login:
-                    LoginView().environmentObject(self.rootStack)
-                default:
-                    EmptyView()
-                }
+                content
                 
-                self.miniPlayer()
-                    .removed(!self.audioPlayer.audioPlayerReady)
+                MenuDialogView()
+                    .environmentObject(self.audioPlayer)
             }
             .ignoresSafeArea(.keyboard)
-            .overlay(MenuDialogView().environmentObject(self.audioPlayer))
+            .overlay(ToastView(), alignment: .bottom)
             .sheet(isPresented: self.$audioPlayer.playerSheet, content: {
                 PlayerView().environmentObject(self.audioPlayer)
             })
@@ -54,15 +43,17 @@ struct MusApp: App
         }
     }
     
-    private func miniPlayer() -> some View
+    private var peekPlayer: some View
     {
-        HStack(spacing: 20)
+        let isUnavailable = self.audioPlayer.playedModel?.streamUrl.isEmpty ?? true
+        let color = isUnavailable ? Color.secondary : Color("color_text")
+        return HStack(spacing: 20)
         {
             VStack(spacing: 2)
             {
                 Text(self.audioPlayer.playedModel?.artist ?? "Artist")
                     .frame(maxWidth: .infinity, alignment: .leading)
-                    .foregroundColor(Color("color_text"))
+                    .foregroundColor(color)
                     .font(.system(size: 16, weight: .bold))
                     .lineLimit(1)
                     .multilineTextAlignment(.leading)
@@ -72,13 +63,13 @@ struct MusApp: App
                     Image("action_explicit")
                         .resizable()
                         .renderingMode(.template)
-                        .foregroundColor(Color("color_text"))
+                        .foregroundColor(color)
                         .frame(width: 14, height: 14)
                         .removed(!(self.audioPlayer.playedModel?.isExplicit ?? false))
                     
                     Text(self.audioPlayer.playedModel?.title ?? "Title")
                         .frame(maxWidth: .infinity, alignment: .leading)
-                        .foregroundColor(Color("color_text"))
+                        .foregroundColor(color)
                         .font(.system(size: 14))
                         .lineLimit(1)
                         .multilineTextAlignment(.leading)
@@ -99,6 +90,29 @@ struct MusApp: App
         .background(Color("color_toolbar").edgesIgnoringSafeArea(.bottom))
         .onTapGesture {
             self.audioPlayer.playerSheet.toggle()
+        }
+    }
+    
+    private var content: some View
+    {
+        VStack(spacing: 0)
+        {
+            switch self.rootStack.root
+            {
+            case .Main:
+                RootNavigationView(
+                    root: MainView().environmentObject(self.audioPlayer),
+                    model: self.rootStack
+                ).ignoresSafeArea()
+            case .Login:
+                LoginView()
+                    .environmentObject(self.rootStack)
+            default:
+                EmptyView()
+            }
+            
+            peekPlayer
+                .removed(!self.audioPlayer.audioPlayerReady)
         }
     }
 }

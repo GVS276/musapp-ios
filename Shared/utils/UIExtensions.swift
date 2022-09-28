@@ -114,6 +114,11 @@ extension Int {
 extension Int32 {
     func toTime() -> String
     {
+        if self <= 0
+        {
+            return "--"
+        }
+        
         let minutes = Int(self % 3600) / 60
         let seconds = Int(self % 60)
         return "\(minutes.addZero()):\(seconds.addZero())"
@@ -123,6 +128,10 @@ extension Int32 {
 extension Float {
     func toTime() -> String
     {
+        guard !(self.isNaN || self.isInfinite) else {
+            return "--"
+        }
+        
         let minutes = Int(floor(self / 60))
         let seconds = Int(self) % 60
         return "\(minutes.addZero()):\(seconds.addZero())"

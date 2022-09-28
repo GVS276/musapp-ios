@@ -460,6 +460,7 @@ extension AudioPlayerModelView: AudioPlayerItemDelegate
             print("Audio: Buffering")
         case .MinimizeStalls:
             print("Audio: MinimizeStalls")
+            self.setAudioPlaying(value: false)
         case .Finished:
             self.mediaFinished = true
         case .Failed:
