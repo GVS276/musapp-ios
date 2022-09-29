@@ -34,7 +34,8 @@ struct LoginView: View
                 .font(.system(size: 16))
                 .padding(.vertical, 10)
                 .padding(.horizontal, 10)
-                .placeholder(shouldShow: self.login.isEmpty, title: "Login", bg: Color("color_toolbar"))
+                .placeholder(shouldShow: self.login.isEmpty, title: "Login",
+                             backgroundColor: Color("color_toolbar"))
                 .cornerRadius(10)
                 .padding(.horizontal, 30)
                 .onTapGesture {}
@@ -44,7 +45,8 @@ struct LoginView: View
                 .font(.system(size: 16))
                 .padding(.vertical, 10)
                 .padding(.horizontal, 10)
-                .placeholder(shouldShow: self.password.isEmpty, title: "Password", bg: Color("color_toolbar"))
+                .placeholder(shouldShow: self.password.isEmpty, title: "Password",
+                             backgroundColor: Color("color_toolbar"))
                 .cornerRadius(10)
                 .padding(.horizontal, 30)
                 .onTapGesture {}

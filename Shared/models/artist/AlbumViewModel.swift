@@ -1,36 +1,31 @@
 //
-//  MyMusicViewModel.swift
+//  AlbumViewModel.swift
 //  musapp (iOS)
 //
-//  Created by Виктор Губин on 07.09.2022.
+//  Created by Виктор Губин on 08.09.2022.
 //
 
 import Foundation
 
-class MyMusicViewModel: ObservableObject
+class AlbumViewModel: ObservableObject
 {
     @Published var list = [AudioModel]()
     @Published var isAllowLoading = true
     @Published var isRequestStatus: RequestLoadingStatus = .None
     
     private let model = VKViewModel.shared
-    private var token = ""
-    private var secret = ""
-    private var userId: Int64 = -1
     
-    private let maxCount = 50
-    
-    init()
+    init(albumId: String, ownerId: Int, accessKey: String)
     {
         if let info = UIUtils.getInfo()
         {
-            self.token = info["token"] as! String
-            self.secret = info["secret"] as! String
-            self.userId = info["userId"] as! Int64
+            let token = info["token"] as! String
+            let secret = info["secret"] as! String
             
             // задержка на 200 мс
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                self.receiveAudio(offset: 0)
+                self.receiveAudio(token: token, secret: secret,
+                                  albumId: albumId, ownerId: ownerId, accessKey: accessKey)
             }
         } else {
             self.isAllowLoading = false
@@ -43,7 +38,7 @@ class MyMusicViewModel: ObservableObject
         self.list.removeAll()
     }
     
-    func receiveAudio(offset: Int)
+    private func receiveAudio(token: String, secret: String, albumId: String, ownerId: Int, accessKey: String)
     {
         if !self.isAllowLoading {
             return
@@ -55,11 +50,11 @@ class MyMusicViewModel: ObservableObject
             self.isRequestStatus = .Receiving
         }
         
-        self.model.getAudioList(token: self.token,
-                                secret: self.secret,
-                                userId: self.userId,
-                                count: self.maxCount,
-                                offset: offset) { list, result in
+        self.model.getAudioFromAlbum(token: token,
+                                     secret: secret,
+                                     ownerId: ownerId,
+                                     accessKey: accessKey,
+                                     albumId: albumId) { count, list, result in
             DispatchQueue.main.async {
                 switch result {
                 case .ErrorInternet:
@@ -78,13 +73,14 @@ class MyMusicViewModel: ObservableObject
                         if list.isEmpty
                         {
                             self.isAllowLoading = false
-                            self.isRequestStatus = self.list.isEmpty ? .Empty : .ReceivedLast
+                            self.isRequestStatus = .Empty
                         } else {
+                            self.list.removeAll()
                             self.list.append(contentsOf: list)
-                            self.isAllowLoading = list.count == self.maxCount
+                            
+                            self.isAllowLoading = false
                             self.isRequestStatus = .Received
                         }
-                        
                     }
                 }
             }

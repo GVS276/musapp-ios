@@ -11,23 +11,26 @@ import CryptoKit
 
 extension View
 {
-    func placeholder(shouldShow: Bool, title: String,
-                     bg: Color = .clear,
-                     alignment: Alignment = .center,
-                     padding: CGFloat = 10,
+    func placeholder(shouldShow: Bool,
+                     title: String,
+                     backgroundColor: Color = .clear,
+                     paddingHorizontal: CGFloat = 10,
                      paddingVertical: CGFloat = 0) -> some View
     {
-        self.background(ZStack(alignment: alignment)
-        {
-            bg
-            Text(title)
-                .foregroundColor(.secondary)
-                .font(.system(size: 16))
-                .padding(.horizontal, padding)
-                .padding(.vertical, paddingVertical)
-                .onlyLeading()
-                .hidden(shouldShow ? false : true)
-        })
+        self.background(
+            ZStack(alignment: .center)
+            {
+                backgroundColor
+                
+                Text(title)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .foregroundColor(.secondary)
+                    .font(.system(size: 16))
+                    .padding(.horizontal, paddingHorizontal)
+                    .padding(.vertical, paddingVertical)
+                    .hidden(shouldShow ? false : true)
+            }
+        )
     }
     
     @ViewBuilder func hidden(_ shouldHide: Bool) -> some View {

@@ -1,40 +1,31 @@
 //
-//  RecommendationsViewModel.swift
+//  SearchViewModel.swift
 //  musapp (iOS)
 //
-//  Created by Виктор Губин on 27.09.2022.
+//  Created by Виктор Губин on 07.09.2022.
 //
 
 import Foundation
 
-class RecommendationsViewModel: ObservableObject
+class SearchViewModel: ObservableObject
 {
     @Published var list = [AudioModel]()
-    @Published var isAllowLoading = true
+    @Published var isAllowLoading = false
     @Published var isRequestStatus: RequestLoadingStatus = .None
     
     private let model = VKViewModel.shared
-    
-    private var audioId = ""
-    private var audioOwnerId = ""
-    
     private var token = ""
     private var secret = ""
+    private var query: String = ""
     
-    init(audioId: String, audioOwnerId: String)
+    private let maxCount = 50
+    
+    init()
     {
         if let info = UIUtils.getInfo()
         {
-            self.audioId = audioId
-            self.audioOwnerId = audioOwnerId
-            
             self.token = info["token"] as! String
             self.secret = info["secret"] as! String
-            
-            // задержка на 200 мс
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                self.receiveAudio()
-            }
         } else {
             self.isAllowLoading = false
             self.isRequestStatus = .Error
@@ -46,7 +37,18 @@ class RecommendationsViewModel: ObservableObject
         self.list.removeAll()
     }
     
-    private func receiveAudio()
+    func startReceiveAudio(q: String)
+    {
+        self.query = q
+        
+        self.list.removeAll()
+        
+        self.isAllowLoading = true
+        
+        self.receiveAudio(offset: 0)
+    }
+    
+    func receiveAudio(offset: Int)
     {
         if !self.isAllowLoading {
             return
@@ -58,10 +60,9 @@ class RecommendationsViewModel: ObservableObject
             self.isRequestStatus = .Receiving
         }
         
-        self.model.getRecommendationsAudio(token: self.token,
-                                           secret: self.secret,
-                                           audioId: self.audioId,
-                                           audioOwnerId: self.audioOwnerId) { list, result in
+        self.model.searchAudio(token: self.token,
+                               secret: self.secret,
+                               q: self.query, count: self.maxCount, offset: offset) { count, list, result in
             DispatchQueue.main.async {
                 switch result {
                 case .ErrorInternet:
@@ -80,12 +81,10 @@ class RecommendationsViewModel: ObservableObject
                         if list.isEmpty
                         {
                             self.isAllowLoading = false
-                            self.isRequestStatus = .Empty
+                            self.isRequestStatus = self.list.isEmpty ? .Empty : .ReceivedLast
                         } else {
-                            self.list.removeAll()
-                            self.list.append(contentsOf: list)
-                            
-                            self.isAllowLoading = false
+                            self.uniquedList(list: list)
+                            self.isAllowLoading = count > self.maxCount
                             self.isRequestStatus = .Received
                         }
                         
@@ -93,5 +92,31 @@ class RecommendationsViewModel: ObservableObject
                 }
             }
         }
+    }
+    
+    private func uniquedList(list: [AudioModel])
+    {
+        // если главный список пуст то добавим в него новые данные
+        if self.list.isEmpty
+        {
+            self.list.append(contentsOf: list)
+            return
+        }
+        
+        // временный список
+        var temp = [AudioModel]()
+        
+        // проверяем данные на повтороение в главном списке
+        list.forEach { model in
+            if !self.list.contains(where: {$0.audioId == model.audioId}) {
+                temp.append(model)
+            }
+        }
+        
+        // заносим новый данные в главный список
+        self.list.append(contentsOf: temp)
+        
+        // очищаем временный список
+        temp.removeAll()
     }
 }

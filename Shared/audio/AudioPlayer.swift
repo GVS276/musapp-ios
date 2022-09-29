@@ -20,16 +20,16 @@ class AudioPlayer: AVPlayer
     {
         var playerItem: AudioPlayerItem? = nil
         
-        guard let audioUrl = UIFileUtils.getAnyFileUri(path: AUDIO_PATH, fileName: "\(model.audioId).mp3") else {
-            super.init(playerItem: nil)
-            delegate?.onAudioUnavailable()
-            return
-        }
-        
-        if UIFileUtils.existFile(fileUrl: audioUrl)
+        if model.isDownloaded
         {
+            guard let audioUrl = UIFileUtils.getAnyFileUri(path: AUDIO_PATH, fileName: "\(model.audioId).mp3") else {
+                super.init()
+                delegate?.onAudioUnavailable()
+                return
+            }
+            
             guard let data = try? Data(contentsOf: audioUrl) else {
-                super.init(playerItem: nil)
+                super.init()
                 delegate?.onAudioUnavailable()
                 return
             }
@@ -38,7 +38,7 @@ class AudioPlayer: AVPlayer
             playerItem = AudioPlayerItem(data: data, delegate: delegate)
         } else {
             guard let url = URL.init(string: model.streamUrl) else {
-                super.init(playerItem: nil)
+                super.init()
                 delegate?.onAudioUnavailable()
                 return
             }
@@ -108,6 +108,7 @@ class AudioPlayer: AVPlayer
         }
         
         removeObserver(self, forKeyPath: #keyPath(AVPlayer.timeControlStatus))
+        NotificationCenter.default.removeObserver(self)
         
         if let observer = self.periodicTime
         {
@@ -126,6 +127,35 @@ class AudioPlayer: AVPlayer
         addObserver(self, forKeyPath: #keyPath(AVPlayer.timeControlStatus), options: .new, context: nil)
         self.periodicTime = addPeriodicTimeObserver(forInterval: CMTime(value: 1, timescale: 1), queue: .main) { time in
             self.playerItem?.setCurrentPosition(seconds: Float(CMTimeGetSeconds(time)))
+        }
+        
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(handleInterruption),
+                                               name: AVAudioSession.interruptionNotification,
+                                               object: AVAudioSession.sharedInstance())
+    }
+    
+    @objc
+    func handleInterruption(_ notification: Notification)
+    {
+        guard let info = notification.userInfo,
+              let typeValue = info[AVAudioSessionInterruptionTypeKey] as? UInt,
+              let type = AVAudioSession.InterruptionType(rawValue: typeValue) else {
+                  return
+        }
+        
+        if type == .began {
+            self.playerItem?.setAudioSessionInterruption(shouldResume: false)
+        }
+        else if type == .ended {
+            guard let optionsValue = info[AVAudioSessionInterruptionOptionKey] as? UInt else {
+                return
+            }
+                    
+            let options = AVAudioSession.InterruptionOptions(rawValue: optionsValue)
+            if options.contains(.shouldResume) {
+                self.playerItem?.setAudioSessionInterruption(shouldResume: true)
+            }
         }
     }
 }

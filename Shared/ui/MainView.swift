@@ -15,6 +15,16 @@ struct MainView: View
     {
         StackView(title: "Library", back: false)
         {
+            if self.audioPlayer.audioList.isEmpty
+            {
+                Text("No tracks")
+                    .foregroundColor(Color("color_text"))
+                    .font(.system(size: 16))
+                    .lineLimit(1)
+                    .multilineTextAlignment(.center)
+                    .padding(.vertical, 20)
+            }
+            
             ScrollView(.vertical, showsIndicators: false) {
                 LazyVStack(spacing: 0)
                 {

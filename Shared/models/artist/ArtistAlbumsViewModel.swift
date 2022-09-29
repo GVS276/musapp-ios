@@ -59,7 +59,7 @@ class ArtistAlbumsViewModel: ObservableObject
                                       secret: self.secret,
                                       artistId: self.artistId,
                                       count: self.maxCount,
-                                      offset: offset) { list, result in
+                                      offset: offset) { count, list, result in
             
             DispatchQueue.main.async {
                 switch result {
@@ -82,7 +82,7 @@ class ArtistAlbumsViewModel: ObservableObject
                             self.isRequestStatus = self.list.isEmpty ? .Empty : .ReceivedLast
                         } else {
                             self.list.append(contentsOf: list)
-                            self.isAllowLoading = list.count == self.maxCount
+                            self.isAllowLoading = count > self.maxCount
                             self.isRequestStatus = .Received
                         }
                         

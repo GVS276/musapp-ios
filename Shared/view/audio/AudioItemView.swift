@@ -28,8 +28,6 @@ struct AudioItemView: View
     
     var body: some View
     {
-        let isUnavailable = item.streamUrl.isEmpty
-        let color = isUnavailable ? Color.secondary : Color("color_text")
         HStack(spacing: 0)
         {
             Button {
@@ -49,7 +47,7 @@ struct AudioItemView: View
                         
                         Text(title)
                             .frame(maxWidth: .infinity, alignment: .leading)
-                            .foregroundColor(color)
+                            .foregroundColor(Color("color_text"))
                             .font(.system(size: 16))
                             .lineLimit(1)
                             .multilineTextAlignment(.leading)
@@ -60,13 +58,13 @@ struct AudioItemView: View
                             Image("action_explicit")
                                 .resizable()
                                 .renderingMode(.template)
-                                .foregroundColor(color)
+                                .foregroundColor(Color("color_text"))
                                 .frame(width: 14, height: 14)
                                 .removed(!item.isExplicit)
                             
                             Text(subTitle)
                                 .frame(maxWidth: .infinity, alignment: .leading)
-                                .foregroundColor(color)
+                                .foregroundColor(Color("color_text"))
                                 .font(.system(size: 14))
                                 .lineLimit(1)
                                 .multilineTextAlignment(.leading)
@@ -83,11 +81,10 @@ struct AudioItemView: View
             } label: {
                 Image("action_menu")
                     .renderingMode(.template)
-                    .foregroundColor(color)
+                    .foregroundColor(Color("color_text"))
                     .padding(.horizontal, 15)
                     .padding(.vertical, 10)
             }
-            .disabled(isUnavailable)
         }
         .padding(.vertical, 10)
         .background(item.audioId == self.playedId ? Color("color_playing") : Color.clear)

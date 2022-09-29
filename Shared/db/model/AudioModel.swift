@@ -7,6 +7,19 @@
 
 import Foundation
 
+struct PlaylistModel: Identifiable
+{
+    var id: String = ""
+    var title: String = ""
+    var description: String = ""
+    var thumb: String = ""
+    var count: Int = 0
+    var update_time: Int64 = 0
+    var year: Int = 0
+    var ownerId: Int = 0
+    var accessKey: String = ""
+}
+
 struct AlbumModel: Identifiable
 {
     let id = UUID().uuidString

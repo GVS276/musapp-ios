@@ -45,15 +45,13 @@ struct MusApp: App
     
     private var peekPlayer: some View
     {
-        let isUnavailable = self.audioPlayer.playedModel?.streamUrl.isEmpty ?? true
-        let color = isUnavailable ? Color.secondary : Color("color_text")
-        return HStack(spacing: 20)
+        HStack(spacing: 20)
         {
             VStack(spacing: 2)
             {
                 Text(self.audioPlayer.playedModel?.artist ?? "Artist")
                     .frame(maxWidth: .infinity, alignment: .leading)
-                    .foregroundColor(color)
+                    .foregroundColor(Color("color_text"))
                     .font(.system(size: 16, weight: .bold))
                     .lineLimit(1)
                     .multilineTextAlignment(.leading)
@@ -63,13 +61,13 @@ struct MusApp: App
                     Image("action_explicit")
                         .resizable()
                         .renderingMode(.template)
-                        .foregroundColor(color)
+                        .foregroundColor(Color("color_text"))
                         .frame(width: 14, height: 14)
                         .removed(!(self.audioPlayer.playedModel?.isExplicit ?? false))
                     
                     Text(self.audioPlayer.playedModel?.title ?? "Title")
                         .frame(maxWidth: .infinity, alignment: .leading)
-                        .foregroundColor(color)
+                        .foregroundColor(Color("color_text"))
                         .font(.system(size: 14))
                         .lineLimit(1)
                         .multilineTextAlignment(.leading)

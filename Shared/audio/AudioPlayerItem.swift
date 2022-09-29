@@ -25,6 +25,7 @@ protocol AudioPlayerItemDelegate
     func onStatus(status: AudioPlayerItemStatus)
     func onCurrentPosition(seconds: Float)
     func onAudioUnavailable()
+    func onAudioSessionInterruption(shouldResume: Bool)
 }
 
 class AudioPlayerItem: AVPlayerItem
@@ -86,6 +87,11 @@ class AudioPlayerItem: AVPlayerItem
         self.delegate?.onCurrentPosition(seconds: seconds)
     }
     
+    func setAudioSessionInterruption(shouldResume: Bool)
+    {
+        self.delegate?.onAudioSessionInterruption(shouldResume: shouldResume)
+    }
+    
     override func observeValue(forKeyPath keyPath: String?,
                                of object: Any?,
                                change: [NSKeyValueChangeKey : Any]?,
@@ -104,8 +110,10 @@ class AudioPlayerItem: AVPlayerItem
     {
         addObserver(self, forKeyPath: #keyPath(AVPlayerItem.status), options: .new, context: nil)
         
-        NotificationCenter.default.addObserver(self, selector: #selector(playbackFinished),
-                                               name: .AVPlayerItemDidPlayToEndTime, object: nil)
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(playbackFinished),
+                                               name: .AVPlayerItemDidPlayToEndTime,
+                                               object: nil)
     }
     
     @objc

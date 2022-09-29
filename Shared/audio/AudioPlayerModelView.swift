@@ -479,6 +479,13 @@ extension AudioPlayerModelView: AudioPlayerItemDelegate
         print("Audio: unavailable")
         Toast.shared.show(text: "Track is unavailable or has been blocked")
     }
+    
+    func onAudioSessionInterruption(shouldResume: Bool) {
+        if shouldResume
+        {
+            self.play()
+        }
+    }
 }
 
 extension AudioPlayerModelView: DownloadDelegate

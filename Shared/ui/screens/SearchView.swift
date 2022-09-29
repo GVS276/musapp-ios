@@ -17,7 +17,7 @@ struct SearchView: View
     {
         StackView(title: "", back: true)
         {
-            if self.model.isRequestStatus == .Receiving
+            if self.model.isRequestStatus == .Receiving && self.model.list.isEmpty
             {
                 ProgressView()
                     .progressViewStyle(CircularProgressViewStyle())
@@ -61,9 +61,11 @@ struct SearchView: View
                 .padding(.vertical, 10)
             }
         } menu: {
-            SearchTextField(text: self.$search, onClickReturn: {
+            SearchTextField(text: self.$search) {
                 self.model.startReceiveAudio(q: self.search)
-            }).onTapGesture {}
+            }
+            .placeholder(shouldShow: self.search.isEmpty, title: "Search...", paddingHorizontal: 0)
+            .onTapGesture {}
             
             Button {
                 self.search.removeAll()

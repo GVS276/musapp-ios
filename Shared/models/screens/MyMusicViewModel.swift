@@ -1,5 +1,5 @@
 //
-//  ArtistTracksViewModel.swift
+//  MyMusicViewModel.swift
 //  musapp (iOS)
 //
 //  Created by Виктор Губин on 07.09.2022.
@@ -7,26 +7,26 @@
 
 import Foundation
 
-class ArtistTracksViewModel: ObservableObject
+class MyMusicViewModel: ObservableObject
 {
     @Published var list = [AudioModel]()
     @Published var isAllowLoading = true
     @Published var isRequestStatus: RequestLoadingStatus = .None
     
     private let model = VKViewModel.shared
-    private var artistId = ""
     private var token = ""
     private var secret = ""
+    private var userId: Int64 = -1
     
     private let maxCount = 50
     
-    init(artistId: String)
+    init()
     {
         if let info = UIUtils.getInfo()
         {
-            self.artistId = artistId
             self.token = info["token"] as! String
             self.secret = info["secret"] as! String
+            self.userId = info["userId"] as! Int64
             
             // задержка на 200 мс
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
@@ -55,11 +55,11 @@ class ArtistTracksViewModel: ObservableObject
             self.isRequestStatus = .Receiving
         }
         
-        self.model.receiveAudioArtist(token: self.token,
-                                      secret: self.secret,
-                                      artistId: self.artistId,
-                                      count: self.maxCount,
-                                      offset: offset) { list, result in
+        self.model.getAudioList(token: self.token,
+                                secret: self.secret,
+                                userId: self.userId,
+                                count: self.maxCount,
+                                offset: offset) { count, list, result in
             DispatchQueue.main.async {
                 switch result {
                 case .ErrorInternet:
@@ -81,7 +81,7 @@ class ArtistTracksViewModel: ObservableObject
                             self.isRequestStatus = self.list.isEmpty ? .Empty : .ReceivedLast
                         } else {
                             self.list.append(contentsOf: list)
-                            self.isAllowLoading = list.count == self.maxCount
+                            self.isAllowLoading = count > self.maxCount
                             self.isRequestStatus = .Received
                         }
                         
