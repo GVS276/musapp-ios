@@ -11,28 +11,26 @@ import CryptoKit
 
 extension View
 {
-    func createToastView() -> some View
-    {
-        self.overlay(ToastView(), alignment: .bottom)
-    }
-    
-    func placeholder(shouldShow: Bool, title: String,
-                     bg: Color = .clear,
-                     alignment: Alignment = .center,
-                     padding: CGFloat = 10,
+    func placeholder(shouldShow: Bool,
+                     title: String,
+                     backgroundColor: Color = .clear,
+                     paddingHorizontal: CGFloat = 10,
                      paddingVertical: CGFloat = 0) -> some View
     {
-        self.background(ZStack(alignment: alignment)
-        {
-            bg
-            Text(title)
-                .foregroundColor(.secondary)
-                .font(.system(size: 16))
-                .padding(.horizontal, padding)
-                .padding(.vertical, paddingVertical)
-                .onlyLeading()
-                .hidden(shouldShow ? false : true)
-        })
+        self.background(
+            ZStack(alignment: .center)
+            {
+                backgroundColor
+                
+                Text(title)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .foregroundColor(.secondary)
+                    .font(.system(size: 16))
+                    .padding(.horizontal, paddingHorizontal)
+                    .padding(.vertical, paddingVertical)
+                    .hidden(shouldShow ? false : true)
+            }
+        )
     }
     
     @ViewBuilder func hidden(_ shouldHide: Bool) -> some View {
@@ -67,44 +65,6 @@ extension View
     func hideKeyBoard()
     {
         UIApplication.shared.endEditing()
-    }
-    
-    @ViewBuilder
-    func dialogArtistsSheet(isPresented: Binding<Bool>,
-                            artists: [ArtistModel],
-                            clicked: @escaping (_ artist: ArtistModel) -> Void) -> some View
-    {
-        if #available(iOS 15.0, *) {
-            self.confirmationDialog("Artists", isPresented: isPresented, titleVisibility: .visible)
-            {
-                ForEach(artists, id: \.id) { artist in
-                    Button {
-                        clicked(artist)
-                    } label: {
-                        Text(artist.name)
-                    }
-                }
-            }
-        } else {
-            self.actionSheet(isPresented: isPresented) {
-                var buttons: [ActionSheet.Button] = []
-                
-                // convert to button
-                artists.forEach { artist in
-                    buttons.append(.default(Text(artist.name), action: {
-                        clicked(artist)
-                    }))
-                }
-                
-                // cancel
-                buttons.append(.destructive(Text("Cancel")))
-                
-                return ActionSheet(
-                    title: Text("Artists"),
-                    buttons: buttons
-                )
-            }
-        }
     }
 }
 
@@ -157,6 +117,11 @@ extension Int {
 extension Int32 {
     func toTime() -> String
     {
+        if self <= 0
+        {
+            return "--"
+        }
+        
         let minutes = Int(self % 3600) / 60
         let seconds = Int(self % 60)
         return "\(minutes.addZero()):\(seconds.addZero())"
@@ -166,6 +131,10 @@ extension Int32 {
 extension Float {
     func toTime() -> String
     {
+        guard !(self.isNaN || self.isInfinite) else {
+            return "--"
+        }
+        
         let minutes = Int(floor(self / 60))
         let seconds = Int(self) % 60
         return "\(minutes.addZero()):\(seconds.addZero())"
@@ -185,5 +154,63 @@ extension UIImage {
             self.draw(in: CGRect.init(origin: CGPoint.zero, size: newSize))
         }
         return image.withRenderingMode(self.renderingMode)
+    }
+    
+    func getColorFromImage() -> UIColor?
+    {
+        guard let inputImage = CIImage(image: self) else { return nil }
+        
+        let extentVector = CIVector(x: inputImage.extent.origin.x,
+                                    y: inputImage.extent.origin.y,
+                                    z: inputImage.extent.size.width,
+                                    w: inputImage.extent.size.height)
+        
+        guard let filter = CIFilter(
+            name: "CIAreaAverage",
+            parameters: [kCIInputImageKey: inputImage, kCIInputExtentKey: extentVector]
+        ) else {
+            return nil
+        }
+        
+        guard let outputImage = filter.outputImage else { return nil }
+        
+        var bitmap = [UInt8](repeating: 0, count: 3)
+        let context = CIContext(options: [.workingColorSpace: kCFNull!])
+        
+        context.render(outputImage,
+                       toBitmap: &bitmap,
+                       rowBytes: 4,
+                       bounds: CGRect(x: 0, y: 0, width: 1, height: 1),
+                       format: .RGBA8,
+                       colorSpace: nil)
+
+        let r = Int(bitmap[0])
+        let g = Int(bitmap[1])
+        let b = Int(bitmap[2])
+        
+        var color = rgb(r, g, b)
+        let luminance = calculateLuminance(r, g, b)
+        
+        // 0 - full light, 1 - full dark
+        if luminance < 0.2 || luminance > 0.9 {
+            color = rgb(100, 100, 100)
+        }
+        
+        return color
+    }
+    
+    private func rgb(_ r: Int, _ g: Int, _ b: Int) -> UIColor {
+        return UIColor(red: CGFloat(r) / 255.0,
+                       green: CGFloat(g) / 255.0,
+                       blue: CGFloat(b) / 255.0,
+                       alpha: 1.0)
+    }
+    
+    private func calculateLuminance(_ r: Int, _ g: Int, _ b: Int) -> Float
+    {
+        let rf = Float(r)
+        let gf = Float(g)
+        let bf = Float(b)
+        return Float(1-(0.299*rf + 0.587*gf + 0.114*bf)/255)
     }
 }

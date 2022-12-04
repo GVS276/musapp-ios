@@ -14,6 +14,8 @@ struct LoginView: View
     @State private var login = ""
     @State private var password = ""
     
+    private let request = VKViewModel.shared
+    
     var body: some View
     {
         VStack(spacing: 15)
@@ -32,7 +34,8 @@ struct LoginView: View
                 .font(.system(size: 16))
                 .padding(.vertical, 10)
                 .padding(.horizontal, 10)
-                .placeholder(shouldShow: self.login.isEmpty, title: "Login", bg: Color("color_toolbar"))
+                .placeholder(shouldShow: self.login.isEmpty, title: "Login",
+                             backgroundColor: Color("color_toolbar"))
                 .cornerRadius(10)
                 .padding(.horizontal, 30)
                 .onTapGesture {}
@@ -42,7 +45,8 @@ struct LoginView: View
                 .font(.system(size: 16))
                 .padding(.vertical, 10)
                 .padding(.horizontal, 10)
-                .placeholder(shouldShow: self.password.isEmpty, title: "Password", bg: Color("color_toolbar"))
+                .placeholder(shouldShow: self.password.isEmpty, title: "Password",
+                             backgroundColor: Color("color_toolbar"))
                 .cornerRadius(10)
                 .padding(.horizontal, 30)
                 .onTapGesture {}
@@ -52,7 +56,7 @@ struct LoginView: View
             } label: {
                 Text("Start")
                     .foregroundColor(.white)
-                    .font(.system(size: 16))
+                    .font(.system(size: 16, weight: .bold))
                     .frame(maxWidth: .infinity, maxHeight: 36)
             }
             .background(.blue)
@@ -61,7 +65,7 @@ struct LoginView: View
             
             Spacer()
             
-            Text("Version: 1.0 - MusApp")
+            Text("Version: 1.01 - MusApp")
                 .foregroundColor(Color("color_text"))
                 .font(.system(size: 12))
                 .padding(.horizontal, 30)
@@ -75,8 +79,7 @@ struct LoginView: View
     
     private func startExport()
     {
-        let model = VKViewModel.shared
-        model.doAuth(login: self.login, password: self.password) { info, result in
+        request.doAuth(login: self.login, password: self.password) { info, result in
             DispatchQueue.main.async {
                 switch result {
                 case .ErrorInternet:
@@ -85,7 +88,26 @@ struct LoginView: View
                     Toast.shared.show(text: "Invalid password or login")
                 case .Success:
                     if let info = info {
-                        self.showMain(token: info.access_token, secret: info.secret, userId: info.user_id)
+                        self.refreshToken(token: info.access_token, secret: info.secret, userId: info.user_id)
+                    }
+                }
+            }
+        }
+    }
+    
+    private func refreshToken(token: String, secret: String, userId: Int64)
+    {
+        request.refreshToken(token: token, secret: secret) { refresh, result in
+            DispatchQueue.main.async {
+                switch result {
+                case .ErrorInternet:
+                    Toast.shared.show(text: "Problems with the Internet")
+                case .ErrorRequest:
+                    Toast.shared.show(text: "Invalid password or login")
+                case .Success:
+                    print("Info updated")
+                    if let refresh = refresh {
+                        self.showMain(token: refresh.response.token, secret: refresh.response.secret, userId: userId)
                     }
                 }
             }

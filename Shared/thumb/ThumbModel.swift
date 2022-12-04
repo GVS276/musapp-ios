@@ -52,12 +52,6 @@ class ThumbModel: ObservableObject
                     value.map {
                         self.create(albumId: self.thumbAlbumId, image: $0)
                     }
-                }, receiveCompletion: { value in
-                    BaseSemaphore.shared.signal()
-                }, receiveCancel: {
-                    BaseSemaphore.shared.signal()
-                }, receiveRequest: { value in
-                    BaseSemaphore.shared.wait()
                 }
             )
             .subscribe(on: BaseTask.dqueue)
@@ -79,7 +73,7 @@ class ThumbModel: ObservableObject
             return
         }
         
-        if let fileUrl = UIFileUtils.getThumbFilePath(fileName: "\(albumId).jpg")
+        if let fileUrl = UIFileUtils.getAnyFileUri(path: THUMB_PATH, fileName: "\(albumId).jpg")
         {
             if UIFileUtils.existFile(fileUrl: fileUrl) {
                 UIFileUtils.removeFile(fileUrl: fileUrl)

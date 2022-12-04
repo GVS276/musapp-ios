@@ -7,233 +7,344 @@
 
 import SwiftUI
 
+// определим начальное положение плеера на экране от общей длины экрана
+let PEEK_PLAYER_TOP: CGFloat = 70 * 2
+
+// Размер мини плеера
+let PEEK_PLAYER_SIZE: CGFloat = 70
+
 struct PlayerView: View
 {
     @EnvironmentObject var audioPlayer: AudioPlayerModelView
     
-    @State private var currentTime: Float = .zero
+    @State private var currentTime: Float = .nan
     @State private var repeatAudio = false
     @State private var randomAudio = false
     @State private var touchedSlider = false
     
+    @State private var dragOpacity: CGFloat = 0
+    @State private var dragOffset: CGFloat = UIScreen.main.bounds.height - PEEK_PLAYER_TOP
+    @State private var lastDragOffset: CGFloat = UIScreen.main.bounds.height - PEEK_PLAYER_TOP
+    
     var body: some View
+    {
+        let end = abs(UIScreen.main.bounds.height / 2)
+        let height = UIScreen.main.bounds.height - PEEK_PLAYER_TOP
+        
+        let drag = DragGesture(minimumDistance: 10, coordinateSpace: .local)
+            .onChanged { value in
+                // Ограничение для свайпа от начала экрана и конца экрана, дабы не рушить системные жесты
+                if value.startLocation.y >= UIScreen.main.bounds.height - (PEEK_PLAYER_SIZE + 20) ||
+                   value.startLocation.y <= 20 {
+                    return
+                }
+                
+                // Корректируем позицию Y из последнего положения плеера на экране
+                let y = lastDragOffset + value.translation.height
+                
+                // Ограничение при перемещении вью плеера выше нуля
+                if y <= 0
+                {
+                    dragOpacity = 1
+                    dragOffset = .zero
+                    lastDragOffset = .zero
+                    return
+                }
+                
+                // Ограничение при перемещении вью плеера нижу peek плеера
+                if y >= height
+                {
+                    dragOpacity = .zero
+                    dragOffset = height
+                    lastDragOffset = height
+                    return
+                }
+                
+                // Y значение передаем в dragOffset для измнения позиции вью плеера
+                dragOffset = y
+                
+                // Определим процентное соотношения открытости плеера где:
+                // 0 - плеер закрыт полностью
+                // 1 - плеер открыт полностью
+                // если умножить на 100, то будут проценты 0%...100%
+                dragOpacity = 1 - min(1, max(0, y / height))
+            }
+            .onEnded { value in
+                let y = value.predictedEndTranslation.height
+                
+                if y >= end
+                {
+                    // Анимация закрытия полноэкранного плеера
+                    hidePlayer()
+                    
+                    // Аналог onDestroy
+                    closedPlayer()
+                } else if lastDragOffset + y < end {
+                    // Анимация открытия полноэкранного плеера
+                    showPlayer()
+                    
+                    // Аналог onStart
+                    openedPlayer()
+                } else if dragOffset > end {
+                    
+                    // Анимация до-закрытия полноэкранного плеера
+                    hidePlayer()
+                }
+            }
+        
+        ZStack(alignment: .top)
+        {
+            // Основной плеер
+            contentPlayer
+                .opacity(dragOpacity) // Управляем видимостью
+            
+            // Мини плеер
+            peekPlayer
+                .opacity(1.0 - dragOpacity) // Управляем видимостью
+        }
+        .background(Color("color_toolbar")) // основной задний фон
+        .offset(y: dragOffset) // положение (сдвиг) плеера на экране
+        .animation(.spring(), value: dragOffset) // анимируем dragOffset для spring
+        .simultaneousGesture(touchedSlider ? nil : drag) // если задействан жест для перемотки, то отменяем свайп
+    }
+    
+    // Мини плеер - UI
+    private var peekPlayer: some View
+    {
+        HStack(spacing: 20)
+        {
+            VStack(spacing: 2)
+            {
+                Text(audioPlayer.playedModel?.artist ?? "Nothing is playing right now")
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .foregroundColor(Color("color_text"))
+                    .font(.system(size: 16, weight: .bold))
+                    .lineLimit(1)
+                    .multilineTextAlignment(.leading)
+                
+                Text(audioPlayer.playedModel?.title ?? "Select a track")
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .foregroundColor(Color("color_text"))
+                    .font(.system(size: 14))
+                    .lineLimit(1)
+                    .multilineTextAlignment(.leading)
+            }
+            
+            Button {
+                audioPlayer.control(tag: .PlayOrPause)
+            } label: {
+                Image(audioPlayer.audioPlaying ? "pause" : "play")
+                    .renderingMode(.template)
+                    .foregroundColor(Color("color_text"))
+                    .padding(.trailing, 15)
+            }
+        }
+        .frame(height: PEEK_PLAYER_SIZE)
+        .padding(.leading, 15)
+        .contentShape(Rectangle())
+        .onTapGesture {
+            guard dragOpacity == 0 else { return }
+            
+            showPlayer()
+            
+            openedPlayer()
+        }
+    }
+    
+    // Шапка полноэкранного плеера - UI
+    private var headerPlayer: some View
+    {
+        HStack(spacing: 20)
+        {
+            Button {
+                hidePlayer()
+                closedPlayer()
+            } label: {
+                Image("action_down")
+                    .resizable()
+                    .frame(width: 32, height: 32)
+            }
+
+            VStack
+            {
+                Text("Album")
+                    .frame(maxWidth: .infinity, alignment: .center)
+                    .foregroundColor(.white)
+                    .font(.system(size: 12, weight: .bold))
+                    .lineLimit(1)
+                    .multilineTextAlignment(.center)
+                
+                Text(audioPlayer.playedModel?.albumTitle ?? "Unknown")
+                    .frame(maxWidth: .infinity, alignment: .center)
+                    .foregroundColor(.white)
+                    .font(.system(size: 12))
+                    .lineLimit(1)
+                    .multilineTextAlignment(.center)
+            }
+            
+            Button {
+                
+            } label: {
+                Image("menu")
+                    .resizable()
+                    .frame(width: 32, height: 32)
+            }
+        }
+        .padding(.top, 15)
+        .padding(.horizontal, 15)
+    }
+    
+    // Полноэкранный плеер - UI
+    private var contentPlayer: some View
     {
         VStack(spacing: 0)
         {
-            Button {
-                self.audioPlayer.playerSheet = false
-            } label: {
-                Image("action_down")
+            headerPlayer
+            
+            if let art = audioPlayer.art
+            {
+                Image(uiImage: art)
+                    .clipShape(RoundedRectangle(cornerRadius: 10))
+                    .padding(.top, 20)
+                    .padding(.horizontal, 30)
+            } else {
+                Image("audio")
                     .renderingMode(.template)
-                    .foregroundColor(Color("color_text"))
-                    .padding(15)
+                    .foregroundColor(.white)
+                    .frame(width: 200, height: 200)
+                    .background(Color("color_thumb_dark"))
+                    .clipShape(RoundedRectangle(cornerRadius: 10))
+                    .padding(.top, 20)
+                    .padding(.horizontal, 30)
             }
             
-            ThumbView(url: self.audioPlayer.playedModel?.model.thumb ?? "",
-                      albumId: self.audioPlayer.playedModel?.model.albumId ?? "",
-                      big: true)
-                .padding(30)
+            Text(audioPlayer.playedModel?.artist ?? "Nothing is playing right now")
+                .foregroundColor(.white)
+                .font(.system(size: 16, weight: .bold))
+                .lineLimit(1)
+                .multilineTextAlignment(.center)
+                .padding(.top, 20)
+                .padding(.horizontal, 30)
+            
+            Text(audioPlayer.playedModel?.title ?? "Select a track")
+                .foregroundColor(.white)
+                .font(.system(size: 14))
+                .lineLimit(4)
+                .multilineTextAlignment(.center)
+                .padding(.top, 5)
+                .padding(.horizontal, 30)
             
             Spacer()
             
-            HStack(spacing: 20)
-            {
-                VStack
-                {
-                    HStack(spacing: 10)
-                    {
-                        Text(self.audioPlayer.playedModel?.model.artist ?? "Artist")
-                            .foregroundColor(Color("color_text"))
-                            .font(.system(size: 18))
-                            .lineLimit(1)
-                            .multilineTextAlignment(.leading)
-                        
-                        Text("E")
-                            .foregroundColor(Color("color_text"))
-                            .font(.system(size: 11))
-                            .padding(.horizontal, 3)
-                            .border(Color("color_text"))
-                            .removed(!(self.audioPlayer.playedModel?.model.isExplicit ?? false))
-                        
-                        Spacer()
+            AudioSliderView(value: currentTime,
+                            maxValue: Float(audioPlayer.playedModel?.duration ?? 0),
+                            touchedHandler: { touched, currentValue in
+                if !touched {
+                    audioPlayer.seek(value: currentValue)
+                    audioPlayer.play()
+                } else {
+                    if audioPlayer.audioPlaying {
+                        audioPlayer.pause()
                     }
-                    
-                    Text(self.audioPlayer.playedModel?.model.title ?? "Title")
-                        .foregroundColor(Color("color_text"))
-                        .font(.system(size: 14))
-                        .lineLimit(3)
-                        .multilineTextAlignment(.leading)
-                        .onlyLeading()
+                    currentTime = currentValue
                 }
-                
-                Spacer()
-                
-                Menu
-                {
-                    if self.audioPlayer.isAddedAudio(audioId: self.audioPlayer.playedModel?.model.audioId ?? "")
-                    {
-                        Button {
-                            if let m = self.audioPlayer.playedModel
-                            {
-                                self.audioPlayer.deleteAudioFromDB(audioId: m.model.audioId)
-                            }
-                        } label: {
-                            Text("Delete from library")
-                                .foregroundColor(Color("color_text"))
-                                .font(.system(size: 16))
-                        }
-                    } else {
-                        Button {
-                            if let m = self.audioPlayer.playedModel
-                            {
-                                self.audioPlayer.addAudioToDB(model: m)
-                            }
-                        } label: {
-                            Text("Add audio")
-                                .foregroundColor(Color("color_text"))
-                                .font(.system(size: 16))
-                        }
-                    }
-                    
-                    Button {
-                        
-                    } label: {
-                        Text("Go to artist")
-                            .foregroundColor(Color("color_text"))
-                            .font(.system(size: 16))
-                    }
-                    .removed(self.audioPlayer.playedModel?.model.artists.isEmpty ?? true)
-                } label: {
-                    Image("action_menu")
-                        .renderingMode(.template)
-                        .foregroundColor(Color("color_text"))
-                        .padding(5)
-                        .background(Color("color_toolbar"))
-                        .clipShape(RoundedRectangle(cornerRadius: 5))
-                }
-            }
-            .padding(.horizontal, 30)
-            .padding(.bottom, 20)
+                touchedSlider = touched
+            })
+                .padding(.bottom, 15)
+                .padding(.horizontal, 30)
+                .disabled(!audioPlayer.audioPlayerReady)
+            
+            Text("\(currentTime.toTime())  /  \(audioPlayer.playedModel?.duration.toTime() ?? "--")")
+                .foregroundColor(.white)
+                .font(.system(size: 12))
+                .padding(.bottom, 25)
+                .padding(.horizontal, 30)
             
             HStack(spacing: 0)
             {
                 Button {
-                    self.randomAudio.toggle()
-                    self.audioPlayer.randomAudio(value: self.randomAudio)
+                    randomAudio.toggle()
+                    audioPlayer.randomAudio(value: randomAudio)
                 } label: {
-                    Image("random")
-                        .resizable()
-                        .renderingMode(.template)
-                        .aspectRatio(contentMode: .fill)
-                        .foregroundColor(self.randomAudio ? .blue : Color("color_text"))
-                        
+                    Image(randomAudio ? "random_on" : "random")
                 }
-                .frame(width: 30, height: 30)
                 
                 Spacer()
                 
                 Button {
-                    self.repeatAudio.toggle()
-                    self.audioPlayer.repeatAudio(value: self.repeatAudio)
-                } label: {
-                    Image("repeat")
-                        .resizable()
-                        .renderingMode(.template)
-                        .aspectRatio(contentMode: .fill)
-                        .foregroundColor(self.repeatAudio ? .blue : Color("color_text"))
-                        
-                }
-                .frame(width: 30, height: 30)
-            }
-            .padding(.horizontal, 30)
-            .padding(.bottom, 20)
-            
-            AudioSliderView(value: self.currentTime,
-                            maxValue: Float(self.audioPlayer.playedModel?.model.duration ?? 0),
-                            touchedHandler: { touched, currentValue in
-                if !touched {
-                    self.audioPlayer.seek(value: currentValue)
-                    self.audioPlayer.play()
-                } else {
-                    if self.audioPlayer.audioPlaying {
-                        self.audioPlayer.pause()
-                    }
-                    self.currentTime = currentValue
-                }
-                self.touchedSlider = touched
-            })
-                .padding(.bottom, 10)
-                .padding(.horizontal, 30)
-            
-            HStack
-            {
-                Text(self.currentTime.toTime())
-                    .foregroundColor(self.touchedSlider ? .blue : Color("color_text"))
-                    .font(.system(size: 14))
-                
-                Spacer()
-                
-                Text(self.audioPlayer.playedModel?.model.duration.toTime() ?? "--")
-                    .foregroundColor(Color("color_text"))
-                    .font(.system(size: 14))
-            }
-            .padding(.horizontal, 30)
-            .padding(.bottom, 30)
-            
-            HStack(spacing: 60)
-            {
-                Button {
-                    self.audioPlayer.control(tag: .Previous)
+                    audioPlayer.control(tag: .Previous)
                 } label: {
                     Image("previous")
-                        .resizable()
-                        .renderingMode(.template)
-                        .aspectRatio(contentMode: .fill)
-                        .foregroundColor(Color("color_text"))
-                        
                 }
-                .frame(width: 35, height: 35)
                 
                 Button {
-                    self.audioPlayer.control(tag: .PlayOrPause)
+                    audioPlayer.control(tag: .PlayOrPause)
                 } label: {
-                    Image(self.audioPlayer.audioPlaying ? "pause" : "play")
+                    Image(audioPlayer.audioPlaying ? "pause_circle" : "play_circle")
                         .resizable()
-                        .renderingMode(.template)
-                        .aspectRatio(contentMode: .fill)
-                        .foregroundColor(Color("color_text"))
+                        .frame(width: 60, height: 60)
                 }
-                .frame(width: 45, height: 45)
+                .padding(.horizontal, 20)
                 
                 Button {
-                    self.audioPlayer.control(tag: .Next)
+                    audioPlayer.control(tag: .Next)
                 } label: {
                     Image("next")
-                        .resizable()
-                        .renderingMode(.template)
-                        .aspectRatio(contentMode: .fill)
-                        .foregroundColor(Color("color_text"))
                 }
-                .frame(width: 35, height: 35)
+                
+                Spacer()
+                
+                Button {
+                    repeatAudio.toggle()
+                    audioPlayer.repeatAudio(value: repeatAudio)
+                } label: {
+                    Image(repeatAudio ? "repeat_on" : "repeat")
+                }
             }
             .padding(.bottom, 60)
+            .padding(.horizontal, 30)
         }
-        .background(Color("color_background"))
-        .onAppear(perform: {
-            self.repeatAudio = self.audioPlayer.isRepeatAudio()
-            self.randomAudio = self.audioPlayer.isRandomAudio()
-            self.initTimer()
-        })
-        .onDisappear {
-            self.audioPlayer.removeCurrentTime()
-        }
+        .background(Color(uiColor: audioPlayer.artColor ??
+                          UIColor(named: "color_player_default") ?? .clear))
     }
     
     private func initTimer()
     {
-        self.currentTime = self.audioPlayer.currentTime()
-        self.audioPlayer.initCurrentTime { current in
-            self.currentTime = current
+        currentTime = audioPlayer.currentTime()
+        audioPlayer.initCurrentTime { current in
+            currentTime = current
         }
+    }
+    
+    private func openedPlayer()
+    {
+        repeatAudio = self.audioPlayer.isRepeatAudio()
+        randomAudio = self.audioPlayer.isRandomAudio()
+        initTimer()
+    }
+    
+    private func closedPlayer()
+    {
+        audioPlayer.removeCurrentTime()
+    }
+    
+    private func hidePlayer()
+    {
+        withAnimation(.spring()) {
+            dragOpacity = .zero
+            dragOffset = UIScreen.main.bounds.height - PEEK_PLAYER_TOP
+        }
+        
+        lastDragOffset = UIScreen.main.bounds.height - PEEK_PLAYER_TOP
+    }
+    
+    private func showPlayer()
+    {
+        withAnimation(.spring()) {
+            dragOpacity = 1
+            dragOffset = .zero
+        }
+        
+        lastDragOffset = .zero
     }
 }

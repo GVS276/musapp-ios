@@ -11,18 +11,42 @@ class DBController
 {
     static var shared = DBController()
     
-    func receiveAudioList(delegate: IDBDelegate) -> Int64
+    func addDelegate(delegate: DBDelegate)
     {
-        return AllAudioTask(delegate: delegate).execute()
+        DBDelegateNotifier.shared.addDelegate(delegate: delegate)
+    }
+
+    func removeDelegate(delegate: DBDelegate)
+    {
+        DBDelegateNotifier.shared.removeDelegate(delegate: delegate)
     }
     
-    func addAudio(model: AudioModel, delegate: IDBDelegate?) -> Int64
+    /*
+     * MARK: AUDIO
+     */
+    
+    func receiveAudioList() -> Int64
     {
-        return AddAudioTask(model: model, delegate: delegate).execute()
+        return AllAudioTask().execute()
     }
     
-    func deleteAudio(audioId: String, delegate: IDBDelegate?) -> Int64
+    func addAudio(model: AudioModel) -> Int64
     {
-        return DeleteAudioTask(audioId: audioId, delegate: delegate).execute()
+        return AddAudioTask(model: model).execute()
+    }
+    
+    func deleteAudio(audioId: String) -> Int64
+    {
+        return DeleteAudioTask(audioId: audioId).execute()
+    }
+    
+    func deleteAudioFromDownload(audioId: String) -> Int64
+    {
+        return DeleteAudioFromDownloadTask(audioId: audioId).execute()
+    }
+    
+    func downloadAudio(model: AudioModel) -> Int64
+    {
+        return DownloadAudioTask(model: model).execute()
     }
 }

@@ -6,32 +6,105 @@
 	objectVersion = 55;
 	objects = {
 
+/* Begin PBXAggregateTarget section */
+		A4CF1A2B7EFA48AA7D1DFC45FA6B1E5C /* mobile-ffmpeg-full */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = 797E3892A9E731F1BE505B941C2067A6 /* Build configuration list for PBXAggregateTarget "mobile-ffmpeg-full" */;
+			buildPhases = (
+				25DCD786C43D49D3F2ED58F8B404DA05 /* [CP] Copy XCFrameworks */,
+			);
+			dependencies = (
+			);
+			name = "mobile-ffmpeg-full";
+		};
+/* End PBXAggregateTarget section */
+
 /* Begin PBXBuildFile section */
-		38DC2E8F35E10418A7E525B4AB7280E0 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73010CC983E3809BECEE5348DA1BB8C6 /* Foundation.framework */; };
-		4ED883B269D29998FAFDAE3BAA2E2B37 /* Pods-musapp (iOS)-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = F91043C1D334830CE0E565B70484617D /* Pods-musapp (iOS)-dummy.m */; };
-		C8B977E6E80EDCF278511588D8168EEA /* Pods-musapp (iOS)-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 3613FC3727DC8101BADC52D6384EFCFB /* Pods-musapp (iOS)-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		407539EF2D6D70E2FD1A145A295B8210 /* Pods-musapp (iOS)-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 3613FC3727DC8101BADC52D6384EFCFB /* Pods-musapp (iOS)-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		5F9C76E331BB1533E0E3BA98CAFEDDA7 /* Pods-musapp (iOS)-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = F91043C1D334830CE0E565B70484617D /* Pods-musapp (iOS)-dummy.m */; };
+		B8839F863B40797D8C37CB3D1A3D431C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73010CC983E3809BECEE5348DA1BB8C6 /* Foundation.framework */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		2EA5FAE281CC9F19FFD825D5D56E28DC /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A4CF1A2B7EFA48AA7D1DFC45FA6B1E5C;
+			remoteInfo = "mobile-ffmpeg-full";
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
+		09872F36CF69EA505A518699F41E3A6A /* soxr.xcframework */ = {isa = PBXFileReference; includeInIndex = 1; path = soxr.xcframework; sourceTree = "<group>"; };
 		0E9247D234605CE2ABF6D81F84BDE30F /* Pods-musapp (iOS).debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-musapp (iOS).debug.xcconfig"; sourceTree = "<group>"; };
+		109BE396DFA254FCB0DBCE5D88920A14 /* libvorbisfile.xcframework */ = {isa = PBXFileReference; includeInIndex = 1; path = libvorbisfile.xcframework; sourceTree = "<group>"; };
+		1125AF65046227ABBDD829C61B7D0F84 /* freetype.xcframework */ = {isa = PBXFileReference; includeInIndex = 1; path = freetype.xcframework; sourceTree = "<group>"; };
+		18E65CB6E7DABDC4F2D63A66EA4C3A6F /* libass.xcframework */ = {isa = PBXFileReference; includeInIndex = 1; path = libass.xcframework; sourceTree = "<group>"; };
+		1B98AE8E8371B37DF9F8BDD8E93D8911 /* kvazaar.xcframework */ = {isa = PBXFileReference; includeInIndex = 1; path = kvazaar.xcframework; sourceTree = "<group>"; };
+		225BA1606C69E9DABAB62BDF6463720F /* fontconfig.xcframework */ = {isa = PBXFileReference; includeInIndex = 1; path = fontconfig.xcframework; sourceTree = "<group>"; };
+		24BF7803AABECAC1B53E2772BD63E1BF /* gnutls.xcframework */ = {isa = PBXFileReference; includeInIndex = 1; path = gnutls.xcframework; sourceTree = "<group>"; };
 		2B7D33FD40E289AFC5BE15F89F83CA41 /* Pods-musapp (iOS)-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-musapp (iOS)-Info.plist"; sourceTree = "<group>"; };
+		2D899463C0A313DBB09387D46F5EF2D7 /* libogg.xcframework */ = {isa = PBXFileReference; includeInIndex = 1; path = libogg.xcframework; sourceTree = "<group>"; };
 		3334BBC71AEC4F98E8F496DC9483D41B /* Pods-musapp (iOS)-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-musapp (iOS)-acknowledgements.plist"; sourceTree = "<group>"; };
 		3613FC3727DC8101BADC52D6384EFCFB /* Pods-musapp (iOS)-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-musapp (iOS)-umbrella.h"; sourceTree = "<group>"; };
 		382CE6CBE2922A0A3C06A39B3BCDAD1F /* Pods-musapp (iOS) */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = "Pods-musapp (iOS)"; path = Pods_musapp__iOS_.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		39016955DCCC9052F482F008543D1A0B /* libwebpdemux.xcframework */ = {isa = PBXFileReference; includeInIndex = 1; path = libwebpdemux.xcframework; sourceTree = "<group>"; };
+		3EC4F557A2E411AE5878320D6F05056B /* libavutil.xcframework */ = {isa = PBXFileReference; includeInIndex = 1; path = libavutil.xcframework; sourceTree = "<group>"; };
+		452C57081B515B712D674BFB27242555 /* libilbc.xcframework */ = {isa = PBXFileReference; includeInIndex = 1; path = libilbc.xcframework; sourceTree = "<group>"; };
+		4A64959A2897095C4D474503C22A1AEC /* libvpx.xcframework */ = {isa = PBXFileReference; includeInIndex = 1; path = libvpx.xcframework; sourceTree = "<group>"; };
+		4B11AA310FD8C2F65E8DD40B9E33B1FB /* snappy.xcframework */ = {isa = PBXFileReference; includeInIndex = 1; path = snappy.xcframework; sourceTree = "<group>"; };
 		4B75D4E084023869B077D93ADC468F9E /* Pods-musapp (iOS).modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = "Pods-musapp (iOS).modulemap"; sourceTree = "<group>"; };
+		54B5629C28FCE40A2B05C20442811E8F /* libnettle.xcframework */ = {isa = PBXFileReference; includeInIndex = 1; path = libnettle.xcframework; sourceTree = "<group>"; };
+		5720DC19D4CC530D40F5D24C75375851 /* libvorbis.xcframework */ = {isa = PBXFileReference; includeInIndex = 1; path = libvorbis.xcframework; sourceTree = "<group>"; };
+		585F9C63CA9A39D20BD0A520EBC59FF1 /* fribidi.xcframework */ = {isa = PBXFileReference; includeInIndex = 1; path = fribidi.xcframework; sourceTree = "<group>"; };
+		5E4E0C0D46338249A0220742FE0D1BF0 /* libtheoraenc.xcframework */ = {isa = PBXFileReference; includeInIndex = 1; path = libtheoraenc.xcframework; sourceTree = "<group>"; };
+		623EB70BFE6CD11FBF9D4461967ABDBC /* libopencore-amrnb.xcframework */ = {isa = PBXFileReference; includeInIndex = 1; path = "libopencore-amrnb.xcframework"; sourceTree = "<group>"; };
+		62D7F3160F073681A2E43D918F101EEA /* libvorbisenc.xcframework */ = {isa = PBXFileReference; includeInIndex = 1; path = libvorbisenc.xcframework; sourceTree = "<group>"; };
+		65044CA84BE1A61B39DBDD155C3CEA97 /* libavfilter.xcframework */ = {isa = PBXFileReference; includeInIndex = 1; path = libavfilter.xcframework; sourceTree = "<group>"; };
+		6BB8A8828E73A5F1948884179AFF51D0 /* lame.xcframework */ = {isa = PBXFileReference; includeInIndex = 1; path = lame.xcframework; sourceTree = "<group>"; };
 		73010CC983E3809BECEE5348DA1BB8C6 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS14.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
+		7779984E194334578A8E9D54C3519F59 /* libwebpmux.xcframework */ = {isa = PBXFileReference; includeInIndex = 1; path = libwebpmux.xcframework; sourceTree = "<group>"; };
+		7DDF5C61C9D2C86B488364DC999C2CB7 /* libswscale.xcframework */ = {isa = PBXFileReference; includeInIndex = 1; path = libswscale.xcframework; sourceTree = "<group>"; };
+		83B34FAA4996A362BE29700344BDBECF /* gmp.xcframework */ = {isa = PBXFileReference; includeInIndex = 1; path = gmp.xcframework; sourceTree = "<group>"; };
+		851E7CDF42155C6892A7BD2D8AAAF602 /* mobileffmpeg.xcframework */ = {isa = PBXFileReference; includeInIndex = 1; path = mobileffmpeg.xcframework; sourceTree = "<group>"; };
+		87403F605D9CBB9F02C0F4FE28A53859 /* speex.xcframework */ = {isa = PBXFileReference; includeInIndex = 1; path = speex.xcframework; sourceTree = "<group>"; };
 		8FDEF2355A872F604993D7039B43060F /* Pods-musapp (iOS)-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-musapp (iOS)-acknowledgements.markdown"; sourceTree = "<group>"; };
+		97ABFCFD31911C9FD44AD7331EF919C4 /* giflib.xcframework */ = {isa = PBXFileReference; includeInIndex = 1; path = giflib.xcframework; sourceTree = "<group>"; };
+		9855F377C9571EA1C68B4E26A5C41A4E /* twolame.xcframework */ = {isa = PBXFileReference; includeInIndex = 1; path = twolame.xcframework; sourceTree = "<group>"; };
 		9AC4DA51251ADB80BC1E0CACC9AD7A6F /* Pods-musapp (iOS).release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-musapp (iOS).release.xcconfig"; sourceTree = "<group>"; };
+		9CA20ED7E88E0F7A3CB81C295038A340 /* vo-amrwbenc.xcframework */ = {isa = PBXFileReference; includeInIndex = 1; path = "vo-amrwbenc.xcframework"; sourceTree = "<group>"; };
+		9D3B7D93ED5599E33D4FFE87F8E66BE1 /* libavcodec.xcframework */ = {isa = PBXFileReference; includeInIndex = 1; path = libavcodec.xcframework; sourceTree = "<group>"; };
 		9D940727FF8FB9C785EB98E56350EF41 /* Podfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; lastKnownFileType = text; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
+		A3A2B1DB2FA3233BF622DD29961D389D /* libxml2.xcframework */ = {isa = PBXFileReference; includeInIndex = 1; path = libxml2.xcframework; sourceTree = "<group>"; };
+		AA67DE5F025EDCB24BFA9D6841077620 /* libswresample.xcframework */ = {isa = PBXFileReference; includeInIndex = 1; path = libswresample.xcframework; sourceTree = "<group>"; };
+		AB30E427771E97042DB275099CE4CBAA /* wavpack.xcframework */ = {isa = PBXFileReference; includeInIndex = 1; path = wavpack.xcframework; sourceTree = "<group>"; };
+		AEA2C74F9A7C2D4A5F663C02F357953F /* libwebp.xcframework */ = {isa = PBXFileReference; includeInIndex = 1; path = libwebp.xcframework; sourceTree = "<group>"; };
+		B8D634456C2E210E0383AE64B6DEEFEF /* libtheora.xcframework */ = {isa = PBXFileReference; includeInIndex = 1; path = libtheora.xcframework; sourceTree = "<group>"; };
+		BE5F07AE8A74ED99057145A07166FD9F /* tiff.xcframework */ = {isa = PBXFileReference; includeInIndex = 1; path = tiff.xcframework; sourceTree = "<group>"; };
+		C3ACEF7524BAC805FDEB8529402F6A20 /* mobile-ffmpeg-full.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "mobile-ffmpeg-full.release.xcconfig"; sourceTree = "<group>"; };
+		C52128611ED1EB2304460D5C8A82AEEF /* libaom.xcframework */ = {isa = PBXFileReference; includeInIndex = 1; path = libaom.xcframework; sourceTree = "<group>"; };
+		C87B90FB2E956D519CC5E71A377EA0E7 /* libhogweed.xcframework */ = {isa = PBXFileReference; includeInIndex = 1; path = libhogweed.xcframework; sourceTree = "<group>"; };
+		C8C632398C13F5E19B3FCFFC975E43EB /* libpng.xcframework */ = {isa = PBXFileReference; includeInIndex = 1; path = libpng.xcframework; sourceTree = "<group>"; };
+		D691B25FA432A5AF2C77D170E05317D7 /* libavformat.xcframework */ = {isa = PBXFileReference; includeInIndex = 1; path = libavformat.xcframework; sourceTree = "<group>"; };
+		D6E8BD1A0EDA28F6468C6A7624EAC230 /* jpeg.xcframework */ = {isa = PBXFileReference; includeInIndex = 1; path = jpeg.xcframework; sourceTree = "<group>"; };
+		DEFD3C0DC9005DAFA9F7CA4A11618EE0 /* shine.xcframework */ = {isa = PBXFileReference; includeInIndex = 1; path = shine.xcframework; sourceTree = "<group>"; };
+		E4B727DC3BBFE0D14571CE8F61D407AF /* mobile-ffmpeg-full-xcframeworks.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "mobile-ffmpeg-full-xcframeworks.sh"; sourceTree = "<group>"; };
+		E5B707B05917EEC2B814C3E7A0BB30F8 /* libavdevice.xcframework */ = {isa = PBXFileReference; includeInIndex = 1; path = libavdevice.xcframework; sourceTree = "<group>"; };
+		E9AC4196576563C1B16FC409CFC1E83E /* libsndfile.xcframework */ = {isa = PBXFileReference; includeInIndex = 1; path = libsndfile.xcframework; sourceTree = "<group>"; };
+		ED8EDB79400248882DBA81A074CC4AA9 /* opus.xcframework */ = {isa = PBXFileReference; includeInIndex = 1; path = opus.xcframework; sourceTree = "<group>"; };
+		F00717AF0EDB1C459ADBDFACC3DCECEF /* expat.xcframework */ = {isa = PBXFileReference; includeInIndex = 1; path = expat.xcframework; sourceTree = "<group>"; };
 		F91043C1D334830CE0E565B70484617D /* Pods-musapp (iOS)-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-musapp (iOS)-dummy.m"; sourceTree = "<group>"; };
+		FB7CD821744EDB2342019E1F7873E2EB /* libtheoradec.xcframework */ = {isa = PBXFileReference; includeInIndex = 1; path = libtheoradec.xcframework; sourceTree = "<group>"; };
+		FE7E334A78E7D37D6026796B5EE109C5 /* mobile-ffmpeg-full.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "mobile-ffmpeg-full.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		0B77774B5EDE0C8173E68FFE8872E147 /* Frameworks */ = {
+		AFD6F6DA918667E3E7D1237FD1525B28 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				38DC2E8F35E10418A7E525B4AB7280E0 /* Foundation.framework in Frameworks */,
+				B8839F863B40797D8C37CB3D1A3D431C /* Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -54,12 +127,95 @@
 			path = "Target Support Files/Pods-musapp (iOS)";
 			sourceTree = "<group>";
 		};
+		3C35AFEAB8715E0562808E3A0699720A /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				F00717AF0EDB1C459ADBDFACC3DCECEF /* expat.xcframework */,
+				225BA1606C69E9DABAB62BDF6463720F /* fontconfig.xcframework */,
+				1125AF65046227ABBDD829C61B7D0F84 /* freetype.xcframework */,
+				585F9C63CA9A39D20BD0A520EBC59FF1 /* fribidi.xcframework */,
+				97ABFCFD31911C9FD44AD7331EF919C4 /* giflib.xcframework */,
+				83B34FAA4996A362BE29700344BDBECF /* gmp.xcframework */,
+				24BF7803AABECAC1B53E2772BD63E1BF /* gnutls.xcframework */,
+				D6E8BD1A0EDA28F6468C6A7624EAC230 /* jpeg.xcframework */,
+				1B98AE8E8371B37DF9F8BDD8E93D8911 /* kvazaar.xcframework */,
+				6BB8A8828E73A5F1948884179AFF51D0 /* lame.xcframework */,
+				C52128611ED1EB2304460D5C8A82AEEF /* libaom.xcframework */,
+				18E65CB6E7DABDC4F2D63A66EA4C3A6F /* libass.xcframework */,
+				9D3B7D93ED5599E33D4FFE87F8E66BE1 /* libavcodec.xcframework */,
+				E5B707B05917EEC2B814C3E7A0BB30F8 /* libavdevice.xcframework */,
+				65044CA84BE1A61B39DBDD155C3CEA97 /* libavfilter.xcframework */,
+				D691B25FA432A5AF2C77D170E05317D7 /* libavformat.xcframework */,
+				3EC4F557A2E411AE5878320D6F05056B /* libavutil.xcframework */,
+				C87B90FB2E956D519CC5E71A377EA0E7 /* libhogweed.xcframework */,
+				452C57081B515B712D674BFB27242555 /* libilbc.xcframework */,
+				54B5629C28FCE40A2B05C20442811E8F /* libnettle.xcframework */,
+				2D899463C0A313DBB09387D46F5EF2D7 /* libogg.xcframework */,
+				623EB70BFE6CD11FBF9D4461967ABDBC /* libopencore-amrnb.xcframework */,
+				C8C632398C13F5E19B3FCFFC975E43EB /* libpng.xcframework */,
+				E9AC4196576563C1B16FC409CFC1E83E /* libsndfile.xcframework */,
+				AA67DE5F025EDCB24BFA9D6841077620 /* libswresample.xcframework */,
+				7DDF5C61C9D2C86B488364DC999C2CB7 /* libswscale.xcframework */,
+				B8D634456C2E210E0383AE64B6DEEFEF /* libtheora.xcframework */,
+				FB7CD821744EDB2342019E1F7873E2EB /* libtheoradec.xcframework */,
+				5E4E0C0D46338249A0220742FE0D1BF0 /* libtheoraenc.xcframework */,
+				5720DC19D4CC530D40F5D24C75375851 /* libvorbis.xcframework */,
+				62D7F3160F073681A2E43D918F101EEA /* libvorbisenc.xcframework */,
+				109BE396DFA254FCB0DBCE5D88920A14 /* libvorbisfile.xcframework */,
+				4A64959A2897095C4D474503C22A1AEC /* libvpx.xcframework */,
+				AEA2C74F9A7C2D4A5F663C02F357953F /* libwebp.xcframework */,
+				39016955DCCC9052F482F008543D1A0B /* libwebpdemux.xcframework */,
+				7779984E194334578A8E9D54C3519F59 /* libwebpmux.xcframework */,
+				A3A2B1DB2FA3233BF622DD29961D389D /* libxml2.xcframework */,
+				851E7CDF42155C6892A7BD2D8AAAF602 /* mobileffmpeg.xcframework */,
+				ED8EDB79400248882DBA81A074CC4AA9 /* opus.xcframework */,
+				DEFD3C0DC9005DAFA9F7CA4A11618EE0 /* shine.xcframework */,
+				4B11AA310FD8C2F65E8DD40B9E33B1FB /* snappy.xcframework */,
+				09872F36CF69EA505A518699F41E3A6A /* soxr.xcframework */,
+				87403F605D9CBB9F02C0F4FE28A53859 /* speex.xcframework */,
+				BE5F07AE8A74ED99057145A07166FD9F /* tiff.xcframework */,
+				9855F377C9571EA1C68B4E26A5C41A4E /* twolame.xcframework */,
+				9CA20ED7E88E0F7A3CB81C295038A340 /* vo-amrwbenc.xcframework */,
+				AB30E427771E97042DB275099CE4CBAA /* wavpack.xcframework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		40B8112CB7B3715CAD1AFD716372D471 /* mobile-ffmpeg-full */ = {
+			isa = PBXGroup;
+			children = (
+				3C35AFEAB8715E0562808E3A0699720A /* Frameworks */,
+				BD06ACACEA14B63865A4D644BF36221B /* Support Files */,
+			);
+			name = "mobile-ffmpeg-full";
+			path = "mobile-ffmpeg-full";
+			sourceTree = "<group>";
+		};
+		47DC8E7174F80B1C1E3CD3E6F2B193F2 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				40B8112CB7B3715CAD1AFD716372D471 /* mobile-ffmpeg-full */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
 		578452D2E740E91742655AC8F1636D1F /* iOS */ = {
 			isa = PBXGroup;
 			children = (
 				73010CC983E3809BECEE5348DA1BB8C6 /* Foundation.framework */,
 			);
 			name = iOS;
+			sourceTree = "<group>";
+		};
+		BD06ACACEA14B63865A4D644BF36221B /* Support Files */ = {
+			isa = PBXGroup;
+			children = (
+				E4B727DC3BBFE0D14571CE8F61D407AF /* mobile-ffmpeg-full-xcframeworks.sh */,
+				FE7E334A78E7D37D6026796B5EE109C5 /* mobile-ffmpeg-full.debug.xcconfig */,
+				C3ACEF7524BAC805FDEB8529402F6A20 /* mobile-ffmpeg-full.release.xcconfig */,
+			);
+			name = "Support Files";
+			path = "../Target Support Files/mobile-ffmpeg-full";
 			sourceTree = "<group>";
 		};
 		BEF58DEA315CE84A537BB1C85F249870 /* Products */ = {
@@ -75,6 +231,7 @@
 			children = (
 				9D940727FF8FB9C785EB98E56350EF41 /* Podfile */,
 				D210D550F4EA176C3123ED886F8F87F5 /* Frameworks */,
+				47DC8E7174F80B1C1E3CD3E6F2B193F2 /* Pods */,
 				BEF58DEA315CE84A537BB1C85F249870 /* Products */,
 				D17EC104AC9419C95D28EAF2A615ED64 /* Targets Support Files */,
 			);
@@ -99,11 +256,11 @@
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
-		EE634B72E87DC0575386AB911B12921B /* Headers */ = {
+		92685ACC9C7CBCF1384209108E50B8B5 /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C8B977E6E80EDCF278511588D8168EEA /* Pods-musapp (iOS)-umbrella.h in Headers */,
+				407539EF2D6D70E2FD1A145A295B8210 /* Pods-musapp (iOS)-umbrella.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -112,16 +269,17 @@
 /* Begin PBXNativeTarget section */
 		C31D00A8A4A396A5E906E3A10967CD97 /* Pods-musapp (iOS) */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = AD2D86C3DED2ACB6E8D85C90795ACDF6 /* Build configuration list for PBXNativeTarget "Pods-musapp (iOS)" */;
+			buildConfigurationList = 542670A9ECCD2471EF65A4E0D1A15C27 /* Build configuration list for PBXNativeTarget "Pods-musapp (iOS)" */;
 			buildPhases = (
-				EE634B72E87DC0575386AB911B12921B /* Headers */,
-				B8F263C412EC148367DE7D3E891627B4 /* Sources */,
-				0B77774B5EDE0C8173E68FFE8872E147 /* Frameworks */,
-				34E79685628782D2E663C2433AE85B65 /* Resources */,
+				92685ACC9C7CBCF1384209108E50B8B5 /* Headers */,
+				06541491BF387CC1881B36A16A6E3111 /* Sources */,
+				AFD6F6DA918667E3E7D1237FD1525B28 /* Frameworks */,
+				EE5CA905A162C336254F8E76369274BC /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				C741C21B86945F798FEF768A9FB0E9D8 /* PBXTargetDependency */,
 			);
 			name = "Pods-musapp (iOS)";
 			productName = Pods_musapp__iOS_;
@@ -150,13 +308,14 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
+				A4CF1A2B7EFA48AA7D1DFC45FA6B1E5C /* mobile-ffmpeg-full */,
 				C31D00A8A4A396A5E906E3A10967CD97 /* Pods-musapp (iOS) */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		34E79685628782D2E663C2433AE85B65 /* Resources */ = {
+		EE5CA905A162C336254F8E76369274BC /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -165,21 +324,50 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		25DCD786C43D49D3F2ED58F8B404DA05 /* [CP] Copy XCFrameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/mobile-ffmpeg-full/mobile-ffmpeg-full-xcframeworks-input-files.xcfilelist",
+			);
+			name = "[CP] Copy XCFrameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/mobile-ffmpeg-full/mobile-ffmpeg-full-xcframeworks-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/mobile-ffmpeg-full/mobile-ffmpeg-full-xcframeworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
-		B8F263C412EC148367DE7D3E891627B4 /* Sources */ = {
+		06541491BF387CC1881B36A16A6E3111 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4ED883B269D29998FAFDAE3BAA2E2B37 /* Pods-musapp (iOS)-dummy.m in Sources */,
+				5F9C76E331BB1533E0E3BA98CAFEDDA7 /* Pods-musapp (iOS)-dummy.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		C741C21B86945F798FEF768A9FB0E9D8 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = "mobile-ffmpeg-full";
+			target = A4CF1A2B7EFA48AA7D1DFC45FA6B1E5C /* mobile-ffmpeg-full */;
+			targetProxy = 2EA5FAE281CC9F19FFD825D5D56E28DC /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
-		098FC6C2B86F281E143BA763B50B0350 /* Debug */ = {
+		148E98178242A7DF51A8B61C294FE8D7 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 0E9247D234605CE2ABF6D81F84BDE30F /* Pods-musapp (iOS).debug.xcconfig */;
+			baseConfigurationReference = 9AC4DA51251ADB80BC1E0CACC9AD7A6F /* Pods-musapp (iOS).release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
 				CLANG_ENABLE_OBJC_WEAK = NO;
@@ -209,10 +397,29 @@
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
-			name = Debug;
+			name = Release;
+		};
+		15E9885A7DE59E23E5CF3427E040D0AA /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = C3ACEF7524BAC805FDEB8529402F6A20 /* mobile-ffmpeg-full.release.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
 		};
 		4214E6946993DF02ED98D89047C64016 /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -280,6 +487,23 @@
 			};
 			name = Debug;
 		};
+		5ECE41A755A062B75E0545BCA8340B6A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = FE7E334A78E7D37D6026796B5EE109C5 /* mobile-ffmpeg-full.debug.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
 		CD85FD90473CFBE797E4264E7BBC70AF /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -342,9 +566,9 @@
 			};
 			name = Release;
 		};
-		F6D9195EDFB4B4074526B45D0964529A /* Release */ = {
+		E1844DE5815E5EC0AF1FFBF616C9BF63 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 9AC4DA51251ADB80BC1E0CACC9AD7A6F /* Pods-musapp (iOS).release.xcconfig */;
+			baseConfigurationReference = 0E9247D234605CE2ABF6D81F84BDE30F /* Pods-musapp (iOS).debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
 				CLANG_ENABLE_OBJC_WEAK = NO;
@@ -374,11 +598,10 @@
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				VALIDATE_PRODUCT = YES;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
-			name = Release;
+			name = Debug;
 		};
 /* End XCBuildConfiguration section */
 
@@ -392,11 +615,20 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		AD2D86C3DED2ACB6E8D85C90795ACDF6 /* Build configuration list for PBXNativeTarget "Pods-musapp (iOS)" */ = {
+		542670A9ECCD2471EF65A4E0D1A15C27 /* Build configuration list for PBXNativeTarget "Pods-musapp (iOS)" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				098FC6C2B86F281E143BA763B50B0350 /* Debug */,
-				F6D9195EDFB4B4074526B45D0964529A /* Release */,
+				E1844DE5815E5EC0AF1FFBF616C9BF63 /* Debug */,
+				148E98178242A7DF51A8B61C294FE8D7 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		797E3892A9E731F1BE505B941C2067A6 /* Build configuration list for PBXAggregateTarget "mobile-ffmpeg-full" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				5ECE41A755A062B75E0545BCA8340B6A /* Debug */,
+				15E9885A7DE59E23E5CF3427E040D0AA /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

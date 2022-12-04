@@ -11,12 +11,10 @@ struct ThumbView: View
 {
     @StateObject private var model: ThumbModel
     
-    private var big: Bool
-    private var albumId: String
+    private let albumId: String
     
-    init(url: String, albumId: String, big: Bool)
+    init(url: String, albumId: String)
     {
-        self.big = big
         self.albumId = albumId
         self._model = StateObject(wrappedValue: ThumbModel(thumbUrl: url, thumbAlbumId: albumId))
     }
@@ -31,21 +29,19 @@ struct ThumbView: View
     
     private var thumb: some View
     {
-        Group {
-            if let image = self.model.cache[self.albumId] {
-                Image(uiImage: image)
-                    .resizable()
-                    .frame(width: 45, height: 45)
+        ZStack
+        {
+            if let image = self.model.cache[self.albumId]
+            {
+                Image(uiImage: image.imageWith(newSize: CGSize(width: 45, height: 45)))
                     .clipShape(Circle())
-                    .removed(self.big)
-                
-                Image(uiImage: image)
-                    .resizable()
-                    .frame(width: 300, height: 300)
-                    .cornerRadius(10)
-                    .removed(!self.big)
             } else {
-                AudioThumbView(big: self.big)
+                Image("audio")
+                    .renderingMode(.template)
+                    .foregroundColor(.white)
+                    .frame(width: 45, height: 45)
+                    .background(Color("color_thumb"))
+                    .clipShape(Circle())
             }
         }
     }

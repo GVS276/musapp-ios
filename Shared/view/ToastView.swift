@@ -25,6 +25,7 @@ class Toast: ObservableObject
 struct ToastView: View
 {
     @StateObject private var model = Toast.shared
+    @State private var timer: Timer? = nil
     
     var body: some View {
         HStack
@@ -33,24 +34,29 @@ struct ToastView: View
                 .lineLimit(6)
                 .multilineTextAlignment(.center)
                 .padding(15)
-                .foregroundColor(.white)
-                .font(Font.system(
-                        size: 16,
-                        design: .default))
-                .background(Rectangle()
-                                .fill(Color.black)
-                                .opacity(0.5)
-                                .cornerRadius(20))
+                .foregroundColor(Color.white)
+                .font(.system(size: 16))
+                .background(Color.black.opacity(0.7))
+                .cornerRadius(20)
         }
         .padding(.bottom, 25)
         .padding(.horizontal, 15)
-        .transition(AnyTransition.opacity.animation(.linear(duration: 0.5)))
+        .transition(.opacity.animation(.linear(duration: 0.5)))
         .onAppear(perform: {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+            if timer != nil
+            {
+                return
+            }
+            
+            timer = Timer.scheduledTimer(withTimeInterval: 2.0, repeats: false) { _ in
                 withAnimation {
                     self.model.showToast = false
                 }
             }
+        })
+        .onDisappear(perform: {
+            timer?.invalidate()
+            timer = nil
         })
         .removed(!self.model.showToast)
     }

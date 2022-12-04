@@ -7,6 +7,21 @@
 
 import Foundation
 
+enum RequestLoadingStatus {
+    // ничего
+    case None
+    // ошибка выполнения запроса
+    case Error
+    // полученный запрос с пустыми данными
+    case Empty
+    // получение данных
+    case Receiving
+    // получены данные (но можно получить еще)
+    case Received
+    // получены последние данные (повторять не требуется)
+    case ReceivedLast
+}
+
 class UIUtils
 {
     static func updateInfo(token: String, secret: String, userId: Int64 = -1)
@@ -37,35 +52,6 @@ class UIUtils
             return info
         }
         return nil
-    }
-    
-    static func isLastAudio(list: [AudioStruct], audio: AudioStruct) -> Bool
-    {
-        guard !list.isEmpty else {
-            return false
-        }
-        
-        guard let itemIndex = list.lastIndex(where: { $0.id == audio.id }) else {
-            return false
-        }
-        
-        let distance = list.distance(from: itemIndex, to: list.endIndex)
-        return distance == 1
-    }
-    
-    static func isPagination(list: [AudioStruct], audio: AudioStruct, offset: Int) -> Bool
-    {
-        guard !list.isEmpty else {
-            return false
-        }
-        
-        guard let itemIndex = list.lastIndex(where: { $0.id == audio.id }) else {
-            return false
-        }
-        
-        let distance = list.distance(from: itemIndex, to: list.endIndex)
-        let offset = offset < list.count ? offset : list.count - 1
-        return offset == (distance - 1)
     }
 }
 

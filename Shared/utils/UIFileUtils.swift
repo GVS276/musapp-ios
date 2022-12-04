@@ -7,9 +7,12 @@
 
 import Foundation
 
+let THUMB_PATH = "/thumbs/"
+let AUDIO_PATH = "/audios/"
+
 class UIFileUtils
 {
-    static func getThumbDirectory() -> URL?
+    static func getAnyDirectory(path: String) -> URL?
     {
         do
         {
@@ -17,7 +20,7 @@ class UIFileUtils
             
             let dir = try manager.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
             
-            let component = dir.appendingPathComponent("/thumbs/", isDirectory: true)
+            let component = dir.appendingPathComponent(path, isDirectory: true)
             
             if !manager.fileExists(atPath: component.path) {
                 try manager.createDirectory(atPath: component.path, withIntermediateDirectories: true, attributes: nil)
@@ -31,9 +34,9 @@ class UIFileUtils
         return nil
     }
     
-    static func getThumbFilePath(fileName: String) -> URL?
+    static func getAnyFileUri(path: String, fileName: String) -> URL?
     {
-        return self.getThumbDirectory()?.appendingPathComponent(fileName)
+        return self.getAnyDirectory(path: path)?.appendingPathComponent(fileName)
     }
     
     static func existFile(fileUrl: URL) -> Bool
