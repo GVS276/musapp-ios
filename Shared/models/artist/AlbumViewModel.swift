@@ -15,17 +15,27 @@ class AlbumViewModel: ObservableObject
     
     private let model = VKViewModel.shared
     
+    private var token = ""
+    private var secret = ""
+    
+    private var albumId = ""
+    private var ownerId: Int = 0
+    private var accessKey = ""
+    
     init(albumId: String, ownerId: Int, accessKey: String)
     {
         if let info = UIUtils.getInfo()
         {
-            let token = info["token"] as! String
-            let secret = info["secret"] as! String
+            self.albumId = albumId
+            self.ownerId = ownerId
+            self.accessKey = accessKey
+            
+            self.token = info["token"] as! String
+            self.secret = info["secret"] as! String
             
             // задержка на 200 мс
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                self.receiveAudio(token: token, secret: secret,
-                                  albumId: albumId, ownerId: ownerId, accessKey: accessKey)
+                self.receiveAudio()
             }
         } else {
             self.isAllowLoading = false
@@ -38,7 +48,7 @@ class AlbumViewModel: ObservableObject
         self.list.removeAll()
     }
     
-    private func receiveAudio(token: String, secret: String, albumId: String, ownerId: Int, accessKey: String)
+    private func receiveAudio()
     {
         if !self.isAllowLoading {
             return
@@ -50,11 +60,11 @@ class AlbumViewModel: ObservableObject
             self.isRequestStatus = .Receiving
         }
         
-        self.model.getAudioFromAlbum(token: token,
-                                     secret: secret,
-                                     ownerId: ownerId,
-                                     accessKey: accessKey,
-                                     albumId: albumId) { count, list, result in
+        self.model.getAudioFromAlbum(token: self.token,
+                                     secret: self.secret,
+                                     ownerId: self.ownerId,
+                                     accessKey: self.accessKey,
+                                     albumId: self.albumId) { count, list, result in
             DispatchQueue.main.async {
                 switch result {
                 case .ErrorInternet:

@@ -19,7 +19,7 @@ struct AlbumItemView: View
         } label: {
             HStack(spacing: 15)
             {
-                ThumbView(url: item.thumb, albumId: item.albumId, big: false)
+                ThumbView(url: item.thumb, albumId: item.albumId)
                 
                 VStack(spacing: 2)
                 {

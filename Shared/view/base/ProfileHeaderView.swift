@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct ProfileHeaderView<Header: View, Content: View>: View
+struct ProfileHeaderView<Header: View, Content: View, Menu: View>: View
 {
     @State private var opacity: CGFloat = .zero
     
@@ -19,6 +19,7 @@ struct ProfileHeaderView<Header: View, Content: View>: View
     
     @ViewBuilder let header: Header
     @ViewBuilder let content: Content
+    @ViewBuilder let menu: Menu
     
     var body: some View
     {
@@ -69,6 +70,8 @@ struct ProfileHeaderView<Header: View, Content: View>: View
                 .lineLimit(1)
                 .multilineTextAlignment(.leading)
                 .opacity(opacity)
+            
+            menu
         }
         .frame(height: self.toolbarHeight)
         .padding(.horizontal, 15)

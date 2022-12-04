@@ -11,20 +11,13 @@ struct AudioSliderView: UIViewRepresentable
 {
     private var value: Float
     private var maxValue: Float
-    private var thumbColor: Color
-    private var minTrackColor: Color
-    private var maxTrackColor: Color
     private var touchedHandler: ((_ touched: Bool, _ currentValue: Float) -> Void)!
     
     init(value: Float, maxValue: Float,
-         thumbColor: Color = .white, minTrackColor: Color = .blue, maxTrackColor: Color = .gray,
          touchedHandler: @escaping ((_ touched: Bool, _ currentValue: Float) -> Void))
     {
         self.value = value
         self.maxValue = maxValue
-        self.thumbColor = thumbColor
-        self.minTrackColor = minTrackColor
-        self.maxTrackColor = maxTrackColor
         self.touchedHandler = touchedHandler
     }
     
@@ -36,9 +29,9 @@ struct AudioSliderView: UIViewRepresentable
     {
         let slider = UISlider()
         slider.value = self.value
-        slider.thumbTintColor = UIColor(self.thumbColor)
-        slider.minimumTrackTintColor = UIColor(self.minTrackColor)
-        slider.maximumTrackTintColor = UIColor(self.maxTrackColor)
+        slider.thumbTintColor = .white
+        slider.minimumTrackTintColor = .white
+        slider.maximumTrackTintColor = UIColor(named: "color_max_track") ?? .gray
         slider.minimumValue = 0
         slider.maximumValue = self.maxValue
 

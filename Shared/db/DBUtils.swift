@@ -136,4 +136,40 @@ class DBUtils
         }
         return []
     }
+    
+    static func toJsonFromPlaylistOriginal(original: PlaylistOriginal?) -> String
+    {
+        guard let original = original else {
+            return ""
+        }
+        
+        do
+        {
+            let jsonData = try JSONEncoder().encode(original)
+            let jsonString = String(data: jsonData, encoding: .utf8)
+            
+            if let jsonString = jsonString {
+                return jsonString
+            }
+        } catch {
+            print("toJsonFromPlaylistOriginal failed")
+        }
+        
+        return ""
+    }
+    
+    static func fromJsonToPlaylistOriginal(json: String) -> PlaylistOriginal?
+    {
+        do
+        {
+            if let jsonData = json.data(using: .utf8)
+            {
+                let obj = try JSONDecoder().decode(PlaylistOriginal.self, from: jsonData)
+                return obj
+            }
+        } catch {
+            print("fromJsonToPlaylistOriginal failed")
+        }
+        return nil
+    }
 }

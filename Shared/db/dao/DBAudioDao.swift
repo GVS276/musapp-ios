@@ -18,8 +18,6 @@ class DBAudioDao
     
     func insertAudio(audio: AudioModel) -> Bool
     {
-        BaseSemaphore.shared.wait()
-        
         var success = false
         let insertStatementString =
                 """
@@ -71,30 +69,22 @@ class DBAudioDao
         }
         
         sqlite3_finalize(insertStatement)
-        
-        BaseSemaphore.shared.signal()
         return success
     }
     
     func getAllAudio() -> Array<AudioModel>?
     {
-        BaseSemaphore.shared.wait()
-        
         let query = "SELECT * from \(DBContracts.AudioEntry.TABLE_NAME) ORDER BY \(DBContracts.AudioEntry.TIMESTAMP) DESC;"
         let list = self.getAudioListFromQuery(query: query)
         
-        BaseSemaphore.shared.signal()
         return list
     }
     
     func getAudioById(audioId: String) -> AudioModel?
     {
-        BaseSemaphore.shared.wait()
-        
         let query = "SELECT * from \(DBContracts.AudioEntry.TABLE_NAME) WHERE \(DBContracts.AudioEntry.AUDIO_ID) = '\(audioId)'"
         let model = self.getAudioFromQuery(query: query)
         
-        BaseSemaphore.shared.signal()
         return model
     }
     

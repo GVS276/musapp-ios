@@ -316,16 +316,14 @@ class VKViewModel
         }
     }
     
-    func getPlaylists(token: String,
+    /*func getPlaylists(token: String,
                       secret: String,
                       userId: Int64,
-                      count: Int = 5,
-                      offset: Int = 0,
                       completionHandler: @escaping ((_ count: Int,
                                                      _ list: [PlaylistModel]?,
                                                      _ result: RequestResult) -> Void))
     {
-        let method = "/method/audio.getPlaylists?access_token=\(token)&owner_id=\(userId)&count=\(count)&offset=\(offset)&v=5.95&https=1&need_blocks=0&lang=ru&device_id=\(self.getDeviceId())"
+        let method = "/method/audio.getPlaylists?access_token=\(token)&owner_id=\(userId)&v=5.95&https=1&need_blocks=0&lang=ru&device_id=\(self.getDeviceId())"
         
         let hash = "\(method)\(secret)".md5
         
@@ -344,6 +342,47 @@ class VKViewModel
             }
         }
     }
+    
+    func followPlaylist(token: String,
+                        secret: String,
+                        ownerId: Int,
+                        playlistId: String,
+                        completionHandler: @escaping ((_ id: Int, _ result: RequestResult) -> Void))
+    {
+        let method = "/method/audio.followPlaylist?access_token=\(token)&owner_id=\(ownerId)&playlist_id=\(playlistId)&v=5.95&https=1&need_blocks=0&lang=ru&device_id=\(self.getDeviceId())"
+        
+        let hash = "\(method)\(secret)".md5
+        
+        self.requestSession(urlString: "https://api.vk.com\(method)&sig=\(hash)", parameters: nil) { data in
+            guard let data = data else {
+                completionHandler(-1, .ErrorInternet)
+                return
+            }
+            
+            guard let json = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] else
+            {
+                completionHandler(-1, .ErrorRequest)
+                return
+            }
+            
+            guard let param = json["response"] as? NSArray else {
+                completionHandler(-1, .ErrorRequest)
+                return
+            }
+            
+            guard let item = param[0] as? [String: Any] else {
+                completionHandler(-1, .ErrorRequest)
+                return
+            }
+            
+            guard let id = item["playlist_id"] as? Int else {
+                completionHandler(-1, .ErrorRequest)
+                return
+            }
+            
+            completionHandler(id, .Success)
+        }
+    }*/
     
     /*
      * List
@@ -522,7 +561,7 @@ class VKViewModel
         result(count, list)
     }
     
-    private func createPlayList(data: Data, result: (_ count: Int, _ list: [PlaylistModel]) -> Void)
+    /*private func createPlayList(data: Data, result: (_ count: Int, _ list: [PlaylistModel]) -> Void)
     {
         var list: [PlaylistModel] = []
         
@@ -551,18 +590,22 @@ class VKViewModel
             items.forEach { it in
                 if let item = it as? [String: Any]
                 {
-                    if let title = item["title"] as? String,
+                    if let playlistId = item["id"] as? Int,
+                       let owner_id = item["owner_id"] as? Int,
+                       let access_key = item["access_key"] as? String,
+                       let title = item["title"] as? String,
                        let description = item["description"] as? String,
-                       let count = item["count"] as? Int,
-                       let update_time = item["update_time"] as? Int64
+                       let count = item["count"] as? Int32
                     {
                         var model = PlaylistModel()
+                        model.id = String(playlistId)
+                        model.ownerId = String(owner_id)
+                        model.accessKey = access_key
                         model.title = title
                         model.description = description
                         model.count = count
-                        model.update_time = update_time
                         
-                        if let year = item["year"] as? Int
+                        if let year = item["year"] as? Int32
                         {
                             model.year = year
                         }
@@ -574,15 +617,11 @@ class VKViewModel
                         
                         if let original = item["original"] as? [String: Any]
                         {
-                            let id = original["playlist_id"] as? Int ?? 0
-                            model.id = String(id)
-                            model.ownerId = original["owner_id"] as? Int ?? 0
-                            model.accessKey = original["access_key"] as? String ?? ""
-                        } else {
-                            let id = item["id"] as? Int ?? 0
-                            model.id = String(id)
-                            model.ownerId = item["owner_id"] as? Int ?? 0
-                            model.accessKey = item["access_key"] as? String ?? ""
+                            var originalModel = PlaylistOriginal()
+                            originalModel.id = String(original["playlist_id"] as? Int ?? 0)
+                            originalModel.ownerId = String(original["owner_id"] as? Int ?? 0)
+                            originalModel.accessKey = original["access_key"] as? String ?? ""
+                            model.original = originalModel
                         }
                         
                         list.append(model)
@@ -592,5 +631,5 @@ class VKViewModel
         }
         
         result(count, list)
-    }
+    }*/
 }

@@ -11,35 +11,42 @@ class DBController
 {
     static var shared = DBController()
     
-    func receiveAudioList(delegate: IDBDelegate) -> Int64
+    func addDelegate(delegate: DBDelegate)
     {
-        return AllAudioTask(delegate: delegate).execute()
+        DBDelegateNotifier.shared.addDelegate(delegate: delegate)
     }
-    
-    func addAudio(model: AudioModel, delegate: IDBDelegate?) -> Int64
+
+    func removeDelegate(delegate: DBDelegate)
     {
-        return AddAudioTask(model: model, delegate: delegate).execute()
-    }
-    
-    func deleteAudio(audioId: String, delegate: IDBDelegate?) -> Int64
-    {
-        return DeleteAudioTask(audioId: audioId, delegate: delegate).execute()
-    }
-    
-    func deleteAudioFromDownload(audioId: String, delegate: IDBDelegate?) -> Int64
-    {
-        return DeleteAudioFromDownloadTask(audioId: audioId, delegate: delegate).execute()
+        DBDelegateNotifier.shared.removeDelegate(delegate: delegate)
     }
     
     /*
-     * Not main thread
+     * MARK: AUDIO
      */
-    func setDownloaded(audioId: String, value: Bool)
+    
+    func receiveAudioList() -> Int64
     {
-        BaseSemaphore.shared.wait()
-        
-        SQLDataBase.shared.getAudioDao().setDownloaded(audioId: audioId, value: value)
-        
-        BaseSemaphore.shared.signal()
+        return AllAudioTask().execute()
+    }
+    
+    func addAudio(model: AudioModel) -> Int64
+    {
+        return AddAudioTask(model: model).execute()
+    }
+    
+    func deleteAudio(audioId: String) -> Int64
+    {
+        return DeleteAudioTask(audioId: audioId).execute()
+    }
+    
+    func deleteAudioFromDownload(audioId: String) -> Int64
+    {
+        return DeleteAudioFromDownloadTask(audioId: audioId).execute()
+    }
+    
+    func downloadAudio(model: AudioModel) -> Int64
+    {
+        return DownloadAudioTask(model: model).execute()
     }
 }

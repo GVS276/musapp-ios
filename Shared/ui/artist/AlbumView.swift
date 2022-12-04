@@ -75,6 +75,8 @@ struct AlbumView: View
                 }
             }
             .padding(.vertical, 10)
+        } menu: {
+            EmptyView()
         }
     }
     

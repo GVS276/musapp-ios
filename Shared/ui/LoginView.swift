@@ -56,7 +56,7 @@ struct LoginView: View
             } label: {
                 Text("Start")
                     .foregroundColor(.white)
-                    .font(.system(size: 16))
+                    .font(.system(size: 16, weight: .bold))
                     .frame(maxWidth: .infinity, maxHeight: 36)
             }
             .background(.blue)
@@ -65,7 +65,7 @@ struct LoginView: View
             
             Spacer()
             
-            Text("Version: 1.0 - MusApp")
+            Text("Version: 1.01 - MusApp")
                 .foregroundColor(Color("color_text"))
                 .font(.system(size: 12))
                 .padding(.horizontal, 30)

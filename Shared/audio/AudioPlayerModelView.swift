@@ -26,6 +26,9 @@ class AudioPlayerModelView: ObservableObject
     
     @Published var audioList: [AudioModel] = []
     
+    @Published var art: UIImage? = nil
+    @Published var artColor: UIColor? = nil
+    
     private let mediaCenter = MPNowPlayingInfoCenter.default()
     private var mediaFinished = false
     
@@ -33,19 +36,24 @@ class AudioPlayerModelView: ObservableObject
     private var playerCurrentTime: ((_ current: Float) -> Void)? = nil
     private var playerList: [AudioModel] = []
     
-    private let DB = DBController.shared
-    private var requestReceiveId: Int64? = nil
-    private var requestAddId: Int64? = nil
-    private var requestDeleteId: Int64? = nil
-    private var requestDeleteFromDownloadId: Int64? = nil
-    private var requestDownloadId: Int64? = nil
+    private let libraryController = DBController.shared
+    private var libraryDelegate: DBDelegate? = nil
+    
+    private var requestReceiveAudiosId: Int64? = nil
+    
+    private var requestAddAudioId: Int64? = nil
+    private var requestAddPlaylistId: Int64? = nil
+    
+    private var requestDeleteAudioId: Int64? = nil
+    private var requestDeleteAudioFromDownloadId: Int64? = nil
+    private var requestDownloadAudioId: Int64? = nil
     
     init() {
-        self.receiveAudioList()
+        self.initLibrary()
     }
     
     deinit {
-        self.destroy()
+        self.deinitLibrary()
     }
     
     func setPlayerList(list: [AudioModel])
@@ -75,6 +83,8 @@ class AudioPlayerModelView: ObservableObject
             self.player = AudioPlayer(model: model, delegate: self)
             
             // info (about track)
+            self.art = ThumbCacheObj.cache[model.albumId]?.imageWith(newSize: CGSize(width: 200, height: 200))
+            self.artColor = self.art?.getColorFromImage()
             self.initPlayingCenter()
             
             self.ready(value: true)
@@ -204,12 +214,6 @@ class AudioPlayerModelView: ObservableObject
         return UserDefaults.standard.object(forKey: "random") as? Bool ?? false
     }
     
-    func download(model: AudioModel)
-    {
-        self.requestDownloadId = AudioDownload(urlString: model.streamUrl, audioId: model.audioId,
-                                               delegate: self).execute()
-    }
-    
     /*
      * MP Center
      */
@@ -255,7 +259,7 @@ class AudioPlayerModelView: ObservableObject
     {
         var info = [String : Any]()
         
-        if let img = ThumbCacheObj.cache[self.playedModel?.albumId ?? ""]
+        if let img = self.art
         {
             info[MPMediaItemPropertyArtwork] = MPMediaItemArtwork(boundsSize: img.size) { size in
                 return img.imageWith(newSize: size)
@@ -358,32 +362,49 @@ class AudioPlayerModelView: ObservableObject
     }
     
     /*
-     * Data base
+     * Library (DB)
      */
+    
+    func initLibrary()
+    {
+        self.libraryDelegate = DBDelegate(delegate: self, key: ObjectIdentifier(self).hashValue)
+        self.libraryController.addDelegate(delegate: self.libraryDelegate!)
+        
+        self.requestReceiveAudiosId = self.libraryController.receiveAudioList()
+    }
+    
+    func deinitLibrary()
+    {
+        if let libraryDelegate = self.libraryDelegate {
+            self.libraryController.removeDelegate(delegate: libraryDelegate)
+        }
+        self.libraryDelegate = nil
+        self.destroy()
+    }
     
     func isAddedAudio(audioId: String) -> Bool
     {
-        return self.audioList.firstIndex(where: { $0.audioId == audioId }) != nil
+        return self.audioList.contains(where: {$0.audioId == audioId})
     }
     
-    func receiveAudioList()
+    func addAudioToLibrary(model: AudioModel)
     {
-        self.requestReceiveId = self.DB.receiveAudioList(delegate: self)
+        self.requestAddAudioId = self.libraryController.addAudio(model: model)
     }
     
-    func addAudioToDB(model: AudioModel)
+    func deleteAudioFromLibrary(audioId: String)
     {
-        self.requestAddId = self.DB.addAudio(model: model, delegate: self)
-    }
-    
-    func deleteAudioFromDB(audioId: String)
-    {
-        self.requestDeleteId = self.DB.deleteAudio(audioId: audioId, delegate: self)
+        self.requestDeleteAudioId = self.libraryController.deleteAudio(audioId: audioId)
     }
     
     func deleteAudioFromDownload(audioId: String)
     {
-        self.requestDeleteFromDownloadId = self.DB.deleteAudioFromDownload(audioId: audioId, delegate: self)
+        self.requestDeleteAudioFromDownloadId = self.libraryController.deleteAudioFromDownload(audioId: audioId)
+    }
+    
+    func downloadAudio(model: AudioModel)
+    {
+        self.requestDownloadAudioId = self.libraryController.downloadAudio(model: model)
     }
 }
 
@@ -391,35 +412,37 @@ extension AudioPlayerModelView: IDBDelegate
 {
     func onAudioList(requestIdentifier: Int64, list: Array<AudioModel>?)
     {
-        if self.requestReceiveId == requestIdentifier
+        if self.requestReceiveAudiosId == requestIdentifier
         {
             DispatchQueue.main.async {
-                if let list = list
-                {
-                    self.audioList = list
+                guard let list = list else {
+                    return
                 }
+                
+                self.audioList = list
             }
         }
     }
     
     func onAudioAdded(requestIdentifier: Int64, model: AudioModel?)
     {
-        if self.requestAddId == requestIdentifier
+        if self.requestAddAudioId == requestIdentifier
         {
             DispatchQueue.main.async {
-                if let model = model
-                {
-                    self.audioList.insert(model, at: 0)
-                    Toast.shared.show(text: "Added to your data base")
-                } else {
-                    Toast.shared.show(text: "Not added to your data base")
+                guard let model = model else {
+                    Toast.shared.show(text: "Not added to Library")
+                    return
                 }
+
+                self.audioList.insert(model, at: 0)
+                
+                Toast.shared.show(text: "Added to Library")
             }
         }
     }
     
     func onAudioDeleted(requestIdentifier: Int64, audioId: String) {
-        if self.requestDeleteId == requestIdentifier
+        if self.requestDeleteAudioId == requestIdentifier
         {
             DispatchQueue.main.async {
                 if let index = self.audioList.firstIndex(where: {$0.audioId == audioId}) {
@@ -430,10 +453,24 @@ extension AudioPlayerModelView: IDBDelegate
     }
     
     func onAudioFromDownloadDeleted(requestIdentifier: Int64, audioId: String) {
-        if self.requestDeleteFromDownloadId == requestIdentifier
+        if self.requestDeleteAudioFromDownloadId == requestIdentifier
         {
             DispatchQueue.main.async {
                 self.setStatusDownload(audioId: audioId, value: false)
+            }
+        }
+    }
+    
+    func onAudioDownload(requestIdentifier: Int64, audioId: String, status: DownloadStatus) {
+        DispatchQueue.main.async {
+            switch status {
+            case .Started:
+                print("Audio: Downloading...")
+            case .Finished:
+                print("Audio: Downloaded")
+                self.setStatusDownload(audioId: audioId, value: true)
+            case .Failed:
+                print("Audio: Downloading failed")
             }
         }
     }
@@ -484,27 +521,6 @@ extension AudioPlayerModelView: AudioPlayerItemDelegate
         if shouldResume
         {
             self.play()
-        }
-    }
-}
-
-extension AudioPlayerModelView: DownloadDelegate
-{
-    func onDownload(requestIdentifier: Int64, audioId: String, status: AudioDownloadStatus)
-    {
-        switch status {
-        case .Started:
-            print("Audio: Downloading...")
-        case .Finished:
-            self.DB.setDownloaded(audioId: audioId, value: true)
-
-            DispatchQueue.main.async {
-                self.setStatusDownload(audioId: audioId, value: true)
-            }
-            
-            print("Audio: Downloaded")
-        case .Failed:
-            print("Audio: Downloading failed")
         }
     }
 }

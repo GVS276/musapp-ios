@@ -11,12 +11,10 @@ struct ThumbView: View
 {
     @StateObject private var model: ThumbModel
     
-    private let big: Bool
     private let albumId: String
     
-    init(url: String, albumId: String, big: Bool)
+    init(url: String, albumId: String)
     {
-        self.big = big
         self.albumId = albumId
         self._model = StateObject(wrappedValue: ThumbModel(thumbUrl: url, thumbAlbumId: albumId))
     }
@@ -35,30 +33,15 @@ struct ThumbView: View
         {
             if let image = self.model.cache[self.albumId]
             {
-                if big
-                {
-                    Image(uiImage: image.imageWith(newSize: CGSize(width: 300, height: 300)))
-                        .clipShape(RoundedRectangle(cornerRadius: 10))
-                } else {
-                    Image(uiImage: image.imageWith(newSize: CGSize(width: 45, height: 45)))
-                        .clipShape(Circle())
-                }
+                Image(uiImage: image.imageWith(newSize: CGSize(width: 45, height: 45)))
+                    .clipShape(Circle())
             } else {
-                if big {
-                    Image("audio")
-                        .renderingMode(.template)
-                        .foregroundColor(.white)
-                        .frame(width: 300, height: 300)
-                        .background(Color("color_thumb"))
-                        .clipShape(RoundedRectangle(cornerRadius: 10))
-                } else {
-                    Image("audio")
-                        .renderingMode(.template)
-                        .foregroundColor(.white)
-                        .frame(width: 45, height: 45)
-                        .background(Color("color_thumb"))
-                        .clipShape(Circle())
-                }
+                Image("audio")
+                    .renderingMode(.template)
+                    .foregroundColor(.white)
+                    .frame(width: 45, height: 45)
+                    .background(Color("color_thumb"))
+                    .clipShape(Circle())
             }
         }
     }

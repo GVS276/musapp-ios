@@ -155,4 +155,62 @@ extension UIImage {
         }
         return image.withRenderingMode(self.renderingMode)
     }
+    
+    func getColorFromImage() -> UIColor?
+    {
+        guard let inputImage = CIImage(image: self) else { return nil }
+        
+        let extentVector = CIVector(x: inputImage.extent.origin.x,
+                                    y: inputImage.extent.origin.y,
+                                    z: inputImage.extent.size.width,
+                                    w: inputImage.extent.size.height)
+        
+        guard let filter = CIFilter(
+            name: "CIAreaAverage",
+            parameters: [kCIInputImageKey: inputImage, kCIInputExtentKey: extentVector]
+        ) else {
+            return nil
+        }
+        
+        guard let outputImage = filter.outputImage else { return nil }
+        
+        var bitmap = [UInt8](repeating: 0, count: 3)
+        let context = CIContext(options: [.workingColorSpace: kCFNull!])
+        
+        context.render(outputImage,
+                       toBitmap: &bitmap,
+                       rowBytes: 4,
+                       bounds: CGRect(x: 0, y: 0, width: 1, height: 1),
+                       format: .RGBA8,
+                       colorSpace: nil)
+
+        let r = Int(bitmap[0])
+        let g = Int(bitmap[1])
+        let b = Int(bitmap[2])
+        
+        var color = rgb(r, g, b)
+        let luminance = calculateLuminance(r, g, b)
+        
+        // 0 - full light, 1 - full dark
+        if luminance < 0.2 || luminance > 0.9 {
+            color = rgb(100, 100, 100)
+        }
+        
+        return color
+    }
+    
+    private func rgb(_ r: Int, _ g: Int, _ b: Int) -> UIColor {
+        return UIColor(red: CGFloat(r) / 255.0,
+                       green: CGFloat(g) / 255.0,
+                       blue: CGFloat(b) / 255.0,
+                       alpha: 1.0)
+    }
+    
+    private func calculateLuminance(_ r: Int, _ g: Int, _ b: Int) -> Float
+    {
+        let rf = Float(r)
+        let gf = Float(g)
+        let bf = Float(b)
+        return Float(1-(0.299*rf + 0.587*gf + 0.114*bf)/255)
+    }
 }

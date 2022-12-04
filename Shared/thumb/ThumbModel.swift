@@ -52,12 +52,6 @@ class ThumbModel: ObservableObject
                     value.map {
                         self.create(albumId: self.thumbAlbumId, image: $0)
                     }
-                }, receiveCompletion: { value in
-                    BaseSemaphore.shared.signal()
-                }, receiveCancel: {
-                    BaseSemaphore.shared.signal()
-                }, receiveRequest: { value in
-                    BaseSemaphore.shared.wait()
                 }
             )
             .subscribe(on: BaseTask.dqueue)

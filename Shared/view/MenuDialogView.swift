@@ -110,7 +110,7 @@ struct MenuDialogView: View
                         .renderingMode(.template)
                         .foregroundColor(Color("color_text"))
                         .frame(width: 14, height: 14)
-                        .removed(!(self.audioPlayer.playedModel?.isExplicit ?? false))
+                        .removed(!(self.model.audio?.isExplicit ?? false))
                     
                     Text("\(self.model.audio?.title ?? "Title") • \(self.model.audio?.duration.toTime() ?? "--")")
                         .frame(maxWidth: .infinity, alignment: .leading)
@@ -148,9 +148,9 @@ struct MenuDialogView: View
                 }
                 
                 if self.audioPlayer.isAddedAudio(audioId: audio.audioId) {
-                    self.audioPlayer.deleteAudioFromDB(audioId: audio.audioId)
+                    self.audioPlayer.deleteAudioFromLibrary(audioId: audio.audioId)
                 } else {
-                    self.audioPlayer.addAudioToDB(model: audio)
+                    self.audioPlayer.addAudioToLibrary(model: audio)
                 }
                 
                 close()

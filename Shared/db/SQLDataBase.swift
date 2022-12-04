@@ -14,6 +14,7 @@ class SQLDataBase
     private let newVersion: Int32 = 1
     
     private var audioDao: DBAudioDao? = nil
+    private var playlistDao: DBPlaylistDao? = nil
     private var db: OpaquePointer?
     
     private init()
@@ -133,14 +134,44 @@ class SQLDataBase
     {
         self.createTable(tableName: DBContracts.AudioEntry.TABLE_NAME,
                          createTableQuery: DBContracts.AudioEntry.SQL_CREATE_AUDIO)
+        
+        self.createTable(tableName: DBContracts.PlatlistEntry.TABLE_NAME,
+                         createTableQuery: DBContracts.PlatlistEntry.SQL_CREATE_PLAYLIST)
     }
     
     private func createDaos()
     {
-        self.audioDao = DBAudioDao(dbConnection: self.db!)
+        if let db = self.db
+        {
+            self.audioDao = DBAudioDao(dbConnection: db)
+            self.playlistDao = DBPlaylistDao(dbConnection: db)
+        }
+    }
+    
+    func dropTable(tableName: String)
+    {
+        var statement: OpaquePointer? = nil
+        
+        if sqlite3_prepare_v2(db, "DROP TABLE \(tableName);", -1, &statement, nil) == SQLITE_OK
+        {
+            if sqlite3_step(statement) == SQLITE_DONE
+            {
+                print("dropTable: \(tableName) table dropped")
+            } else {
+                print("dropTable: \(tableName) not dropped")
+            }
+        } else {
+            print("dropTable: \(tableName) not be prepared")
+        }
+        
+        sqlite3_finalize(statement)
     }
     
     func getAudioDao() -> DBAudioDao {
         return self.audioDao!
+    }
+    
+    func getPlaylistDao() -> DBPlaylistDao {
+        return self.playlistDao!
     }
 }
