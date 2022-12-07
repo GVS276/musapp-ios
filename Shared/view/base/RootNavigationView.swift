@@ -9,8 +9,7 @@ import SwiftUI
 
 struct RootNavigationView<Root: View>: UIViewControllerRepresentable
 {
-    let root: Root
-    let model: RootStack
+    @ViewBuilder let root: Root
     
     func makeUIViewController(context: Context) -> some UINavigationController
     {
@@ -20,12 +19,12 @@ struct RootNavigationView<Root: View>: UIViewControllerRepresentable
         let nav = UINavigationController(rootViewController: viewController)
         nav.view.backgroundColor = .clear
         nav.navigationBar.isHidden = true
-        
-        self.model.navigationController = nav
         return nav
     }
     
     func updateUIViewController(_ uiViewController: UIViewControllerType, context: Context) {
-        
+        let viewController = UIHostingController(rootView: root)
+        viewController.view.backgroundColor = .clear
+        uiViewController.setViewControllers([viewController], animated: false)
     }
 }

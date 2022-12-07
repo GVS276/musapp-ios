@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		1A09A36328A2FF51009760A6 /* AudioSliderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A09A36228A2FF51009760A6 /* AudioSliderView.swift */; };
 		1A1A378E28C1057000677EBB /* RootStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A1A378D28C1057000677EBB /* RootStack.swift */; };
+		1A1EBDA0293F54FE00607ABA /* PlayerSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A1EBD9F293F54FE00607ABA /* PlayerSheetView.swift */; };
 		1A1FBD3428DB7B1900CDA475 /* AlbumItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A1FBD3328DB7B1900CDA475 /* AlbumItemView.swift */; };
 		1A282C7B28E32268005F0B5A /* RecommendationsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A282C7A28E32268005F0B5A /* RecommendationsView.swift */; };
 		1A282C7D28E32432005F0B5A /* RecommendationsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A282C7C28E32432005F0B5A /* RecommendationsViewModel.swift */; };
@@ -78,6 +79,8 @@
 		1A7F960E28AE7E3B000171F5 /* AboutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A7F960D28AE7E3B000171F5 /* AboutView.swift */; };
 		1A818E4F28B12079002A862D /* ThumbModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A818E4E28B12079002A862D /* ThumbModel.swift */; };
 		1A902B5D28BB933300E2B82F /* AudioPlayerItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A902B5C28BB933300E2B82F /* AudioPlayerItem.swift */; };
+		1A9F44D3293CFB0700831825 /* LibraryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A9F44D2293CFB0700831825 /* LibraryView.swift */; };
+		1A9F44D5293CFCBB00831825 /* ChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A9F44D4293CFCBB00831825 /* ChartView.swift */; };
 		1AA2A3EA289BE56D009A8739 /* Tests_iOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AA2A3E9289BE56D009A8739 /* Tests_iOS.swift */; };
 		1AA2A3EC289BE56D009A8739 /* Tests_iOSLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AA2A3EB289BE56D009A8739 /* Tests_iOSLaunchTests.swift */; };
 		1AA2A3F6289BE56D009A8739 /* Tests_macOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AA2A3F5289BE56D009A8739 /* Tests_macOS.swift */; };
@@ -86,11 +89,9 @@
 		1AA2A3FD289BE56D009A8739 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1AA2A3D3289BE56D009A8739 /* Assets.xcassets */; };
 		1AB4B06428B3C76B003E3007 /* BaseTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AB4B06328B3C76B003E3007 /* BaseTask.swift */; };
 		1AC9B82228B39C3600037733 /* UIFileUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AC9B82128B39C3600037733 /* UIFileUtils.swift */; };
-		1AD3E955289E6872007745E9 /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AD3E954289E6872007745E9 /* MainView.swift */; };
 		1AD3E959289E6CF7007745E9 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1AD3E958289E6CF7007745E9 /* AudioToolbox.framework */; };
 		1AD3E95B289E717C007745E9 /* UIUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AD3E95A289E717C007745E9 /* UIUtils.swift */; };
 		1AD3E95D289E81B9007745E9 /* AudioPlayerModelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AD3E95C289E81B9007745E9 /* AudioPlayerModelView.swift */; };
-		1AD3E961289EA246007745E9 /* PlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AD3E960289EA246007745E9 /* PlayerView.swift */; };
 		1AD3E966289EA28D007745E9 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AD3E965289EA28D007745E9 /* LoginView.swift */; };
 		1AD3E968289EA2A4007745E9 /* UIExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AD3E967289EA2A4007745E9 /* UIExtensions.swift */; };
 		1AD4EB0728C90F02000BCB24 /* ArtistViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AD4EB0628C90F02000BCB24 /* ArtistViewModel.swift */; };
@@ -128,6 +129,7 @@
 		02289A18AB1F5BB3D9652527 /* Pods-musapp (iOS).release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-musapp (iOS).release.xcconfig"; path = "Target Support Files/Pods-musapp (iOS)/Pods-musapp (iOS).release.xcconfig"; sourceTree = "<group>"; };
 		1A09A36228A2FF51009760A6 /* AudioSliderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioSliderView.swift; sourceTree = "<group>"; };
 		1A1A378D28C1057000677EBB /* RootStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootStack.swift; sourceTree = "<group>"; };
+		1A1EBD9F293F54FE00607ABA /* PlayerSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerSheetView.swift; sourceTree = "<group>"; };
 		1A1FBD3328DB7B1900CDA475 /* AlbumItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumItemView.swift; sourceTree = "<group>"; };
 		1A282C7A28E32268005F0B5A /* RecommendationsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecommendationsView.swift; sourceTree = "<group>"; };
 		1A282C7C28E32432005F0B5A /* RecommendationsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecommendationsViewModel.swift; sourceTree = "<group>"; };
@@ -197,6 +199,8 @@
 		1A7F960D28AE7E3B000171F5 /* AboutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutView.swift; sourceTree = "<group>"; };
 		1A818E4E28B12079002A862D /* ThumbModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThumbModel.swift; sourceTree = "<group>"; };
 		1A902B5C28BB933300E2B82F /* AudioPlayerItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioPlayerItem.swift; sourceTree = "<group>"; };
+		1A9F44D2293CFB0700831825 /* LibraryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryView.swift; sourceTree = "<group>"; };
+		1A9F44D4293CFCBB00831825 /* ChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartView.swift; sourceTree = "<group>"; };
 		1AA2A3D1289BE56C009A8739 /* MusApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusApp.swift; sourceTree = "<group>"; };
 		1AA2A3D3289BE56D009A8739 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		1AA2A3D8289BE56D009A8739 /* musapp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = musapp.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -209,12 +213,10 @@
 		1AA2A40D289BE632009A8739 /* musapp--iOS--Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "musapp--iOS--Info.plist"; sourceTree = "<group>"; };
 		1AB4B06328B3C76B003E3007 /* BaseTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseTask.swift; sourceTree = "<group>"; };
 		1AC9B82128B39C3600037733 /* UIFileUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIFileUtils.swift; sourceTree = "<group>"; };
-		1AD3E954289E6872007745E9 /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
 		1AD3E956289E6CF7007745E9 /* musapp (iOS).entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "musapp (iOS).entitlements"; sourceTree = "<group>"; };
 		1AD3E958289E6CF7007745E9 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS15.2.sdk/System/Library/Frameworks/AudioToolbox.framework; sourceTree = DEVELOPER_DIR; };
 		1AD3E95A289E717C007745E9 /* UIUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIUtils.swift; sourceTree = "<group>"; };
 		1AD3E95C289E81B9007745E9 /* AudioPlayerModelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioPlayerModelView.swift; sourceTree = "<group>"; };
-		1AD3E960289EA246007745E9 /* PlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerView.swift; sourceTree = "<group>"; };
 		1AD3E965289EA28D007745E9 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		1AD3E967289EA2A4007745E9 /* UIExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIExtensions.swift; sourceTree = "<group>"; };
 		1AD4EB0628C90F02000BCB24 /* ArtistViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArtistViewModel.swift; sourceTree = "<group>"; };
@@ -238,6 +240,7 @@
 		1AEF60FC28EAF855009DD90C /* DBPlaylistDao.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DBPlaylistDao.swift; sourceTree = "<group>"; };
 		1AEF60FE28EAFFC6009DD90C /* BaseNotifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseNotifier.swift; sourceTree = "<group>"; };
 		1B4B5F824BBAF9DEF4B8FBB5 /* Pods-musapp (iOS).debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-musapp (iOS).debug.xcconfig"; path = "Target Support Files/Pods-musapp (iOS)/Pods-musapp (iOS).debug.xcconfig"; sourceTree = "<group>"; };
+		352D89C281AC29D51C3A3EB2 /* Pods_musapp__iOS_.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_musapp__iOS_.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -401,10 +404,12 @@
 		1A7F960A28AE7DE0000171F5 /* screens */ = {
 			isa = PBXGroup;
 			children = (
+				1A9F44D4293CFCBB00831825 /* ChartView.swift */,
+				1A9F44D2293CFB0700831825 /* LibraryView.swift */,
 				1AE0830C28A18B2F00ED456B /* SearchView.swift */,
+				1A7F960D28AE7E3B000171F5 /* AboutView.swift */,
 				1A5BE0BE28AF7A3800CC54F2 /* MyMusicView.swift */,
 				1A282C7A28E32268005F0B5A /* RecommendationsView.swift */,
-				1A7F960D28AE7E3B000171F5 /* AboutView.swift */,
 			);
 			path = screens;
 			sourceTree = "<group>";
@@ -485,9 +490,8 @@
 			children = (
 				1A3B40D628B4E96700A73B0A /* artist */,
 				1A7F960A28AE7DE0000171F5 /* screens */,
-				1AD3E954289E6872007745E9 /* MainView.swift */,
 				1AD3E965289EA28D007745E9 /* LoginView.swift */,
-				1AD3E960289EA246007745E9 /* PlayerView.swift */,
+				1A1EBD9F293F54FE00607ABA /* PlayerSheetView.swift */,
 			);
 			path = ui;
 			sourceTree = "<group>";
@@ -573,6 +577,7 @@
 				1A4BCC3D28BE7F29009E9E6C /* wavpack.xcframework */,
 				1ADB3F3A28A1031D00D44C59 /* StoreKit.framework */,
 				1AD3E958289E6CF7007745E9 /* AudioToolbox.framework */,
+				352D89C281AC29D51C3A3EB2 /* Pods_musapp__iOS_.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -775,12 +780,12 @@
 				1AD4EB0728C90F02000BCB24 /* ArtistViewModel.swift in Sources */,
 				1AD4EB1328C9196E000BCB24 /* ArtistTracksView.swift in Sources */,
 				1A3B40D828B4E97D00A73B0A /* ArtistView.swift in Sources */,
-				1AD3E961289EA246007745E9 /* PlayerView.swift in Sources */,
 				1ADB3F4A28A1075000D44C59 /* DBDelegates.swift in Sources */,
 				1A7F960E28AE7E3B000171F5 /* AboutView.swift in Sources */,
 				1A3A198528B0490F00B961D7 /* AudioItemView.swift in Sources */,
 				1AD3E968289EA2A4007745E9 /* UIExtensions.swift in Sources */,
 				1ADB3F4828A1063500D44C59 /* DBTasks.swift in Sources */,
+				1A9F44D3293CFB0700831825 /* LibraryView.swift in Sources */,
 				1A09A36328A2FF51009760A6 /* AudioSliderView.swift in Sources */,
 				1A3F230228A045A500BF13D3 /* SQLDataBase.swift in Sources */,
 				1AD3E95D289E81B9007745E9 /* AudioPlayerModelView.swift in Sources */,
@@ -790,8 +795,8 @@
 				1A5BE0BF28AF7A3800CC54F2 /* MyMusicView.swift in Sources */,
 				1AB4B06428B3C76B003E3007 /* BaseTask.swift in Sources */,
 				1AD4EB1928C93030000BCB24 /* ArtistAlbumsViewModel.swift in Sources */,
-				1AD3E955289E6872007745E9 /* MainView.swift in Sources */,
 				1A282C7D28E32432005F0B5A /* RecommendationsViewModel.swift in Sources */,
+				1A9F44D5293CFCBB00831825 /* ChartView.swift in Sources */,
 				1A818E4F28B12079002A862D /* ThumbModel.swift in Sources */,
 				1A3B40D528B4E95700A73B0A /* AlbumView.swift in Sources */,
 				1AE0830D28A18B2F00ED456B /* SearchView.swift in Sources */,
@@ -814,6 +819,7 @@
 				1A282C7B28E32268005F0B5A /* RecommendationsView.swift in Sources */,
 				1A3F910528B7BB500063D205 /* ProfileHeaderView.swift in Sources */,
 				1A3C2B8628B242C90079C407 /* ThumbView.swift in Sources */,
+				1A1EBDA0293F54FE00607ABA /* PlayerSheetView.swift in Sources */,
 				1AD4EB1028C90FF3000BCB24 /* RootNavigationView.swift in Sources */,
 				1A31BA2D28DDF29100BF040A /* AudioPlayer.swift in Sources */,
 				1A3C2B8428B242350079C407 /* ThumbCache.swift in Sources */,
@@ -973,7 +979,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = "musapp (iOS).entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = C97944NT66;
 				ENABLE_PREVIEWS = YES;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -987,13 +993,13 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.2;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.01;
 				PRODUCT_BUNDLE_IDENTIFIER = com.vg276.musapp;
 				PRODUCT_NAME = musapp;
 				SDKROOT = iphoneos;
@@ -1011,7 +1017,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = "musapp (iOS).entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = C97944NT66;
 				ENABLE_PREVIEWS = YES;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -1025,13 +1031,13 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.2;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.01;
 				PRODUCT_BUNDLE_IDENTIFIER = com.vg276.musapp;
 				PRODUCT_NAME = musapp;
 				SDKROOT = iphoneos;

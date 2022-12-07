@@ -74,7 +74,7 @@ struct AboutView: View
             .padding(.horizontal, 30)
             .padding(.bottom, 30)
 
-            Text("Version: 1.0")
+            Text("Version: 1.01")
                 .foregroundColor(Color("color_text"))
                 .font(.system(size: 12))
                 .padding(.horizontal, 30)

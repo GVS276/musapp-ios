@@ -22,7 +22,6 @@ class AudioPlayerModelView: ObservableObject
     @Published var playedModel: AudioModel? = nil
     
     @Published var audioPlaying = false
-    @Published var audioPlayerReady = false
     
     @Published var audioList: [AudioModel] = []
     
@@ -83,13 +82,11 @@ class AudioPlayerModelView: ObservableObject
             self.player = AudioPlayer(model: model, delegate: self)
             
             // info (about track)
-            self.art = ThumbCacheObj.cache[model.albumId]?.imageWith(newSize: CGSize(width: 200, height: 200))
+            self.art = ThumbCacheObj.cache[model.albumId]
             self.artColor = self.art?.getColorFromImage()
             self.initPlayingCenter()
-            
-            self.ready(value: true)
         } catch {
-            self.ready(value: false)
+            print("startStream error")
         }
     }
     
@@ -97,11 +94,6 @@ class AudioPlayerModelView: ObservableObject
     {
         self.audioPlaying = value
         self.updatePlayingCenterTime(time: self.currentTime())
-    }
-    
-    private func ready(value: Bool)
-    {
-        self.audioPlayerReady = value
     }
     
     private func destroy()
@@ -158,7 +150,6 @@ class AudioPlayerModelView: ObservableObject
     func stop()
     {
         self.destroy()
-        self.ready(value: false)
     }
     
     func currentTime() -> Float

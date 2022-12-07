@@ -1,15 +1,17 @@
 //
-//  MainView.swift
+//  LibraryView.swift
 //  musapp (iOS)
 //
-//  Created by Виктор Губин on 06.08.2022.
+//  Created by Виктор Губин on 04.12.2022.
 //
 
 import SwiftUI
 
-struct MainView: View
+struct LibraryView: View
 {
     @EnvironmentObject private var audioPlayer: AudioPlayerModelView
+    
+    @State private var search = ""
     
     var body: some View
     {
@@ -45,22 +47,6 @@ struct MainView: View
                 .padding(.vertical, 10)
             }
         } menu: {
-            Button {
-                RootStack.shared.pushToView(view: MyMusicView().environmentObject(self.audioPlayer))
-            } label: {
-                Image("action_my")
-                    .renderingMode(.template)
-                    .foregroundColor(Color("color_text"))
-            }
-            
-            Button {
-                RootStack.shared.pushToView(view: SearchView().environmentObject(self.audioPlayer))
-            } label: {
-                Image("action_search")
-                    .renderingMode(.template)
-                    .foregroundColor(Color("color_text"))
-            }
-            
             Button {
                 RootStack.shared.pushToView(view: AboutView())
             } label: {

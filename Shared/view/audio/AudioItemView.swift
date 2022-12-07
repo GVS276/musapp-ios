@@ -43,19 +43,14 @@ struct AudioItemView: View
                 Text(title)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .foregroundColor(Color("color_text"))
-                    .font(.system(size: 16))
+                    .font(.system(size: 14))
                     .lineLimit(1)
-                    .multilineTextAlignment(.leading)
-                    .removed(item.artist.isEmpty)
-                
                 
                 Text(subTitle)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .foregroundColor(Color("color_text"))
                     .font(.system(size: 14))
                     .lineLimit(1)
-                    .multilineTextAlignment(.leading)
-                    .removed(item.title.isEmpty)
             }
             
             Image("action_explicit")
@@ -66,14 +61,14 @@ struct AudioItemView: View
             Image("action_menu")
                 .renderingMode(.template)
                 .foregroundColor(Color("color_text"))
-                .padding(.trailing, 15)
                 .padding(.vertical, 10)
                 .onTapGesture {
                     self.clicked(.Menu)
                 }
         }
         .padding(.vertical, 10)
-        .padding(.leading, 15)
+        .padding(.horizontal, 15)
+        .background(playedId == item.audioId ? Color("color_playing") : Color.clear)
         .contentShape(Rectangle())
         .onTapGesture {
             self.clicked(.Item)

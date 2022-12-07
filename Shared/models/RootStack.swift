@@ -16,13 +16,12 @@ enum Stack {
 class RootStack: ObservableObject
 {
     static let shared = RootStack()
-    var navigationController: UINavigationController? = nil
     
     @Published var root: Stack = .None
     
     func pushToView<Content: View>(view: Content)
     {
-        if let navigationController = self.navigationController
+        if let navigationController = getNavigationController()
         {
             let viewController = UIHostingController(rootView: view)
             navigationController.navigationBar.isHidden = true
@@ -32,6 +31,44 @@ class RootStack: ObservableObject
     
     func popToView()
     {
-        self.navigationController?.popViewController(animated: true)
+        getNavigationController()?.popViewController(animated: true)
+    }
+    func popToRoot()
+    {
+        getNavigationController()?.popToRootViewController(animated: true)
+    }
+    
+    func getRootViewController() -> UIViewController?
+    {
+        if #available(iOS 14, *) {
+            return UIApplication.shared
+                .connectedScenes
+                .compactMap { $0 as? UIWindowScene }
+                .flatMap { $0.windows }
+                .first { $0.isKeyWindow }?
+                .rootViewController
+        } else {
+            return UIApplication.shared
+                .windows
+                .first { $0.isKeyWindow }?
+                .rootViewController
+        }
+    }
+    
+    func getNavigationController() -> UINavigationController?
+    {
+        guard let rootViewController = getRootViewController() else { return nil }
+        
+        for children in rootViewController.children {
+            if let tabBarController = children as? UITabBarController {
+                let selectedView = tabBarController.selectedViewController
+                
+                if let navigationController = selectedView?.children[0] as? UINavigationController {
+                    return navigationController
+                }
+            }
+        }
+        
+        return nil
     }
 }

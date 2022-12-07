@@ -15,7 +15,7 @@ struct SearchView: View
     
     var body: some View
     {
-        StackView(title: "", back: true)
+        StackView(title: "", back: false)
         {
             if self.model.isRequestStatus == .Receiving && self.model.list.isEmpty
             {

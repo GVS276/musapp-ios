@@ -34,14 +34,14 @@ struct ThumbView: View
             if let image = self.model.cache[self.albumId]
             {
                 Image(uiImage: image.imageWith(newSize: CGSize(width: 45, height: 45)))
-                    .clipShape(Circle())
+                    .clipShape(RoundedRectangle(cornerRadius: 10))
             } else {
                 Image("audio")
                     .renderingMode(.template)
                     .foregroundColor(.white)
                     .frame(width: 45, height: 45)
                     .background(Color("color_thumb"))
-                    .clipShape(Circle())
+                    .clipShape(RoundedRectangle(cornerRadius: 10))
             }
         }
     }
