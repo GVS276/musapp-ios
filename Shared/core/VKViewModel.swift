@@ -33,6 +33,17 @@ struct Response: Decodable
     let response: AuthInfoUpdated
 }
 
+struct CatalogBanner
+{
+    let id: Int?
+    let title: String?
+    let text: String?
+    let subtext: String?
+    let trackCode: String?
+    let imageMode: String?
+    let image: String?
+}
+
 struct CatalogSection
 {
     let id: String?
@@ -580,6 +591,7 @@ class VKViewModel
                            secret: String,
                            catalogSectionId: String,
                            completionHandler: @escaping ((_ section: Section?,
+                                                          _ banners: [CatalogBanner]?,
                                                           _ result: RequestResult) -> Void))
     {
         let method = "/method/catalog.getSection?access_token=\(token)&section_id=\(catalogSectionId)&v=5.138&https=1&lang=ru&device_id=\(self.getDeviceId())"
@@ -588,23 +600,23 @@ class VKViewModel
         
         self.requestSession(urlString: "https://api.vk.com\(method)&sig=\(hash)", parameters: nil) { data in
             guard let data = data else {
-                completionHandler(nil, .ErrorInternet)
+                completionHandler(nil, nil, .ErrorInternet)
                 return
             }
             
             guard let json = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] else
             {
-                completionHandler(nil, .ErrorRequest)
+                completionHandler(nil, nil, .ErrorRequest)
                 return
             }
             
             guard let param = json["response"] as? [String: Any] else {
-                completionHandler(nil, .ErrorRequest)
+                completionHandler(nil, nil, .ErrorRequest)
                 return
             }
             
             guard let section = param["section"] as? [String: Any] else {
-                completionHandler(nil, .ErrorRequest)
+                completionHandler(nil, nil, .ErrorRequest)
                 return
             }
             
@@ -672,7 +684,45 @@ class VKViewModel
                 url: section["url"] as? String
             )
             
-            completionHandler(result, .Success)
+            var catBanners: [CatalogBanner] = []
+            
+            if let banners = param["catalog_banners"] as? NSArray {
+                
+                banners.forEach { item in
+                    
+                    if let item = item as? [String: Any]
+                    {
+                        
+                        var image: String? = nil
+                        
+                        if let images = item["images"] as? NSArray {
+                            
+                            if images.count > 0
+                            {
+                                
+                                if let element = images[images.count - 1] as? [String: Any]
+                                {
+                                    image = element["url"] as? String
+                                }
+                            }
+                        }
+                        
+                        let banner = CatalogBanner(
+                            id: item["id"] as? Int,
+                            title: item["title"] as? String,
+                            text: item["text"] as? String,
+                            subtext: item["subtext"] as? String,
+                            trackCode: item["track_code"] as? String,
+                            imageMode: item["image_mode"] as? String,
+                            image: image
+                        )
+                        
+                        catBanners.append(banner)
+                    }
+                }
+            }
+            
+            completionHandler(result, catBanners, .Success)
         }
     }
     

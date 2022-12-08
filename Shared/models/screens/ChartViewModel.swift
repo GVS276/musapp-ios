@@ -9,7 +9,9 @@ import Foundation
 
 class ChartViewModel: ObservableObject
 {
-    @Published var list = [AudioModel]()
+    @Published var listAudio = [AudioModel]()
+    @Published var listBanner = [CatalogBanner]()
+    
     @Published var isAllowLoading = true
     @Published var isRequestStatus: RequestLoadingStatus = .None
     @Published var idNewSongs = ""
@@ -38,7 +40,19 @@ class ChartViewModel: ObservableObject
     
     deinit
     {
-        self.list.removeAll()
+        self.listAudio.removeAll()
+        self.listBanner.removeAll()
+    }
+    
+    func refresh()
+    {
+        self.listAudio.removeAll()
+        
+        self.listBanner.removeAll()
+        
+        self.isAllowLoading = true
+        
+        self.receiveExploreCatalog()
     }
     
     private func receiveExploreCatalog()
@@ -100,7 +114,7 @@ class ChartViewModel: ObservableObject
     {
         self.model.getCatalogSection(token: token,
                                      secret: secret,
-                                     catalogSectionId: id) { section, result in
+                                     catalogSectionId: id) { section, banners, result in
             
             guard result == .Success else {
                 
@@ -128,6 +142,13 @@ class ChartViewModel: ObservableObject
                 }
                 
                 return
+            }
+            
+            if let banners = banners {
+                DispatchQueue.main.async {
+                    self.listBanner.removeAll()
+                    self.listBanner.append(contentsOf: banners)
+                }
             }
             
             // ищем блок "Новинки"
@@ -197,8 +218,8 @@ class ChartViewModel: ObservableObject
                     return
                 }
                 
-                self.list.removeAll()
-                self.list.append(contentsOf: list)
+                self.listAudio.removeAll()
+                self.listAudio.append(contentsOf: list)
                 
                 self.isAllowLoading = false
                 self.isRequestStatus = .Received
