@@ -89,6 +89,9 @@
 		1AA2A3FD289BE56D009A8739 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1AA2A3D3289BE56D009A8739 /* Assets.xcassets */; };
 		1AB4B06428B3C76B003E3007 /* BaseTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AB4B06328B3C76B003E3007 /* BaseTask.swift */; };
 		1AC9B82228B39C3600037733 /* UIFileUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AC9B82128B39C3600037733 /* UIFileUtils.swift */; };
+		1AD1A87C294219A000A919D0 /* NewSongsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AD1A87B294219A000A919D0 /* NewSongsView.swift */; };
+		1AD1A87E29422E5100A919D0 /* ChartViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AD1A87D29422E5100A919D0 /* ChartViewModel.swift */; };
+		1AD1A880294235ED00A919D0 /* NewSongsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AD1A87F294235ED00A919D0 /* NewSongsViewModel.swift */; };
 		1AD3E959289E6CF7007745E9 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1AD3E958289E6CF7007745E9 /* AudioToolbox.framework */; };
 		1AD3E95B289E717C007745E9 /* UIUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AD3E95A289E717C007745E9 /* UIUtils.swift */; };
 		1AD3E95D289E81B9007745E9 /* AudioPlayerModelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AD3E95C289E81B9007745E9 /* AudioPlayerModelView.swift */; };
@@ -213,6 +216,9 @@
 		1AA2A40D289BE632009A8739 /* musapp--iOS--Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "musapp--iOS--Info.plist"; sourceTree = "<group>"; };
 		1AB4B06328B3C76B003E3007 /* BaseTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseTask.swift; sourceTree = "<group>"; };
 		1AC9B82128B39C3600037733 /* UIFileUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIFileUtils.swift; sourceTree = "<group>"; };
+		1AD1A87B294219A000A919D0 /* NewSongsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewSongsView.swift; sourceTree = "<group>"; };
+		1AD1A87D29422E5100A919D0 /* ChartViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartViewModel.swift; sourceTree = "<group>"; };
+		1AD1A87F294235ED00A919D0 /* NewSongsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewSongsViewModel.swift; sourceTree = "<group>"; };
 		1AD3E956289E6CF7007745E9 /* musapp (iOS).entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "musapp (iOS).entitlements"; sourceTree = "<group>"; };
 		1AD3E958289E6CF7007745E9 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS15.2.sdk/System/Library/Frameworks/AudioToolbox.framework; sourceTree = DEVELOPER_DIR; };
 		1AD3E95A289E717C007745E9 /* UIUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIUtils.swift; sourceTree = "<group>"; };
@@ -330,9 +336,11 @@
 		1A13F3F928E4531E00442877 /* screens */ = {
 			isa = PBXGroup;
 			children = (
+				1AD1A87D29422E5100A919D0 /* ChartViewModel.swift */,
 				1AD4EB0A28C90F93000BCB24 /* SearchViewModel.swift */,
 				1AD4EB0828C90F6B000BCB24 /* MyMusicViewModel.swift */,
 				1A282C7C28E32432005F0B5A /* RecommendationsViewModel.swift */,
+				1AD1A87F294235ED00A919D0 /* NewSongsViewModel.swift */,
 			);
 			path = screens;
 			sourceTree = "<group>";
@@ -410,6 +418,7 @@
 				1A7F960D28AE7E3B000171F5 /* AboutView.swift */,
 				1A5BE0BE28AF7A3800CC54F2 /* MyMusicView.swift */,
 				1A282C7A28E32268005F0B5A /* RecommendationsView.swift */,
+				1AD1A87B294219A000A919D0 /* NewSongsView.swift */,
 			);
 			path = screens;
 			sourceTree = "<group>";
@@ -779,6 +788,7 @@
 				1A3F231028A04C9300BF13D3 /* DBAudioDao.swift in Sources */,
 				1AD4EB0728C90F02000BCB24 /* ArtistViewModel.swift in Sources */,
 				1AD4EB1328C9196E000BCB24 /* ArtistTracksView.swift in Sources */,
+				1AD1A87C294219A000A919D0 /* NewSongsView.swift in Sources */,
 				1A3B40D828B4E97D00A73B0A /* ArtistView.swift in Sources */,
 				1ADB3F4A28A1075000D44C59 /* DBDelegates.swift in Sources */,
 				1A7F960E28AE7E3B000171F5 /* AboutView.swift in Sources */,
@@ -809,6 +819,7 @@
 				1A1A378E28C1057000677EBB /* RootStack.swift in Sources */,
 				1AA2A3F9289BE56D009A8739 /* MusApp.swift in Sources */,
 				1A1FBD3428DB7B1900CDA475 /* AlbumItemView.swift in Sources */,
+				1AD1A87E29422E5100A919D0 /* ChartViewModel.swift in Sources */,
 				1AEF60FB28EAF7FD009DD90C /* PlaylistModel.swift in Sources */,
 				1AD4EB0B28C90F93000BCB24 /* SearchViewModel.swift in Sources */,
 				1A902B5D28BB933300E2B82F /* AudioPlayerItem.swift in Sources */,
@@ -823,6 +834,7 @@
 				1AD4EB1028C90FF3000BCB24 /* RootNavigationView.swift in Sources */,
 				1A31BA2D28DDF29100BF040A /* AudioPlayer.swift in Sources */,
 				1A3C2B8428B242350079C407 /* ThumbCache.swift in Sources */,
+				1AD1A880294235ED00A919D0 /* NewSongsViewModel.swift in Sources */,
 				1A3F231528A052F900BF13D3 /* DBUtils.swift in Sources */,
 				1ADB3F4C28A108F500D44C59 /* DBController.swift in Sources */,
 				1A5416AE28C554FB0090580F /* SearchTextField.swift in Sources */,

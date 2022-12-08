@@ -1,20 +1,25 @@
 //
-//  ChartView.swift
+//  NewSongsView.swift
 //  musapp (iOS)
 //
-//  Created by Виктор Губин on 04.12.2022.
+//  Created by Виктор Губин on 08.12.2022.
 //
 
 import SwiftUI
 
-struct ChartView: View
+struct NewSongsView: View
 {
     @EnvironmentObject private var audioPlayer: AudioPlayerModelView
-    @StateObject private var model = ChartViewModel()
+    @StateObject private var model: NewSongsViewModel
+    
+    init(sectionId: String)
+    {
+        self._model = StateObject(wrappedValue: NewSongsViewModel(id: sectionId))
+    }
     
     var body: some View
     {
-        StackView(title: "Chart", back: false)
+        StackView(title: "New songs", back: true)
         {
             if self.model.isRequestStatus == .Receiving
             {
@@ -33,33 +38,10 @@ struct ChartView: View
                     .padding(.vertical, 20)
             }
             
-            ScrollView(.vertical, showsIndicators: false)
-            {
+            ScrollView(.vertical, showsIndicators: false) {
                 LazyVStack(spacing: 0)
                 {
-                    if self.model.isRequestStatus == .Received
-                    {
-                        Button {
-                            goToNewSongs()
-                        } label: {
-                            HStack(spacing: 15)
-                            {
-                                Text("New songs")
-                                    .frame(maxWidth: .infinity, alignment: .leading)
-                                    .foregroundColor(Color("color_text"))
-                                    .font(.system(size: 16, weight: .bold))
-                                    .lineLimit(1)
-                                
-                                Image("action_next")
-                                    .renderingMode(.template)
-                                    .foregroundColor(Color("color_text"))
-                            }
-                            .padding(.vertical, 10)
-                            .padding(.horizontal, 15)
-                        }
-                    }
-                    
-                    ForEach(model.list, id: \.id) { item in
+                    ForEach(self.model.list, id:\.id) { item in
                         let playedId = self.audioPlayer.playedModel?.audioId
                         
                         AudioItemView(item: item, source: .OtherAudio, playedId: playedId) { type in
@@ -72,11 +54,9 @@ struct ChartView: View
                         }
                         .id(item.id)
                     }
-                    
                 }
                 .padding(.vertical, 10)
             }
-            
         } menu: {
             EmptyView()
         }
@@ -89,13 +69,7 @@ struct ChartView: View
             self.audioPlayer.control(tag: .PlayOrPause)
         } else {
             self.audioPlayer.startStream(model: item)
-            self.audioPlayer.setPlayerList(list: model.list)
+            self.audioPlayer.setPlayerList(list: self.model.list)
         }
-    }
-    
-    private func goToNewSongs()
-    {
-        RootStack.shared.pushToView(
-            view: NewSongsView(sectionId: model.idNewSongs).environmentObject(audioPlayer))
     }
 }
