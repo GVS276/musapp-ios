@@ -97,6 +97,14 @@ struct Section
     let url: String?
 }
 
+struct Suggestion
+{
+    let id: String?
+    let title: String?
+    let subtitle: String?
+    let context: String?
+}
+
 class VKViewModel
 {
     static let shared = VKViewModel()
@@ -810,6 +818,103 @@ class VKViewModel
             }
         }
     }
+    
+    func getSearchSuggestions(token: String,
+                              secret: String,
+                              completionHandler: @escaping ((_ list: [Suggestion]?,
+                                                             _ result: RequestResult) -> Void))
+    {
+        let method = "/method/catalog.getAudioSearch?access_token=\(token)&need_blocks=0&v=5.138&https=1&lang=ru&device_id=\(self.getDeviceId())"
+        
+        let hash = "\(method)\(secret)".md5
+        
+        self.requestSession(urlString: "https://api.vk.com\(method)&sig=\(hash)", parameters: nil) { data in
+            
+            guard let data = data else {
+                completionHandler(nil, .ErrorInternet)
+                return
+            }
+            
+            guard let json = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] else {
+                completionHandler(nil, .ErrorRequest)
+                return
+            }
+            
+            guard let param = json["response"] as? [String: Any] else {
+                completionHandler(nil, .ErrorRequest)
+                return
+            }
+            
+            guard let catalog = param["catalog"] as? [String: Any] else {
+                completionHandler(nil, .ErrorRequest)
+                return
+            }
+            
+            guard let defaultSection = catalog["default_section"] as? String else {
+                completionHandler(nil, .ErrorRequest)
+                return
+            }
+            
+            self.getSearchSection(token: token,
+                                  secret: secret,
+                                  sectionId: defaultSection,
+                                  completionHandler: completionHandler)
+        }
+    }
+    
+    private func getSearchSection(token: String,
+                                  secret: String,
+                                  sectionId: String,
+                                  completionHandler: @escaping ((_ list: [Suggestion]?,
+                                                                 _ result: RequestResult) -> Void))
+    {
+        let method = "/method/catalog.getSection?access_token=\(token)&section_id=\(sectionId)&v=5.138&https=1&lang=ru&device_id=\(self.getDeviceId())"
+        
+        let hash = "\(method)\(secret)".md5
+        
+        self.requestSession(urlString: "https://api.vk.com\(method)&sig=\(hash)", parameters: nil) { data in
+            
+            guard let data = data else {
+                completionHandler(nil, .ErrorInternet)
+                return
+            }
+            
+            guard let json = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] else {
+                completionHandler(nil, .ErrorRequest)
+                return
+            }
+            
+            guard let param = json["response"] as? [String: Any] else {
+                completionHandler(nil, .ErrorRequest)
+                return
+            }
+            
+            guard let suggestions = param["suggestions"] as? NSArray else {
+                completionHandler(nil, .ErrorRequest)
+                return
+            }
+            
+            var list = [Suggestion]()
+            
+            suggestions.forEach { item in
+                
+                if let item = item as? [String: Any] {
+                    
+                    let suggestion = Suggestion(
+                        id: item["id"] as? String,
+                        title: item["title"] as? String,
+                        subtitle: item["subtitle"] as? String,
+                        context: item["context"] as? String
+                    )
+                    
+                    list.append(suggestion)
+                }
+            }
+            
+            completionHandler(list, .Success)
+        }
+    }
+    
     
     /*
      * List

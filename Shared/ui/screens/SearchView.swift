@@ -15,66 +15,29 @@ struct SearchView: View
     
     var body: some View
     {
-        StackView(title: "", back: false)
+        StackView(title: "Search", back: false)
         {
-            if self.model.isRequestStatus == .Receiving && self.model.list.isEmpty
-            {
-                ProgressView()
-                    .progressViewStyle(CircularProgressViewStyle())
-                    .padding(.vertical, 20)
-            }
-            
-            if self.model.isRequestStatus == .Empty
-            {
-                Text("No tracks")
-                    .foregroundColor(Color("color_text"))
-                    .font(.system(size: 16))
-                    .lineLimit(1)
-                    .multilineTextAlignment(.center)
-                    .padding(.vertical, 20)
-            }
-            
             ScrollView(.vertical, showsIndicators: false) {
                 LazyVStack(spacing: 0)
                 {
-                    ForEach(self.model.list, id:\.id) { item in
-                        let playedId = self.audioPlayer.playedModel?.audioId
+                    
+                    findSector()
+                    
+                    if model.isRequestStatus == .None {
                         
-                        AudioItemView(item: item, source: .OtherAudio, playedId: playedId) { type in
-                            switch type {
-                            case .Menu:
-                                MenuDialog.shared.showMenu(audio: item)
-                            case .Item:
-                                self.playOrPause(item: item)
-                            }
-                        }
-                        .id(item.id)
-                        .onAppear {
-                            if item.id == self.model.list.last?.id && self.model.isAllowLoading
-                            {
-                                let end = self.model.list.endIndex
-                                self.model.receiveAudio(offset: end)
-                            }
-                        }
+                        suggestionsSector()
+                        
+                    } else {
+                        
+                        searchSector()
+                        
                     }
+                    
                 }
                 .padding(.vertical, 10)
             }
         } menu: {
-            SearchTextField(text: self.$search) {
-                self.model.startReceiveAudio(q: self.search)
-            }
-            .placeholder(shouldShow: self.search.isEmpty, title: "Search...", paddingHorizontal: 0)
-            .onTapGesture {}
-            
-            Button {
-                self.search.removeAll()
-            } label: {
-                Image("action_close")
-                    .renderingMode(.template)
-                    .foregroundColor(Color("color_text"))
-            }
-            .removed(self.search.isEmpty)
+            EmptyView()
         }
         .onTapGesture {
             self.hideKeyBoard()
@@ -90,5 +53,104 @@ struct SearchView: View
             self.audioPlayer.startStream(model: item)
             self.audioPlayer.setPlayerList(list: self.model.list)
         }
+    }
+    
+    private func searchSector() -> some View
+    {
+        ForEach(model.list, id:\.id) { item in
+            let playedId = audioPlayer.playedModel?.audioId
+            
+            AudioItemView(item: item, source: .OtherAudio, playedId: playedId) { type in
+                switch type {
+                case .Menu:
+                    MenuDialog.shared.showMenu(audio: item)
+                case .Item:
+                    self.playOrPause(item: item)
+                }
+            }
+            .id(item.id)
+            .onAppear {
+                if item.id == model.list.last?.id && model.isAllowLoading
+                {
+                    let end = model.list.endIndex
+                    model.receiveAudio(offset: end)
+                }
+            }
+        }
+    }
+    
+    private func suggestionsSector() -> some View
+    {
+        ForEach(model.listSuggestion.indices, id:\.self) { index in
+            
+            let item = model.listSuggestion[index]
+            
+            Text(item.title ?? "")
+                .font(.system(size: 16, weight: .bold))
+                .foregroundColor(Color("color_text"))
+                .padding(.vertical, 10)
+                .padding(.horizontal, 15)
+                .onTapGesture {
+                    
+                    guard let q = item.title else { return }
+                    
+                    search = q
+                    
+                    hideKeyBoard()
+                    
+                    model.startReceiveAudio(q: search)
+                    
+                }
+            
+        }
+    }
+    
+    private func findSector() -> some View
+    {
+        VStack(spacing: 20)
+        {
+            HStack(spacing: 10)
+            {
+                SearchTextField(text: $search) {
+                    
+                    hideKeyBoard()
+                    
+                    model.startReceiveAudio(q: search)
+                    
+                }
+                .frame(height: 36)
+                .placeholder(shouldShow: search.isEmpty, title: "Find tracks...", paddingHorizontal: 0)
+                .onTapGesture {}
+                
+                Button {
+                    search.removeAll()
+                    model.clearSearch()
+                } label: {
+                    Image("action_close")
+                        .renderingMode(.template)
+                        .foregroundColor(Color("color_text"))
+                }
+                .removed(search.isEmpty)
+            }
+            .padding(.horizontal, 10)
+            .background(Color("color_toolbar"))
+            .clipShape(RoundedRectangle(cornerRadius: 10))
+            
+            if model.isRequestStatus == .Receiving && model.list.isEmpty
+            {
+                ProgressView()
+                    .progressViewStyle(CircularProgressViewStyle())
+            }
+            
+            if model.isRequestStatus == .Empty
+            {
+                Text("No tracks")
+                    .foregroundColor(Color("color_text"))
+                    .font(.system(size: 16))
+                    .lineLimit(1)
+            }
+        }
+        .padding(.vertical, 10)
+        .padding(.horizontal, 15)
     }
 }

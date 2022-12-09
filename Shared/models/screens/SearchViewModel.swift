@@ -10,6 +10,7 @@ import Foundation
 class SearchViewModel: ObservableObject
 {
     @Published var list = [AudioModel]()
+    @Published var listSuggestion = [Suggestion]()
     @Published var isAllowLoading = false
     @Published var isRequestStatus: RequestLoadingStatus = .None
     
@@ -26,6 +27,10 @@ class SearchViewModel: ObservableObject
         {
             self.token = info["token"] as! String
             self.secret = info["secret"] as! String
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                self.receiveSuggestions()
+            }
         } else {
             self.isAllowLoading = false
             self.isRequestStatus = .Error
@@ -46,6 +51,17 @@ class SearchViewModel: ObservableObject
         self.isAllowLoading = true
         
         self.receiveAudio(offset: 0)
+    }
+    
+    func clearSearch()
+    {
+        self.query.removeAll()
+        
+        self.list.removeAll()
+        
+        self.isAllowLoading = false
+        
+        self.isRequestStatus = .None
     }
     
     func receiveAudio(offset: Int)
@@ -118,5 +134,27 @@ class SearchViewModel: ObservableObject
         
         // очищаем временный список
         temp.removeAll()
+    }
+    
+    private func receiveSuggestions()
+    {
+        model.getSearchSuggestions(token: token,
+                                   secret: secret) { list, result in
+            
+           DispatchQueue.main.async {
+               
+               guard result == .Success else {
+                   return
+               }
+               
+               guard let list = list else {
+                   return
+               }
+                
+               self.listSuggestion.removeAll()
+               self.listSuggestion.append(contentsOf: list)
+               
+            }
+        }
     }
 }
