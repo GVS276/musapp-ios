@@ -62,8 +62,10 @@ struct ChartView: View
                         .padding(.top, 20)
                     }
                     
-                    ForEach(model.listAudio, id: \.id) { item in
-                        let playedId = self.audioPlayer.playedModel?.audioId
+                    GridScrollStack(rows: 3, count: model.listAudio.count) { index in
+                        
+                        let item = model.listAudio[index]
+                        let playedId = audioPlayer.playedModel?.audioId
                         
                         AudioItemView(item: item, source: .OtherAudio, playedId: playedId) { type in
                             switch type {
@@ -73,7 +75,8 @@ struct ChartView: View
                                 self.playOrPause(item: item)
                             }
                         }
-                        .id(item.id)
+                        .frame(minWidth: 250, idealWidth: 250, maxWidth: 250)
+                        
                     }
                     
                 }
@@ -151,5 +154,31 @@ struct ChartView: View
                alignment: .topLeading)
         .padding(.horizontal, 10)
         .padding(.vertical, 10)
+        .onTapGesture {
+            
+            if let url = item.url {
+                
+                if let last = url.split(separator: "/").last {
+                    
+                    let inf = last.split(separator: "_")
+                    
+                    guard inf.count == 3 else {
+                        return
+                    }
+                    
+                    let ownerId = String(inf[0])
+                    let albumId = String(inf[1])
+                    let accessKey = String(inf[2])
+                    
+                    RootStack.shared.pushToView(
+                        view: AlbumView(albumId: albumId,
+                                        albumName: item.text ?? "",
+                                        artistName: item.title ?? "",
+                                        ownerId: Int(ownerId) ?? 0,
+                                        accessKey: accessKey).environmentObject(self.audioPlayer)
+                    )
+                }
+            }
+        }
     }
 }

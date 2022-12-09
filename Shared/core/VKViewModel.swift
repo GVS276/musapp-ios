@@ -42,6 +42,7 @@ struct CatalogBanner
     let trackCode: String?
     let imageMode: String?
     let image: String?
+    let url: String?
 }
 
 struct CatalogSection
@@ -693,17 +694,22 @@ class VKViewModel
                     if let item = item as? [String: Any]
                     {
                         
+                        var url: String? = nil
                         var image: String? = nil
                         
                         if let images = item["images"] as? NSArray {
                             
-                            if images.count > 0
+                            if let element = images.lastObject as? [String: Any]
                             {
+                                image = element["url"] as? String
+                            }
+                        }
+                        
+                        if let click_action = item["click_action"] as? [String: Any] {
+                            
+                            if let action = click_action["action"] as? [String: Any] {
                                 
-                                if let element = images[images.count - 1] as? [String: Any]
-                                {
-                                    image = element["url"] as? String
-                                }
+                                url = action["url"] as? String
                             }
                         }
                         
@@ -714,7 +720,8 @@ class VKViewModel
                             subtext: item["subtext"] as? String,
                             trackCode: item["track_code"] as? String,
                             imageMode: item["image_mode"] as? String,
-                            image: image
+                            image: image,
+                            url: url
                         )
                         
                         catBanners.append(banner)
