@@ -16,25 +16,11 @@ class ChartViewModel: ObservableObject
     @Published var isRequestStatus: RequestLoadingStatus = .None
     @Published var idNewSongs = ""
     
-    private let model = VKViewModel.shared
-    
-    private var token = ""
-    private var secret = ""
-    
     init()
     {
-        if let info = UIUtils.getInfo()
-        {
-            self.token = info["token"] as! String
-            self.secret = info["secret"] as! String
-            
-            // задержка на 200 мс
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                self.receiveExploreCatalog()
-            }
-        } else {
-            self.isAllowLoading = false
-            self.isRequestStatus = .Error
+        // задержка на 200 мс
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+            self.receiveExploreCatalog()
         }
     }
     
@@ -67,7 +53,7 @@ class ChartViewModel: ObservableObject
             self.isRequestStatus = .Receiving
         }
         
-        self.model.getCatologAudio(token: token, secret: secret) { catalog, result in
+        VKCatalog.shared.request { catalog, result in
             
             guard result == .Success else {
                 
@@ -112,9 +98,7 @@ class ChartViewModel: ObservableObject
     
     private func receiveSection(id: String)
     {
-        self.model.getCatalogSection(token: token,
-                                     secret: secret,
-                                     catalogSectionId: id) { section, banners, result in
+        VKSection.shared.request(sectionId: id) { section, banners, result in
             
             guard result == .Success else {
                 
@@ -192,9 +176,7 @@ class ChartViewModel: ObservableObject
     
     private func receiveAudiosFromSection(ids: [String])
     {
-        self.model.getAudios(token: token,
-                        secret: secret,
-                        audios: ids) { list, result in
+        VKAudioGetById.shared.request(audios: ids) { list, result in
             
             DispatchQueue.main.async {
                 

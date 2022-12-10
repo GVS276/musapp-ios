@@ -13,28 +13,17 @@ class ArtistTracksViewModel: ObservableObject
     @Published var isAllowLoading = true
     @Published var isRequestStatus: RequestLoadingStatus = .None
     
-    private let model = VKViewModel.shared
     private var artistId = ""
-    private var token = ""
-    private var secret = ""
     
     private let maxCount = 50
     
     init(artistId: String)
     {
-        if let info = UIUtils.getInfo()
-        {
-            self.artistId = artistId
-            self.token = info["token"] as! String
-            self.secret = info["secret"] as! String
-            
-            // задержка на 200 мс
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                self.receiveAudio(offset: 0)
-            }
-        } else {
-            self.isAllowLoading = false
-            self.isRequestStatus = .Error
+        self.artistId = artistId
+        
+        // задержка на 200 мс
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+            self.receiveAudio(offset: 0)
         }
     }
     
@@ -55,11 +44,9 @@ class ArtistTracksViewModel: ObservableObject
             self.isRequestStatus = .Receiving
         }
         
-        self.model.receiveAudioArtist(token: self.token,
-                                      secret: self.secret,
-                                      artistId: self.artistId,
-                                      count: self.maxCount,
-                                      offset: offset) { count, list, result in
+        VKAudioGetByArtistId.shared.request(artistId: artistId,
+                                            count: maxCount,
+                                            offset: offset) { count, list, result in
             DispatchQueue.main.async {
                 switch result {
                 case .ErrorInternet:

@@ -13,31 +13,17 @@ class RecommendationsViewModel: ObservableObject
     @Published var isAllowLoading = true
     @Published var isRequestStatus: RequestLoadingStatus = .None
     
-    private let model = VKViewModel.shared
-    
     private var audioId = ""
     private var audioOwnerId = ""
     
-    private var token = ""
-    private var secret = ""
-    
     init(audioId: String, audioOwnerId: String)
     {
-        if let info = UIUtils.getInfo()
-        {
-            self.audioId = audioId
-            self.audioOwnerId = audioOwnerId
-            
-            self.token = info["token"] as! String
-            self.secret = info["secret"] as! String
-            
-            // задержка на 200 мс
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                self.receiveAudio()
-            }
-        } else {
-            self.isAllowLoading = false
-            self.isRequestStatus = .Error
+        self.audioId = audioId
+        self.audioOwnerId = audioOwnerId
+        
+        // задержка на 200 мс
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+            self.receiveAudio()
         }
     }
     
@@ -58,10 +44,8 @@ class RecommendationsViewModel: ObservableObject
             self.isRequestStatus = .Receiving
         }
         
-        self.model.getRecommendationsAudio(token: self.token,
-                                           secret: self.secret,
-                                           audioId: self.audioId,
-                                           audioOwnerId: self.audioOwnerId) { count, list, result in
+        VKAudioRecommendations.shared.request(audioId: audioId,
+                                              audioOwnerId: audioOwnerId) { count, list, result in
             DispatchQueue.main.async {
                 switch result {
                 case .ErrorInternet:

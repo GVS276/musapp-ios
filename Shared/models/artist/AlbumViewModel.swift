@@ -13,33 +13,19 @@ class AlbumViewModel: ObservableObject
     @Published var isAllowLoading = true
     @Published var isRequestStatus: RequestLoadingStatus = .None
     
-    private let model = VKViewModel.shared
-    
-    private var token = ""
-    private var secret = ""
-    
     private var albumId = ""
     private var ownerId: Int = 0
     private var accessKey = ""
     
     init(albumId: String, ownerId: Int, accessKey: String)
     {
-        if let info = UIUtils.getInfo()
-        {
-            self.albumId = albumId
-            self.ownerId = ownerId
-            self.accessKey = accessKey
-            
-            self.token = info["token"] as! String
-            self.secret = info["secret"] as! String
-            
-            // задержка на 200 мс
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                self.receiveAudio()
-            }
-        } else {
-            self.isAllowLoading = false
-            self.isRequestStatus = .Error
+        self.albumId = albumId
+        self.ownerId = ownerId
+        self.accessKey = accessKey
+        
+        // задержка на 200 мс
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+            self.receiveAudio()
         }
     }
     
@@ -60,11 +46,9 @@ class AlbumViewModel: ObservableObject
             self.isRequestStatus = .Receiving
         }
         
-        self.model.getAudioFromAlbum(token: self.token,
-                                     secret: self.secret,
-                                     ownerId: self.ownerId,
-                                     accessKey: self.accessKey,
-                                     albumId: self.albumId) { count, list, result in
+        VKAudioGetByAlbumId.shared.request(ownerId: ownerId,
+                                           accessKey: accessKey,
+                                           albumId: albumId) { count, list, result in
             DispatchQueue.main.async {
                 switch result {
                 case .ErrorInternet:

@@ -14,8 +14,6 @@ struct LoginView: View
     @State private var login = ""
     @State private var password = ""
     
-    private let request = VKViewModel.shared
-    
     var body: some View
     {
         VStack(spacing: 15)
@@ -79,7 +77,7 @@ struct LoginView: View
     
     private func startExport()
     {
-        request.doAuth(login: self.login, password: self.password) { info, result in
+        VKAuth.shared.request(login: self.login, password: self.password) { info, result in
             DispatchQueue.main.async {
                 switch result {
                 case .ErrorInternet:
@@ -97,7 +95,7 @@ struct LoginView: View
     
     private func refreshToken(token: String, secret: String, userId: Int64)
     {
-        request.refreshToken(token: token, secret: secret) { refresh, result in
+        VKAuthRefreshToken.shared.request { refresh, result in
             DispatchQueue.main.async {
                 switch result {
                 case .ErrorInternet:

@@ -13,25 +13,11 @@ class NewSongsViewModel: ObservableObject
     @Published var isAllowLoading = true
     @Published var isRequestStatus: RequestLoadingStatus = .None
     
-    private let model = VKViewModel.shared
-    
-    private var token = ""
-    private var secret = ""
-    
     init(id: String)
     {
-        if let info = UIUtils.getInfo()
-        {
-            self.token = info["token"] as! String
-            self.secret = info["secret"] as! String
-            
-            // задержка на 200 мс
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                self.receiveAudio(id: id)
-            }
-        } else {
-            self.isAllowLoading = false
-            self.isRequestStatus = .Error
+        // задержка на 200 мс
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+            self.receiveAudio(id: id)
         }
     }
     
@@ -52,7 +38,7 @@ class NewSongsViewModel: ObservableObject
             self.isRequestStatus = .Receiving
         }
         
-        self.model.getButtonTracks(token: token, secret: secret, buttonSectionId: id) { list, result in
+        VKButtonTracks.shared.request(buttonSectionId: id, count: 100) { list, result in
             
             DispatchQueue.main.async {
                 

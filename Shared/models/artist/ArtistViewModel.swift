@@ -15,22 +15,11 @@ class ArtistViewModel: ObservableObject
     @Published var isAllowLoading = true
     @Published var isRequestStatus: RequestLoadingStatus = .None
     
-    private let model = VKViewModel.shared
-    
     init(artistId: String)
     {
-        if let info = UIUtils.getInfo()
-        {
-            let token = info["token"] as! String
-            let secret = info["secret"] as! String
-            
-            // задержка на 200 мс
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                self.receiveTracks(token: token, secret: secret, artistId: artistId)
-            }
-        } else {
-            self.isAllowLoading = false
-            self.isRequestStatus = .Error
+        // задержка на 200 мс
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+            self.receiveTracks(artistId: artistId)
         }
     }
     
@@ -40,7 +29,7 @@ class ArtistViewModel: ObservableObject
         self.albumList.removeAll()
     }
     
-    private func receiveTracks(token: String, secret: String, artistId: String)
+    private func receiveTracks(artistId: String)
     {
         if !self.isAllowLoading {
             return
@@ -52,7 +41,8 @@ class ArtistViewModel: ObservableObject
             self.isRequestStatus = .Receiving
         }
         
-        self.model.receiveAudioArtist(token: token, secret: secret, artistId: artistId) { count, list, result in
+        VKAudioGetByArtistId.shared.request(artistId: artistId,
+                                            count: 5, offset: 0) { count, list, result in
             DispatchQueue.main.async {
                 switch result {
                 case .ErrorInternet:
@@ -75,7 +65,7 @@ class ArtistViewModel: ObservableObject
                         } else {
                             self.audioList.removeAll()
                             self.audioList.append(contentsOf: list)
-                            self.receiveAlbums(token: token, secret: secret, artistId: artistId)
+                            self.receiveAlbums(artistId: artistId)
                             
                             self.isAllowLoading = false
                             self.isRequestStatus = .Received
@@ -87,9 +77,10 @@ class ArtistViewModel: ObservableObject
         }
     }
     
-    private func receiveAlbums(token: String, secret: String, artistId: String)
+    private func receiveAlbums(artistId: String)
     {
-        self.model.receiveAlbumArtist(token: token, secret: secret, artistId: artistId) { count, list, result in
+        VKAlbumByArtistId.shared.request(artistId: artistId,
+                                         count: 5, offset: 0) { count, list, result in
             DispatchQueue.main.async {
                 if result == .Success
                 {

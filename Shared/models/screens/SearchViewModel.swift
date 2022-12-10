@@ -14,32 +14,21 @@ class SearchViewModel: ObservableObject
     @Published var isAllowLoading = false
     @Published var isRequestStatus: RequestLoadingStatus = .None
     
-    private let model = VKViewModel.shared
-    private var token = ""
-    private var secret = ""
     private var query: String = ""
     
     private let maxCount = 50
     
     init()
     {
-        if let info = UIUtils.getInfo()
-        {
-            self.token = info["token"] as! String
-            self.secret = info["secret"] as! String
-            
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                self.receiveSuggestions()
-            }
-        } else {
-            self.isAllowLoading = false
-            self.isRequestStatus = .Error
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+            self.receiveSuggestions()
         }
     }
     
     deinit
     {
         self.list.removeAll()
+        self.listSuggestion.removeAll()
     }
     
     func startReceiveAudio(q: String)
@@ -76,9 +65,9 @@ class SearchViewModel: ObservableObject
             self.isRequestStatus = .Receiving
         }
         
-        self.model.searchAudio(token: self.token,
-                               secret: self.secret,
-                               q: self.query, count: self.maxCount, offset: offset) { count, list, result in
+        VKAudioSearch.shared.request(q: query,
+                                     count: maxCount,
+                                     offset: offset) { count, list, result in
             DispatchQueue.main.async {
                 switch result {
                 case .ErrorInternet:
@@ -138,8 +127,7 @@ class SearchViewModel: ObservableObject
     
     private func receiveSuggestions()
     {
-        model.getSearchSuggestions(token: token,
-                                   secret: secret) { list, result in
+        VKSearchSuggestions.shared.request { list, result in
             
            DispatchQueue.main.async {
                

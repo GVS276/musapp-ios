@@ -25,23 +25,17 @@ class AppDelegate: NSObject, UIApplicationDelegate
             return
         }
         
-        if let info = UIUtils.getInfo()
-        {
-            let token = info["token"] as! String
-            let secret = info["secret"] as! String
-            
-            self.isRequest = false
-            
-            VKViewModel.shared.refreshToken(token: token, secret: secret) { refresh, result in
-                switch result {
-                case .ErrorInternet:
-                    print("Problems with the Internet")
-                case .ErrorRequest:
-                    print("An error occurred when accessing the server")
-                case .Success:
-                    print("Info updated")
-                    UIUtils.updateInfo(token: refresh!.response.token, secret: refresh!.response.secret)
-                }
+        self.isRequest = false
+        
+        VKAuthRefreshToken.shared.request { refresh, result in
+            switch result {
+            case .ErrorInternet:
+                print("Problems with the Internet")
+            case .ErrorRequest:
+                print("An error occurred when accessing the server")
+            case .Success:
+                print("Info updated")
+                UIUtils.updateInfo(token: refresh!.response.token, secret: refresh!.response.secret)
             }
         }
     }
