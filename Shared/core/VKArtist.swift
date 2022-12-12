@@ -1,19 +1,18 @@
 //
-//  VKButtonTracks.swift
+//  VKArtist.swift
 //  musapp (iOS)
 //
-//  Created by Виктор Губин on 09.12.2022.
+//  Created by Виктор Губин on 10.12.2022.
 //
 
 import Foundation
 
-class VKButtonTracks: VKRequestSession
+class VKArtist: VKRequestSession
 {
-    static let shared = VKButtonTracks()
+    static let shared = VKArtist()
     
-    func request(buttonSectionId: String,
-                 count: Int,
-                 completionHandler: @escaping ((_ list: [AudioModel]?,
+    func request(artistDomain: String,
+                 completionHandler: @escaping ((_ section: Section?,
                                                 _ result: RequestResult) -> Void))
     {
         guard let info = UIUtils.getInfo() else {
@@ -31,11 +30,10 @@ class VKButtonTracks: VKRequestSession
             return
         }
         
-        let method = methodLine(method: "audio.getButtonTracks",
+        let method = methodLine(method: "catalog.getAudioArtist",
                                 token: token,
-                                param: ["id=\(buttonSectionId)",
-                                        "count=\(count)"],
-                                needBlocks: false,
+                                param: ["artist_id=\(artistDomain)"],
+                                needBlocks: true,
                                 apiVer: "5.138",
                                 lang: "ru")
         
@@ -50,8 +48,7 @@ class VKButtonTracks: VKRequestSession
                 return
             }
             
-            guard let json = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] else
-            {
+            guard let json = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] else {
                 completionHandler(nil, .ErrorRequest)
                 return
             }
@@ -61,14 +58,29 @@ class VKButtonTracks: VKRequestSession
                 return
             }
             
-            guard let audios = param["audios"] as? NSArray else {
+            guard let cat = param["catalog"] as? [String: Any] else {
                 completionHandler(nil, .ErrorRequest)
                 return
             }
             
-            let list = self.parseAudioList(audios: audios)
+            guard let def = cat["default_section"] as? String else {
+                completionHandler(nil, .ErrorRequest)
+                return
+            }
             
-            completionHandler(list, .Success)
+            guard let sections = cat["sections"] as? [[String: Any]] else {
+                completionHandler(nil, .ErrorRequest)
+                return
+            }
+            
+            guard let item = sections.first(where: {($0["id"] as? String) == def}) else {
+                completionHandler(nil, .ErrorRequest)
+                return
+            }
+            
+            let section = self.parseSection(param: param, item: item, count: 5)
+            
+            completionHandler(section, .Success)
         }
     }
 }

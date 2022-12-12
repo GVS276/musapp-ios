@@ -68,12 +68,12 @@ class VKAudioGetById: VKRequestSession
                 return
             }
             
-            guard let response = json["response"] as? NSArray else {
+            guard let audios = json["response"] as? [[String: Any]] else {
                 completionHandler(nil, .ErrorRequest)
                 return
             }
             
-            let list = self.parseAudioList(audios: response)
+            let list = self.parseAudioList(audios: audios)
             
             completionHandler(list, .Success)
         }

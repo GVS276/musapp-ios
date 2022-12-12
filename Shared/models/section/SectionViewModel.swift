@@ -1,5 +1,5 @@
 //
-//  NewSongsViewModel.swift
+//  SectionViewModel.swift
 //  musapp (iOS)
 //
 //  Created by Виктор Губин on 08.12.2022.
@@ -7,9 +7,9 @@
 
 import Foundation
 
-class NewSongsViewModel: ObservableObject
+class SectionViewModel: ObservableObject
 {
-    @Published var list = [AudioModel]()
+    @Published var list = [SectionBlock]()
     @Published var isAllowLoading = true
     @Published var isRequestStatus: RequestLoadingStatus = .None
     
@@ -17,7 +17,7 @@ class NewSongsViewModel: ObservableObject
     {
         // задержка на 200 мс
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-            self.receiveAudio(id: id)
+            self.receiveBlocks(id: id)
         }
     }
     
@@ -26,7 +26,7 @@ class NewSongsViewModel: ObservableObject
         self.list.removeAll()
     }
     
-    private func receiveAudio(id: String)
+    private func receiveBlocks(id: String)
     {
         if !self.isAllowLoading {
             return
@@ -38,21 +38,11 @@ class NewSongsViewModel: ObservableObject
             self.isRequestStatus = .Receiving
         }
         
-        VKButtonTracks.shared.request(buttonSectionId: id, count: 100) { list, result in
+        VKSection.shared.request(sectionId: id, count: 100) { section, result in
             
             DispatchQueue.main.async {
                 
-                guard result == .Success else {
-                    
-                    self.isAllowLoading = false
-                    self.isRequestStatus = .Error
-                    
-                    Toast.shared.show(text: "An error occurred while accessing the list")
-                    
-                    return
-                }
-                
-                guard let list = list else {
+                guard result == .Success, let section = section else {
                     
                     self.isAllowLoading = false
                     self.isRequestStatus = .Error
@@ -63,7 +53,7 @@ class NewSongsViewModel: ObservableObject
                 }
                 
                 self.list.removeAll()
-                self.list.append(contentsOf: list)
+                self.list.append(contentsOf: section.blocks)
                 
                 self.isAllowLoading = false
                 self.isRequestStatus = .Received

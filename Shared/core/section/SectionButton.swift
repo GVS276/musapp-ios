@@ -7,6 +7,7 @@
 
 struct SectionButton
 {
+    let action: SectionButtonAction?
     let blockId: String?
     let sectionId: String?
     let title: String?

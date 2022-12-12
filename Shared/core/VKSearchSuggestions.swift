@@ -57,26 +57,23 @@ class VKSearchSuggestions: VKRequestSession
                 return
             }
             
-            guard let suggestions = param["suggestions"] as? NSArray else {
+            guard let suggestions = param["suggestions"] as? [[String: Any]] else {
                 completionHandler(nil, .ErrorRequest)
                 return
             }
             
             var list = [Suggestion]()
             
-            suggestions.forEach { item in
+            for item in suggestions
+            {
+                let suggestion = Suggestion(
+                    id: item["id"] as? String,
+                    title: item["title"] as? String,
+                    subtitle: item["subtitle"] as? String,
+                    context: item["context"] as? String
+                )
                 
-                if let item = item as? [String: Any] {
-                    
-                    let suggestion = Suggestion(
-                        id: item["id"] as? String,
-                        title: item["title"] as? String,
-                        subtitle: item["subtitle"] as? String,
-                        context: item["context"] as? String
-                    )
-                    
-                    list.append(suggestion)
-                }
+                list.append(suggestion)
             }
             
             completionHandler(list, .Success)

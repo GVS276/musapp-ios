@@ -69,7 +69,7 @@ class VKAudioRecommendations: VKRequestSession
                 return
             }
             
-            guard let items = param["items"] as? NSArray else {
+            guard let audios = param["items"] as? [[String: Any]] else {
                 completionHandler(0, nil, .ErrorRequest)
                 return
             }
@@ -81,7 +81,7 @@ class VKAudioRecommendations: VKRequestSession
                 
             } else {
                 
-                let list = self.parseAudioList(audios: items)
+                let list = self.parseAudioList(audios: audios)
                 
                 completionHandler(count, list, .Success)
             }

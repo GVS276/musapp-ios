@@ -12,22 +12,22 @@ class VKSection: VKRequestSession
     static let shared = VKSection()
     
     func request(sectionId: String,
+                 count: Int,
                  completionHandler: @escaping ((_ section: Section?,
-                                                _ banners: [CatalogBanner]?,
                                                 _ result: RequestResult) -> Void))
     {
         guard let info = UIUtils.getInfo() else {
-            completionHandler(nil, nil, .ErrorRequest)
+            completionHandler(nil, .ErrorRequest)
             return
         }
         
         guard let token = info["token"] as? String else {
-            completionHandler(nil, nil, .ErrorRequest)
+            completionHandler(nil, .ErrorRequest)
             return
         }
         
         guard let secret = info["secret"] as? String else {
-            completionHandler(nil, nil, .ErrorRequest)
+            completionHandler(nil, .ErrorRequest)
             return
         }
         
@@ -45,34 +45,27 @@ class VKSection: VKRequestSession
         requestSession(urlString: urlString) { data in
             
             guard let data = data else {
-                completionHandler(nil, nil, .ErrorInternet)
+                completionHandler(nil, .ErrorInternet)
                 return
             }
             
             guard let json = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] else {
-                completionHandler(nil, nil, .ErrorRequest)
+                completionHandler(nil, .ErrorRequest)
                 return
             }
             
             guard let param = json["response"] as? [String: Any] else {
-                completionHandler(nil, nil, .ErrorRequest)
+                completionHandler(nil, .ErrorRequest)
                 return
             }
             
             guard let item = param["section"] as? [String: Any] else {
-                completionHandler(nil, nil, .ErrorRequest)
                 return
             }
             
-            var banners: [CatalogBanner] = []
+            let section = self.parseSection(param: param, item: item, count: count)
             
-            if let list = param["catalog_banners"] as? NSArray {
-                banners = self.parseBanners(listBanners: list)
-            }
-            
-            let section = self.parseSection(item: item)
-            
-            completionHandler(section, banners, .Success)
+            completionHandler(section, .Success)
         }
     }
 }

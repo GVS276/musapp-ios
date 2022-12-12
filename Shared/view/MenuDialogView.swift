@@ -168,7 +168,7 @@ struct MenuDialogView: View
                     }
                 } else {
                     let item = audio.artists[0]
-                    RootStack.shared.pushToView(view: ArtistView(artistModel: item).environmentObject(self.audioPlayer))
+                    RootStack.shared.pushToView(view: SectionArtistView(artistModel: item).environmentObject(self.audioPlayer))
                     close()
                 }
             }
@@ -179,12 +179,12 @@ struct MenuDialogView: View
                     return
                 }
                 
-                RootStack.shared.pushToView(view: AlbumView(
+                /*RootStack.shared.pushToView(view: AlbumView(
                     albumId: audio.albumId,
                     albumName: audio.albumTitle,
                     artistName: audio.artist,
                     ownerId: Int(audio.albumOwnerId) ?? 0,
-                    accessKey: audio.albumAccessKey).environmentObject(self.audioPlayer))
+                    accessKey: audio.albumAccessKey).environmentObject(self.audioPlayer))*/
                 
                 close()
             }
@@ -216,7 +216,7 @@ struct MenuDialogView: View
             {
                 ForEach(artists, id: \.id) { item in
                     self.item(iconSet: "action_next", title: item.name) {
-                        RootStack.shared.pushToView(view: ArtistView(artistModel: item).environmentObject(self.audioPlayer))
+                        RootStack.shared.pushToView(view: SectionArtistView(artistModel: item).environmentObject(self.audioPlayer))
                         close()
                     }
                     .id(item.id)

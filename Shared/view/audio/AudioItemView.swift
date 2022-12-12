@@ -32,7 +32,7 @@ struct AudioItemView: View
         {
             if (source != .AudioFromAlbum)
             {
-                ThumbView(url: item.thumb, albumId: item.albumId)
+                ThumbView(url: item.thumb, albumId: item.albumId, size: CGSize(width: 45, height: 45))
             }
             
             VStack(spacing: 2)

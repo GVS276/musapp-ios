@@ -48,7 +48,7 @@ struct LibraryView: View
             }
         } menu: {
             Button {
-                RootStack.shared.pushToView(view: AboutView())
+                
             } label: {
                 Image("action_settings")
                     .renderingMode(.template)

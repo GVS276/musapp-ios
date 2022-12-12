@@ -69,7 +69,7 @@ class VKAlbumByArtistId: VKRequestSession
                 return
             }
             
-            guard let items = param["items"] as? NSArray else {
+            guard let albums = param["items"] as? [[String: Any]] else {
                 completionHandler(0, nil, .ErrorRequest)
                 return
             }
@@ -80,7 +80,7 @@ class VKAlbumByArtistId: VKRequestSession
                 
             } else {
                 
-                let list = self.parseAlbumList(albums: items)
+                let list = self.parseAlbumList(albums: albums)
                 
                 completionHandler(count, list, .Success)
             }

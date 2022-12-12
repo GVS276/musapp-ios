@@ -10,5 +10,4 @@ struct SectionLayout
     let name: String?
     let title: String?
     let ownerId: Int?
-    let infiniteRepeat: Bool = false
 }
