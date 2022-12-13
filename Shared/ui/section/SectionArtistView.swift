@@ -12,16 +12,13 @@ struct SectionArtistView: View
     @EnvironmentObject private var audioPlayer: AudioPlayerModelView
     @StateObject private var model: SectionArtistViewModel
     
-    private let artistModel: ArtistModel
-    
-    init(artistModel: ArtistModel) {
-        self.artistModel = artistModel
-        self._model = StateObject(wrappedValue: SectionArtistViewModel(artistDomain: artistModel.domain))
+    init(artistDomain: String) {
+        self._model = StateObject(wrappedValue: SectionArtistViewModel(artistDomain: artistDomain))
     }
     
     var body: some View
     {
-        StackView(title: artistModel.name, back: true)
+        StackView(title: "Artist", back: true)
         {
             if self.model.isRequestStatus == .Receiving
             {
@@ -49,108 +46,83 @@ struct SectionArtistView: View
                         
                         if block.layout?.name == "header"
                         {
-                            createHeader(block: block)
+                            ItemsSectionHeaderView(block: block) { sectionId, title in
+                                
+                                RootStack.shared.pushToView(
+                                    view: SectionView(sectionId: sectionId, title: title)
+                                        .environmentObject(audioPlayer))
+                            }
                         }
                         
                         if block.dataType == "music_audios"
                         {
-                            createAudiosView(block: block)
+                            ItemsSectionAudioView(block: block) { audio in
+                                
+                                if audio.audioId == audioPlayer.playedModel?.audioId
+                                {
+                                    audioPlayer.control(tag: .PlayOrPause)
+                                } else {
+                                    audioPlayer.startStream(model: audio)
+                                    audioPlayer.setPlayerList(list: block.audios)
+                                }
+                            }
                         }
                         
-                        if block.dataType == "music_playlists"
+                        if block.dataType == "music_playlists", block.layout?.name == "list"
                         {
-                            createPlaylistsView(block: block)
+                            ItemsSectionPlaylistView(block: block, vertical: true) { playlist in
+                                RootStack.shared.pushToView(
+                                    view: PlaylistView(playlistId: playlist.albumId,
+                                                       ownerId: String(playlist.ownerId),
+                                                       accessKey: playlist.accessKey)
+                                        .environmentObject(audioPlayer)
+                                )
+                            }
                         }
                         
+                        if block.dataType == "music_playlists", block.layout?.name == "large_slider"
+                        {
+                            ItemsSectionPlaylistView(block: block, vertical: false) { playlist in
+                                RootStack.shared.pushToView(
+                                    view: PlaylistView(playlistId: playlist.albumId,
+                                                       ownerId: String(playlist.ownerId),
+                                                       accessKey: playlist.accessKey)
+                                        .environmentObject(audioPlayer)
+                                )
+                            }
+                        }
+                        
+                        if block.dataType == "artist_videos"
+                        {
+                            Text("Скоро")
+                                .foregroundColor(Color("color_text"))
+                                .font(.system(size: 16))
+                                .padding(.vertical, 10)
+                                .padding(.horizontal, 15)
+                        }
+                        
+                        if block.dataType == "links", block.layout?.name == "list"
+                        {
+                            ItemsSectionLinkView(block: block, vertical: true) { artistDomain in
+                                
+                            }
+                        }
+                        
+                        if block.dataType == "links", block.layout?.name == "slider"
+                        {
+                            ItemsSectionLinkView(block: block, vertical: false) { artistDomain in
+                                RootStack.shared.pushToView(
+                                    view: SectionArtistView(artistDomain: artistDomain)
+                                        .environmentObject(audioPlayer)
+                                )
+                            }
+                        }
                     }
                 }
                 .padding(.vertical, 10)
             }
         } menu: {
             EmptyView()
-        }
-    }
-    
-    private func createAudiosView(block: SectionBlock) -> some View
-    {
-        ForEach(block.audios.indices, id: \.self) { index in
-            
-            let item = block.audios[index]
-            let playedId = audioPlayer.playedModel?.audioId
-            
-            AudioItemView(item: item, source: .OtherAudio, playedId: playedId) { type in
-                switch type {
-                case .Menu:
-                    MenuDialog.shared.showMenu(audio: item)
-                case .Item:
-                    
-                    if item.audioId == self.audioPlayer.playedModel?.audioId
-                    {
-                        self.audioPlayer.control(tag: .PlayOrPause)
-                    } else {
-                        self.audioPlayer.startStream(model: item)
-                        self.audioPlayer.setPlayerList(list: block.audios)
-                    }
-                    
-                }
-            }
-        }
-    }
-    
-    private func createPlaylistsView(block: SectionBlock) -> some View
-    {
-        ScrollView(.horizontal, showsIndicators: false)
-        {
-            LazyHStack(spacing: 0)
-            {
-                ForEach(block.playlists.indices, id: \.self) { index in
-                    
-                    let item = block.playlists[index]
-                    
-                    PlaylistItemView(item: item, large: true) {
-                        /*RootStack.shared.pushToView(
-                            view: AlbumView(albumId: item.albumId,
-                                            albumName: item.title,
-                                            artistName: item.description,
-                                            ownerId: item.ownerId,
-                                            accessKey: item.accessKey).environmentObject(self.audioPlayer)
-                        )*/
-                    }
-                }
-            }
-            .padding(.horizontal, 5)
-        }
-    }
-    
-    private func createHeader(block: SectionBlock) -> some View
-    {
-        HStack(spacing: 15)
-        {
-            Text(block.layout?.title ?? "Title")
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .foregroundColor(Color("color_text"))
-                .font(.system(size: 16, weight: .bold))
-                .lineLimit(1)
-            
-            if !block.buttons.isEmpty
-            {
-                Image("action_next")
-                    .renderingMode(.template)
-                    .foregroundColor(Color("color_text"))
-            }
-        }
-        .padding(.vertical, 10)
-        .padding(.horizontal, 15)
-        .contentShape(Rectangle())
-        .onTapGesture {
-            if let last = block.buttons.last
-            {
-                let id = last.sectionId ?? ""
-                let text = block.layout?.title ?? "Title"
-                
-                RootStack.shared.pushToView(
-                    view: SectionView(sectionId: id, title: text).environmentObject(audioPlayer))
-            }
         }
     }
 }

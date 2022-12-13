@@ -7,18 +7,28 @@
 
 import SwiftUI
 
+enum ThumbType {
+    case Track
+    case Playlist
+    case Player
+    case Banner
+    case Link
+}
+
 struct ThumbView: View
 {
     @StateObject private var model: ThumbModel
     
-    private let albumId: String
+    private let id: String
+    private let type: ThumbType
     private let size: CGSize
     
-    init(url: String, albumId: String, size: CGSize)
+    init(url: String, id: String, type: ThumbType, size: CGSize)
     {
-        self.albumId = albumId
+        self.id = id
+        self.type = type
         self.size = size
-        self._model = StateObject(wrappedValue: ThumbModel(thumbUrl: url, thumbAlbumId: albumId))
+        self._model = StateObject(wrappedValue: ThumbModel(thumbUrl: url, thumbAlbumId: id))
     }
     
     var body: some View
@@ -33,17 +43,59 @@ struct ThumbView: View
     {
         ZStack
         {
-            if let image = self.model.cache[self.albumId]
+            if let image = self.model.cache[id]
             {
-                Image(uiImage: image.imageWith(newSize: size))
-                    .clipShape(RoundedRectangle(cornerRadius: 10))
+                
+                switch type {
+                case .Track, .Player, .Playlist, .Banner:
+                    Image(uiImage: image.imageWith(newSize: size))
+                        .clipShape(RoundedRectangle(cornerRadius: 10))
+                    
+                case .Link:
+                    Image(uiImage: image.imageWith(newSize: size))
+                        .clipShape(Circle())
+                }
+                
             } else {
-                Image("audio")
-                    .renderingMode(.template)
-                    .foregroundColor(.white)
-                    .frame(width: size.width, height: size.height)
-                    .background(Color("color_thumb"))
-                    .clipShape(RoundedRectangle(cornerRadius: 10))
+                switch type {
+                    
+                case .Track:
+                    Image("audio")
+                        .renderingMode(.template)
+                        .foregroundColor(.white)
+                        .frame(width: size.width, height: size.height)
+                        .background(Color("color_thumb"))
+                        .clipShape(RoundedRectangle(cornerRadius: 10))
+                    
+                case.Playlist:
+                    Image("album")
+                        .renderingMode(.template)
+                        .foregroundColor(.white)
+                        .frame(width: size.width, height: size.height)
+                        .background(Color("color_thumb"))
+                        .clipShape(RoundedRectangle(cornerRadius: 10))
+                    
+                case .Player:
+                    Image("audio")
+                        .renderingMode(.template)
+                        .foregroundColor(.white)
+                        .frame(width: size.width, height: size.height)
+                        .background(Color("color_thumb_dark"))
+                        .clipShape(RoundedRectangle(cornerRadius: 10))
+                    
+                case .Banner:
+                    Color.gray
+                        .frame(width: size.width, height: size.height)
+                        .clipShape(RoundedRectangle(cornerRadius: 10))
+                    
+                case .Link:
+                    Image("action_my")
+                        .renderingMode(.template)
+                        .foregroundColor(.white)
+                        .frame(width: size.width, height: size.height)
+                        .background(Color("color_thumb"))
+                        .clipShape(Circle())
+                }
             }
         }
     }

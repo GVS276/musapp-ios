@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftUI
 
 extension VKRequestSession
 {
@@ -46,6 +47,8 @@ extension VKRequestSession
         let audios = param["audios"] as? [[String: Any]]
         
         let playlists = param["playlists"] as? [[String: Any]]
+        
+        let links = param["links"] as? [[String: Any]]
         
         var blocks = [SectionBlock]()
         
@@ -185,6 +188,32 @@ extension VKRequestSession
                     }
                 }
                 
+                // парсим список плейлистов под блок
+                var listLink = [CatalogLink]()
+                
+                if let links = links
+                {
+                    if let linksIds = block["links_ids"] as? [String]
+                    {
+                        for id in linksIds {
+                            
+                            let check = links.first { link in
+                                
+                                guard let linkId = link["id"] as? String else {
+                                    return false
+                                }
+                                
+                                return id == linkId
+                            }
+                            
+                            if let check = check {
+                                let model = self.convertToCatalogLink(item: check)
+                                listLink.append(model)
+                            }
+                        }
+                    }
+                }
+                
                 let sectionBlock = SectionBlock(
                     id: block["id"] as? String,
                     dataType: block["data_type"] as? String,
@@ -194,7 +223,8 @@ extension VKRequestSession
                     url: block["url"] as? String,
                     banners: listBanner,
                     audios: listAudio.count >= count ? Array(listAudio.prefix(count)) : listAudio,
-                    playlists: listPlaylist.count >= count ? Array(listPlaylist.prefix(count)) : listPlaylist
+                    playlists: listPlaylist.count >= count ? Array(listPlaylist.prefix(count)) : listPlaylist,
+                    links: listLink.count >= count ? Array(listLink.prefix(count)) : listLink
                 )
                 
                 blocks.append(sectionBlock)
@@ -377,5 +407,40 @@ extension VKRequestSession
         }
         
         return model
+    }
+    
+    func convertToCatalogLink(item: [String: Any]) -> CatalogLink
+    {
+        var image: String? = nil
+        var catalogLinkMeta: CatalogLinkMeta? = nil
+        
+        if let images = item["image"] as? [[String: Any]] {
+            
+            if let element = images.last
+            {
+                image = element["url"] as? String
+            }
+        }
+        
+        if let meta = item["meta"] as? [String: Any]
+        {
+            catalogLinkMeta = CatalogLinkMeta(
+                contentType: meta["content_type"] as? String,
+                trackCode: meta["track_code"] as? String,
+                icon: meta["icon"] as? String
+            )
+        }
+        
+        let link = CatalogLink(
+            id: item["id"] as? String,
+            title: item["title"] as? String,
+            subtitle: item["subtitle"] as? String,
+            url: item["url"] as? String,
+            image: image,
+            isNft: item["is_nft"] as? Bool ?? false,
+            meta: catalogLinkMeta
+        )
+        
+        return link
     }
 }

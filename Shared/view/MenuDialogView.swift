@@ -168,7 +168,10 @@ struct MenuDialogView: View
                     }
                 } else {
                     let item = audio.artists[0]
-                    RootStack.shared.pushToView(view: SectionArtistView(artistModel: item).environmentObject(self.audioPlayer))
+                    RootStack.shared.pushToView(
+                        view: SectionArtistView(artistDomain: item.domain)
+                            .environmentObject(audioPlayer)
+                    )
                     close()
                 }
             }
@@ -179,12 +182,12 @@ struct MenuDialogView: View
                     return
                 }
                 
-                /*RootStack.shared.pushToView(view: AlbumView(
-                    albumId: audio.albumId,
-                    albumName: audio.albumTitle,
-                    artistName: audio.artist,
-                    ownerId: Int(audio.albumOwnerId) ?? 0,
-                    accessKey: audio.albumAccessKey).environmentObject(self.audioPlayer))*/
+                RootStack.shared.pushToView(
+                    view: PlaylistView(playlistId: audio.albumId,
+                                       ownerId: audio.albumOwnerId,
+                                       accessKey: audio.albumAccessKey)
+                        .environmentObject(audioPlayer)
+                )
                 
                 close()
             }
@@ -216,7 +219,10 @@ struct MenuDialogView: View
             {
                 ForEach(artists, id: \.id) { item in
                     self.item(iconSet: "action_next", title: item.name) {
-                        RootStack.shared.pushToView(view: SectionArtistView(artistModel: item).environmentObject(self.audioPlayer))
+                        RootStack.shared.pushToView(
+                            view: SectionArtistView(artistDomain: item.domain)
+                                .environmentObject(audioPlayer)
+                        )
                         close()
                     }
                     .id(item.id)

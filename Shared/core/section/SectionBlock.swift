@@ -16,4 +16,5 @@ struct SectionBlock
     let banners: [CatalogBanner]
     let audios: [AudioModel]
     let playlists: [AlbumModel]
+    let links: [CatalogLink]
 }

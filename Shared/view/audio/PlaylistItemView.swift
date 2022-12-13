@@ -26,7 +26,10 @@ struct PlaylistItemView: View
     {
         HStack(spacing: 15)
         {
-            ThumbView(url: item.thumb, albumId: item.albumId, size: CGSize(width: 45, height: 45))
+            ThumbView(url: item.thumb,
+                      id: item.albumId,
+                      type: .Playlist,
+                      size: CGSize(width: 60, height: 60))
             
             VStack(spacing: 2)
             {
@@ -67,7 +70,10 @@ struct PlaylistItemView: View
     {
         VStack(spacing: 0)
         {
-            ThumbView(url: item.thumb, albumId: item.albumId, size: CGSize(width: 150, height: 150))
+            ThumbView(url: item.thumb,
+                      id: item.albumId,
+                      type: .Playlist,
+                      size: CGSize(width: 150, height: 150))
             
             Text(item.title)
                 .foregroundColor(Color("color_text"))
